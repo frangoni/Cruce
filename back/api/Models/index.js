@@ -12,4 +12,4 @@ Order.hasOne(User, { as: "Empresa" });
 Product.belongsToMany(Order, { through: OrderProduct });
 Order.belongsToMany(Product, { through: OrderProduct });
 
-module.exports = { Product, Branch, Order, User, OrderProduct, db };
+module.exports = db;
