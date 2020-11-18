@@ -12,15 +12,16 @@ User.init(
   {
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     role: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
+      allowNull: false,
       validate: {
         isEmail: true,
       },
@@ -53,5 +54,9 @@ User.beforeCreate((user) => {
       user.password = hash;
     });
 });
+
+User.prototype.hash = function (password) {
+  return hash(password, this.salt);
+}
 
 module.exports = User;
