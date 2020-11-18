@@ -12,15 +12,16 @@ User.init(
   {
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     role: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
+      allowNull: false,
       validate: {
         isEmail: true,
       },

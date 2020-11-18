@@ -19,9 +19,9 @@ app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////SERVER
-db.sync({ force: true }).then(() => {
-  app.listen(3000, (req, res) => {
+
+db.sync({ force: false }).then(() => {
+  app.listen(8000, (req, res) => {
     console.log("SERVER EN PUERTO 3000");
   });
 });

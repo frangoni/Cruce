@@ -4,19 +4,22 @@ const privateKey = "clavesecreta1234"
 
 const userValidation = async (req, res, next) => {
     const { email, password } = req.body;
-    const user = await User.findOne({ email })
-    const hash = await user.hash(password)
-    if (hash == user.password) {
-        //generar un jwt
-        const encrypt = {
-            user: user.email,
-            exp: Math.floor(Date.now() / 1000) + (60 * 60) //expira en una hora
+    console.log(req.body)
+    try {
+        const user = await User.findOne({ where: { email } })
+        const hash = await user.hash(password)
+        if (hash == user.password) {
+            //generar un jwt
+            const encrypt = {
+                user: user.email,
+                exp: Math.floor(Date.now() / 1000) + (3600) //expira en una hora
+            }
+            const token = jwt.sign(encrypt, privateKey, { algorithm: 'HS256' });
+            return res.send(token)
         }
-        const token = jwt.sign(encrypt, privateKey, { algorithm: 'RS256' });
-        return res.send(token)
+        res.status(401).send({ error: "acceso denegado" })
     }
-    res.status(401).send({ error: "acceso denegado" })
-
+    catch (e) { console.log(e) }
 
 }
 
@@ -28,4 +31,9 @@ const userCreation = async (req, res, next) => {
     res.status(201).send(user)
 }
 
-module.exports = { userValidation, userCreation }
+const userData = (req, res, next) => {
+    if (req.user) return res.send(req.user)
+    res.status(401).send({ error: "token invalido" })
+}
+
+module.exports = { userValidation, userCreation, userData }
