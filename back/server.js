@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const volleyball = require("volleyball");
 const path = require("path");
-const db = require("./api/DB/index");
+const db = require("./api/db/index");
 const routes = require("./api/Routes/index");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////MIDDLEWARES
@@ -20,7 +20,7 @@ app.get("/*", (req, res) => {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////SERVER
-db.sync({ force: false }).then(() => {
+db.sync({ force: true }).then(() => {
   app.listen(3000, (req, res) => {
     console.log("SERVER EN PUERTO 3000");
   });
