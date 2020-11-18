@@ -57,3 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
+# PACKAGE-LOCK.JSON
+package-lock.json
+
