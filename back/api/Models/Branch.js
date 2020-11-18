@@ -5,7 +5,7 @@ class Branch extends Model {}
 
 Branch.init(
   {
-    id: {
+    pv: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },

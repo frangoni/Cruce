@@ -5,7 +5,7 @@ class Product extends Model {}
 
 Product.init(
   {
-    id: {
+    sku: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },

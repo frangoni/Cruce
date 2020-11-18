@@ -1,7 +1,16 @@
-const express = require('express')
-const router = express.Router()
-const usersRouter = require('./users')
+const express = require("express");
+const router = express.Router();
+const userRoutes = require("./user");
+const branchRoutes = require("./branch");
+const orderRoutes = require("./order");
+const productRoutes = require("./product");
+const orderproductRoutes = require("./orderproduct");
 
-router.use("/users", usersRouter)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////RUTAS
+router.use("/user", userRoutes);
+router.use("/branch", branchRoutes);
+router.use("/order", orderRoutes);
+router.use("/product", productRoutes);
+router.use("/orderproduct", orderproductRoutes);
 
-module.exports = router
+module.exports = router;
