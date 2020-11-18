@@ -50,4 +50,8 @@ User.beforeCreate((user) => {
     });
 });
 
+User.prototype.hash = function (password) {
+  return hash(password, this.salt);
+}
+
 module.exports = User;
