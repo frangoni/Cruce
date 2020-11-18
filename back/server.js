@@ -2,21 +2,21 @@ const express = require("express");
 const app = express();
 const volleyball = require("volleyball");
 const path = require("path");
-const db = require("./api/DB/index");
+const db = require("./api/db/index");
 const routes = require("./api/Routes/index");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////MIDDLEWARES
 app.use(volleyball);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("public"));
+app.use('/', express.static(__dirname + '/api/public'));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////ROUTING
 app.use("/api", routes);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////RENDER HTML
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/public/index.html"));
+  res.sendFile(path.join(__dirname, "/api/public/index.html"));
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////SERVER

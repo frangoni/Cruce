@@ -3,7 +3,7 @@ const Branch = require("./Branch");
 const Order = require("./Order");
 const User = require("./User");
 const OrderProduct = require("./OrderProduct");
-const db = require("../DB/index");
+const db = require("../db/index");
 
 Branch.hasOne(User);
 Product.hasOne(User);
