@@ -1,6 +1,7 @@
 const User = require("../Models/User")
 
 User.bulkCreate([
+    { name: 'Admin', email: "admin@admin.com", password: "1234", company: "Admin", accepted: true, role: "Admin" },
     { name: 'Seba', email: "seba.wetzel@gmail.com", password: "1234", company: "Motoneta veloz", accepted: false, role: "Cadete" },
     { name: 'Feli', email: "feli@gmail.com", password: "1234", company: "Motoneta veloz", accepted: false, role: "Cadete" },
     { name: 'Fran', email: "fran@gmail.com", password: "1234", company: "Motoneta veloz", accepted: false, role: "Cadete" },

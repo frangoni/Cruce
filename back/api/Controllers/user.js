@@ -8,7 +8,7 @@ const userValidation = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email } });
     const hash = await user.hash(password);
-    if (hash == user.password) {
+    if (hash == user.password && user.accepted) {
       //generar un jwt
       const encrypt = {
         user: user.email,

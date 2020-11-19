@@ -14,7 +14,7 @@ export const setCadetes = (cadetes) => {
     };
 };
 
-export const userEmpresas = (empresas) => {
+export const setEmpresas = (empresas) => {
     return {
         type: GET_ALL_EMPRESAS,
         payload: empresas,
@@ -23,12 +23,13 @@ export const userEmpresas = (empresas) => {
 
 
 export const fetchCadetes = (data) => (dispatch, state) => {
+    const { token } = state().user
     axios
         .get('/api/users/cadetes', {
-            headers: { Authorization: `Bearer ${state.user.token}` }
+            headers: { Authorization: `Bearer ${token}` }
         })
         .then((cadetes) => {
-            dispatch(setCadetes(cadetes))
+            dispatch(setCadetes(cadetes.data))
         })
         .catch((err) => {
             console.log('ERROR DEL FETCH REGISTER', err)
@@ -37,12 +38,13 @@ export const fetchCadetes = (data) => (dispatch, state) => {
 }
 
 export const fetchEmpresas = (data) => (dispatch, state) => {
+    const { token } = state().user
     axios
         .get('/api/users/empresas', {
-            headers: { Authorization: `Bearer ${state.user.token}` }
+            headers: { Authorization: `Bearer ${token}` }
         })
         .then((empresas) => {
-            dispatch(setEmpresas(empresas))
+            dispatch(setEmpresas(empresas.data))
         })
         .catch((err) => {
             console.log('ERROR DEL FETCH REGISTER', err)
