@@ -9,7 +9,7 @@ const routes = require("./api/Routes/index");
 app.use(volleyball);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/', express.static(__dirname + '/api/public'));
+app.use('/', express.static(__dirname + '/public'));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////ROUTING
 app.use("/api", routes);
