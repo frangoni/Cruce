@@ -16,10 +16,14 @@ export default (state = initialState, action) => {
     case USER_REGISTER:
       return { ...state, register: true };
     case USER_LOGIN:
-      return { ...state, register: false, user: action.payload };
+      return {
+        ...state,
+        register: false,
+        user: action.payload,
+        token: action.token,
+      };
     case USER_LOGOUT:
       return { ...state, user: {} };
-
     default:
       return state;
   }

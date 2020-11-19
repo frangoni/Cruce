@@ -9,7 +9,7 @@ const routes = require("./api/Routes/index");
 app.use(volleyball);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/', express.static(__dirname + '/api/public'));
+app.use("/", express.static(__dirname + "/api/public"));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////ROUTING
 app.use("/api", routes);
@@ -18,7 +18,6 @@ app.use("/api", routes);
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
-
 
 db.sync({ force: false }).then(() => {
   app.listen(8000, (req, res) => {
