@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+//import { useHistory } from "react-router-dom";
+import { useInput } from "../hooks/useInput";
+import { fetchRegister } from "../redux/actions/user";
+import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -16,6 +20,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister } from "../redux/actions/user";
 import { useDispatch } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,6 +49,10 @@ export default function SignUp() {
   const userPassword = useInput("password");
   const [role, setRole] = useState("Empresa");
   const dispatch = useDispatch();
+  let register = "";
+
+  useSelector((state) => (register = state.user.register));
+
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(
@@ -53,7 +62,10 @@ export default function SignUp() {
         password: userPassword.value,
         role,
       })
-    );
+    ); /* .then(() => {
+      let history = useHistory();
+      history.push("/login");
+    }); */
   };
 
   return (
@@ -137,11 +149,12 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
+          {/* {register ? <CircularProgress /> : null} */}
         </form>
       </div>
       <Box mt={5}></Box>

@@ -8,11 +8,11 @@ const userValidation = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email } });
     const hash = await user.hash(password);
-    if (hash == user.password) {
+    if (hash == user.password && user.accepted) {
       //generar un jwt
       const encrypt = {
         user: user.email,
-        exp: Math.floor(Date.now() / 1000) + 3600, //expira en una hora
+        exp: Math.floor(Date.now() / 1000) + 3600,
       };
       const token = jwt.sign(encrypt, privateKey, { algorithm: "HS256" });
       return res.send(token);

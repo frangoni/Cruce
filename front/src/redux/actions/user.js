@@ -12,10 +12,11 @@ export const userRegister = () => {
   };
 };
 
-export const userLogin = (user) => {
+export const userLogin = (user, token) => {
   return {
     type: USER_LOGIN,
     payload: user,
+    token: token,
   };
 };
 
@@ -33,14 +34,27 @@ export const setError = (error) => {
 };
 
 export const fetchRegister = (data) => (dispatch) => {
+  dispatch(userRegister());
+  axios.post("/api/user/register", data);
+  then(() => {
+    dispatch(userRegister(false));
+  }).catch((err) => {
+    dispatch(setError(err));
+  });
+};
+
+export const fetchLogin = (data) => (dispatch) => {
   axios
-    .post("/api/user/register", data)
+    .post("/api/user/login", data)
     .then((res) => {
-      dispatch(userRegister());
-      console.log("RES DEL POST", res);
+      if (res.data.error) {
+        return alert(res.data.error);
+      } else {
+        dispatch(userLogin(data, res.data));
+        //guardar token en localstorage?
+      }
     })
     .catch((err) => {
-      console.log("ERROR DEL FETCH REGISTER", err);
       dispatch(setError(err));
     });
 };

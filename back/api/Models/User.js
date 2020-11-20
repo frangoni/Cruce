@@ -18,6 +18,9 @@ User.init(
       type: DataTypes.STRING,
       // allowNull: false,
     },
+    company: {
+      type: DataTypes.STRING,
+    },
     email: {
       type: DataTypes.STRING,
       unique: true,
