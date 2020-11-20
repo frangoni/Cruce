@@ -35,7 +35,10 @@ export const setError = (error) => {
 
 export const fetchRegister = (data) => (dispatch) => {
   dispatch(userRegister());
-  axios.post("/api/user/register", data).catch((err) => {
+  axios.post("/api/user/register", data);
+  then(() => {
+    dispatch(userRegister(false));
+  }).catch((err) => {
     dispatch(setError(err));
   });
 };

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister } from "../redux/actions/user";
 import { useDispatch, useSelector } from "react-redux";
-
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -18,6 +17,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import { useInput } from "../hooks/useInput";
+import { fetchRegister } from "../redux/actions/user";
+import { useDispatch } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,16 +44,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
-
   const userInput = useInput("fullName");
   const userEmail = useInput("email");
   const userPassword = useInput("password");
-
   const [role, setRole] = useState("Empresa");
-
   const dispatch = useDispatch();
-
   let register = "";
+
   useSelector((state) => (register = state.user.register));
 
   const handleSubmit = (e) => {
