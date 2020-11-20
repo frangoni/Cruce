@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Link } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import SheetTest from "./components/SheetTest";
 import AdminPanel from "./components/admin/panel";
 import SheetUpload from "./components/SheetUpload";
 

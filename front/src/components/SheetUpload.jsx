@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import XLSX from "xlsx";
 
 export default () => {
@@ -6,7 +6,7 @@ export default () => {
   const handleInputChange = (e) => {
     const target = e.target;
     const fileExt = e.target.value.slice(e.target.value.indexOf("."));
-    if (fileExt == ".xls" || fileExt == ".xlsx" || fileExt == ".ods") {
+    if (fileExt == ".xlsx" || fileExt == ".ods") {
       let reader = new FileReader();
       reader.readAsArrayBuffer(target.files[0]);
       reader.onloadend = (e) => {
@@ -15,9 +15,6 @@ export default () => {
         let planilla = XLSX.utils.sheet_to_row_object_array(
           workBook.Sheets[workBook.SheetNames]
         );
-        console.log(new Date(planilla[0]["Creation Date"]).getTimezoneOffset());
-        console.log("222", planilla[0]["Creation Date"]);
-        console.log(planilla);
         planilla.map((order) =>
           orders.push({
             from: order.Origin,
@@ -56,9 +53,7 @@ export default () => {
         console.log(orders);
       };
     } else {
-      alert(
-        `${fileExt} extension not supported. Please use "xls", "xlsx" or "ods" `
-      );
+      alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
   };
 
