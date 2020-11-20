@@ -28,6 +28,10 @@ Order.init(
       ),
       allowNull: true,
     },
+    assignedDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     pickedDate: {
       type: DataTypes.DATE,
       allowNull: true,

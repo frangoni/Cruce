@@ -19,7 +19,6 @@ export default (state = initialState, action) => {
       return { ...state, register: false, user: action.payload };
     case USER_LOGOUT:
       return { ...state, user: {} };
-
     default:
       return state;
   }
