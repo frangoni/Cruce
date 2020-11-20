@@ -3,6 +3,8 @@ const privateKey = "clavesecreta1234";
 const User = require("../Models/User");
 
 const auth = async (req, res, next) => {
+  console.log("REQ.HEADER",req.headers)
+  console.log("REQ.BODY", req.body)
   let idToken;
   if (
     req.headers.authorization &&
@@ -15,7 +17,7 @@ const auth = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(idToken, privateKey);
+    const decoded = jwt.verify(idToken, privateKey); // decoded guarda los datos que guardamos en el encrypt, si se verifica el token, te da tus datos
     const user = await User.findOne({ where: { email: decoded.user } });
     if (user) req.user = user;
     return next();

@@ -5,28 +5,44 @@ class Order extends Model {}
 
 Order.init(
   {
-    receiver: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     //URL DE GOOGLE MAPS
     from: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    //URL DE GOOGLE MAPS
-    to: {
+    orderId: {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    creationDate : {
+      type : DataTypes.DATE,
+      allowNull:true, 
+    },
+    // STRINGIFY JSON/////
+    client : {
+      type :  DataTypes.STRING,
+      allowNull:true
+    },
+    destination : {
+      type :DataTypes.STRING,
+     allowNull:true
+
+    },
+    products : {
+      type : DataTypes.STRING,
+      allowNull:true
+    },
+ // STRINGIFY JSON/////
     state: {
-      type: DataTypes.ENUM(
-        "Entregado",
-        "Pendiente de retiro en sucursal",
-        "En camino",
-        "Devuelto a sucursal"
-      ),
-      allowNull: true,
+      type: DataTypes.ENUM({
+        values: [
+          "Pendiente de retiro en sucursal",
+          "Retirado",
+          "En progreso",
+          "Entregado",
+        ],
+      }),
+      defaultValue="Pendiente de retiro en sucursal",
     },
     assignedDate: {
       type: DataTypes.DATE,

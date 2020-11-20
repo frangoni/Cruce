@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 //import { useHistory } from "react-router-dom";
-import { useInput } from "../hooks/useInput";
-import { fetchRegister } from "../redux/actions/user";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -19,7 +17,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister } from "../redux/actions/user";
-import { useDispatch } from "react-redux";
+
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
