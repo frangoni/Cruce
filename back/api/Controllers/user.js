@@ -24,11 +24,11 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
+  console.log("en el user creation");
   try {
     const user = await User.create(req.body);
-    console.log('REQ BODY', req.body)
+    console.log("estoy mandando el 201");
     res.status(201).send(user);
- 
   } catch (err) {
     res.status(400).send(err);
   }

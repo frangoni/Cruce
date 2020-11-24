@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useInput } from "../hooks/useInput";
@@ -20,7 +19,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
-
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -66,34 +64,35 @@ export default function SignUp() {
     name: "",
     email: "",
     password: "",
-    company: ""
+    company: "",
   };
 
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
-  errorRegisterFront.company ? (classInput.password = classes.root) : null
+  errorRegisterFront.company ? (classInput.password = classes.root) : null;
 
   const dispatch = useDispatch();
 
   let isLoadingRegister = useSelector((state) => state.user.isLoadingRegister);
-  console.log('is loading register', isLoadingRegister)
+  console.log("is loading register", isLoadingRegister);
   let statusRegister = useSelector((state) => state.user.statusRegister);
   let errorBack = useSelector((state) => state.user.errorBack);
 
   let history = useHistory();
 
   useEffect(() => {
-    if (statusRegister === 201) {
-      history.push("/login");
+    if (statusRegister === 200) {
+      console.log("Use effect con status 201");
+      //history.push("/login");
     }
-  }, [statusRegister]); 
+  }, [statusRegister]);
 
   useEffect(() => {
     if (errorBack != "") {
       dispatch(setError(""));
     }
-  }, [userInput.value, userEmail.value, userPassword.value/* , userCompany.value */]);
+  }, [userInput.value, userEmail.value, userPassword.value, userCompany.value]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -112,14 +111,13 @@ export default function SignUp() {
           name: userInput.value,
           email: userEmail.value,
           password: userPassword.value,
-          /* company: userCompany.value, */
-          role
+          company: userCompany.value,
+          role,
         })
       );
-    } 
+    }
   };
 
-  console.log("ERROR FRONT", Object.keys(errorRegisterFront));
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -187,7 +185,7 @@ export default function SignUp() {
                 {...userPassword}
               />
             </Grid>
-{/*             <Grid item xs={12}>
+            <Grid item xs={12}>
               <TextField
                 className={classInput.name}
                 variant="outlined"
@@ -199,7 +197,7 @@ export default function SignUp() {
                 autoComplete="company"
                 {...userCompany}
               />
-            </Grid> */}
+            </Grid>
             <RadioGroup
               aria-label="gender"
               name="gender1"

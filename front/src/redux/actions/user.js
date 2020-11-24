@@ -19,7 +19,7 @@ export const userLogin = (user, token, valueLoading) => {
     type: USER_LOGIN,
     payload: user,
     token: token,
-    isLoadingLogin: valueLoading
+    isLoadingLogin: valueLoading,
   };
 };
 
@@ -37,31 +37,31 @@ export const setError = (error) => {
 };
 
 export const fetchRegister = (data) => (dispatch) => {
-  /* dispatch(userRegister(true, null)); */
-  /* axios
+  dispatch(userRegister(true, null));
+  console.log("data", data);
+  axios
     .post("/api/user/register", data)
     .then((res) => {
-      console.log('res status', res.status)
+      console.log("res status", res.status);
       dispatch(userRegister(false, res.status));
     })
     .catch((err) => {
       dispatch(userRegister(false, 400));
       dispatch(setError(err));
-    }); */
+    });
 };
 
-
 export const fetchLogin = (data) => (dispatch) => {
-  dispatch(userLogin('','', true))
+  dispatch(userLogin("", "", true));
   axios
     .post("/api/user/login", data)
     .then((res) => {
       dispatch(userLogin(data, res.data, false));
-      
-        //guardar token en localstorage?
+
+      //guardar token en localstorage?
     })
     .catch((err) => {
-      dispatch(userLogin('','', false))
+      dispatch(userLogin("", "", false));
       dispatch(setError(err));
     });
 };
