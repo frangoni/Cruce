@@ -2,13 +2,15 @@ import {
   USER_REGISTER,
   USER_LOGIN,
   USER_LOGOUT,
-  SET_ERROR,
+  SET_ERROR_REGISTER_BACK,
 } from "../constants";
 import axios from "axios";
 
-export const userRegister = () => {
+export const userRegister = (valueLoading, valueStatus) => {
   return {
     type: USER_REGISTER,
+    isLoadingRegister: valueLoading,
+    statusRegister: valueStatus,
   };
 };
 
@@ -28,16 +30,22 @@ export const userLogout = () => {
 
 export const setError = (error) => {
   return {
-    type: SET_ERROR,
+    type: SET_ERROR_REGISTER_BACK,
     payload: error,
   };
 };
 
 export const fetchRegister = (data) => (dispatch) => {
-  dispatch(userRegister());
-  axios.post("/api/user/register", data).catch((err) => {
-    dispatch(setError(err));
-  });
+  dispatch(userRegister(true));
+  axios
+    .post("/api/user/register", data)
+    .then((res) => {
+      dispatch(userRegister(false, res.status));
+    })
+    .catch((err) => {
+      dispatch(userRegister(false, 400));
+      dispatch(setError(err));
+    });
 };
 
 export const fetchLogin = (data) => (dispatch) => {

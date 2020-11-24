@@ -2,28 +2,36 @@ import {
   USER_REGISTER,
   USER_LOGIN,
   USER_LOGOUT,
-  SET_ERROR,
+  SET_ERROR_REGISTER_BACK,
 } from "../constants";
 
 const initialState = {
   user: {},
   token: "",
-  register: false,
+  isLoadingRegister: "",
+  statusRegister: "",
+  errorRegisterBack: "",
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case USER_REGISTER:
-      return { ...state, register: true };
+      return {
+        ...state,
+        isLoadingRegister: action.isLoadingRegister,
+        statusRegister: action.statusRegister,
+      };
     case USER_LOGIN:
       return {
         ...state,
-        register: false,
+        isLoading: false,
         user: action.payload,
         token: action.token,
       };
     case USER_LOGOUT:
       return { ...state, user: {} };
+    case SET_ERROR_REGISTER_BACK:
+      return { ...state, errorRegisterBack: action.payload };
     default:
       return state;
   }

@@ -24,12 +24,12 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
-  const { email, password, name, role } = req.body;
-  const userExists = await User.findOne({ where: { email } });
-  if (userExists)
-    return res.status(403).send({ error: "el usuario ya existe" });
-  const user = await User.create({ email, password, name, role });
-  res.status(201).send(user);
+  try {
+    const user = await User.create(req.body);
+    res.status(201).send(user);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 };
 
 const userData = (req, res, next) => {
