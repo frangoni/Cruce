@@ -2,7 +2,7 @@ import {
   USER_REGISTER,
   USER_LOGIN,
   USER_LOGOUT,
-  SET_ERROR_REGISTER_BACK,
+  SET_ERROR_USER_BACK,
 } from "../constants";
 import axios from "axios";
 
@@ -14,11 +14,12 @@ export const userRegister = (valueLoading, valueStatus) => {
   };
 };
 
-export const userLogin = (user, token) => {
+export const userLogin = (user, token, valueLoading) => {
   return {
     type: USER_LOGIN,
     payload: user,
     token: token,
+    isLoadingLogin: valueLoading
   };
 };
 
@@ -30,7 +31,7 @@ export const userLogout = () => {
 
 export const setError = (error) => {
   return {
-    type: SET_ERROR_REGISTER_BACK,
+    type: SET_ERROR_USER_BACK,
     payload: error,
   };
 };
@@ -49,17 +50,16 @@ export const fetchRegister = (data) => (dispatch) => {
 };
 
 export const fetchLogin = (data) => (dispatch) => {
+  dispatch(userLogin('','', true))
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      if (res.data.error) {
-        return alert(res.data.error);
-      } else {
-        dispatch(userLogin(data, res.data));
+      dispatch(userLogin(data, res.data, false));
+      
         //guardar token en localstorage?
-      }
     })
     .catch((err) => {
+      dispatch(userLogin('','', false))
       dispatch(setError(err));
     });
 };

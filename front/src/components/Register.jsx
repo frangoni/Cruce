@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -46,32 +46,8 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiInputLabel-outlined": {
       color: "red",
     },
-    /* "& .MuiOutlinedInput-input": {
-      color: "red",
-    }, */
-    /* "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-      borderColor: "red",
-    },
-    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "purple",
-    }, */
-    /*  "&:hover .MuiOutlinedInput-input": {
-      color: "red",
-    },
-    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input": {
-      color: "purple",
-    }, */
-    /* "&:hover .MuiInputLabel-outlined": {
-      color: "red",
-    },
-    "& .MuiInputLabel-outlined.Mui-focused": {
-      color: "purple",
-    }, */
   },
 }));
-
-/* const useStyles = makeStyles({
-}); */
 
 export default function SignUp() {
   const classes = useStyles();
@@ -98,7 +74,7 @@ export default function SignUp() {
 
   let isLoadingRegister = useSelector((state) => state.user.isLoadingRegister);
   let statusRegister = useSelector((state) => state.user.statusRegister);
-  let errorRegisterBack = useSelector((state) => state.user.errorRegisterBack);
+  let errorBack = useSelector((state) => state.user.errorBack);
 
   let history = useHistory();
 
@@ -109,7 +85,7 @@ export default function SignUp() {
   }, [statusRegister]);
 
   useEffect(() => {
-    if (errorRegisterBack != "") {
+    if (errorBack != "") {
       dispatch(setError(""));
     }
   }, [userInput.value, userEmail.value, userPassword.value]);
@@ -121,7 +97,6 @@ export default function SignUp() {
 
     if (userInput.value.length == 0) {
       error = { ...error, name: true };
-      classInput.name = classes.root;
     }
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
@@ -135,11 +110,10 @@ export default function SignUp() {
           role,
         })
       );
-    } else {
-      console.log("NO estás mandando al back");
-    }
+    } 
   };
 
+  console.log("ERROR FRONT", Object.keys(errorRegisterFront));
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -151,9 +125,15 @@ export default function SignUp() {
           Sign up
         </Typography>
         <Grid container justify="flex-end">
-          {errorRegisterBack ? (
+          {errorBack ? (
             <Alert severity="error" style={{ margin: "25px auto" }}>
-              Los datos ingresados ya existen, intente nuevamente.
+              Los datos ingresados no son válidos o ya existen, intente
+              nuevamente.
+            </Alert>
+          ) : null}
+          {Object.keys(errorRegisterFront).length ? (
+            <Alert severity="error" style={{ margin: "25px auto" }}>
+              Complete los datos obligatorios por favor.
             </Alert>
           ) : null}
           {isLoadingRegister ? (
@@ -164,7 +144,6 @@ export default function SignUp() {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                //style={{ border: "solid red" }}
                 className={classInput.name}
                 required={true}
                 autoComplete="fname"

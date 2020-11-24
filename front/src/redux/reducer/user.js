@@ -2,7 +2,7 @@ import {
   USER_REGISTER,
   USER_LOGIN,
   USER_LOGOUT,
-  SET_ERROR_REGISTER_BACK,
+  SET_ERROR_USER_BACK,
 } from "../constants";
 
 const initialState = {
@@ -10,7 +10,8 @@ const initialState = {
   token: "",
   isLoadingRegister: "",
   statusRegister: "",
-  errorRegisterBack: "",
+  errorBack: "",
+  isLoadingLogin: ""
 };
 
 export default (state = initialState, action) => {
@@ -24,14 +25,14 @@ export default (state = initialState, action) => {
     case USER_LOGIN:
       return {
         ...state,
-        isLoading: false,
         user: action.payload,
         token: action.token,
+        isLoadingLogin: action.isLoadingLogin
       };
     case USER_LOGOUT:
       return { ...state, user: {} };
-    case SET_ERROR_REGISTER_BACK:
-      return { ...state, errorRegisterBack: action.payload };
+    case SET_ERROR_USER_BACK:
+      return { ...state, errorBack: action.payload };
     default:
       return state;
   }

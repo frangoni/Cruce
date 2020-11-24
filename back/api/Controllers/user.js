@@ -19,7 +19,7 @@ const userValidation = async (req, res, next) => {
     }
     res.status(401).send({ error: "acceso denegado" });
   } catch (e) {
-    console.log(e);
+    res.status(400).send(e);
   }
 };
 
