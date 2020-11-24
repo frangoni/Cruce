@@ -1,4 +1,4 @@
-import { GET_ALL_CADETES, GET_ALL_EMPRESAS } from "../constants";
+import { GET_ALL_CADETES, GET_ALL_EMPRESAS, UPDATE_CADETE, UPDATE_EMPRESA } from "../constants";
 import axios from 'axios'
 
 export const userRegister = () => {
@@ -20,6 +20,16 @@ export const setEmpresas = (empresas) => {
         payload: empresas,
     };
 };
+
+const updateCadete = (id, data) => ({
+    type: UPDATE_CADETE,
+    payload: { id, data }
+})
+
+const updateEmpresa = (id, data) => ({
+    type: UPDATE_EMPRESA,
+    payload: { id, data }
+})
 
 
 export const fetchCadetes = (data) => (dispatch, state) => {
@@ -45,6 +55,27 @@ export const fetchEmpresas = (data) => (dispatch, state) => {
         })
         .then((empresas) => {
             dispatch(setEmpresas(empresas.data))
+        })
+        .catch((err) => {
+            console.log('ERROR DEL FETCH REGISTER', err)
+            dispatch(setError(err))
+        })
+}
+
+export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
+    const { token } = state().user
+    console.log(token)
+    axios
+        ({
+            method: 'PUT',
+            url: `/api/users/${role.toLowerCase()}s/${id}`,
+            headers: { Authorization: `Bearer ${token}` },
+            data: {}
+        })
+        .then((res) => {
+            console.log(res.data)
+            if (role.toLowerCase() === "empresa") dispatch(updateEmpresa(id, res.data))
+            else dispatch(updateCadete(id, res.data))
         })
         .catch((err) => {
             console.log('ERROR DEL FETCH REGISTER', err)

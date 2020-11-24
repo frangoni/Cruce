@@ -4,6 +4,7 @@ const User = require('../Models/User')
 
 const auth = async (req, res, next) => {
     let idToken;
+    console.log(req.headers.authorization)
     if (
         req.headers.authorization &&
         req.headers.authorization.startsWith("Bearer ")
@@ -16,6 +17,9 @@ const auth = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(idToken, privateKey);
+        //TODO  cambiar el obj user por los fields necesarios      
+        //const {name, id, role} = await User.findOne({ where: { email: decoded.user } })
+        //if (id) req.user = {name  id :user. name}
         const user = await User.findOne({ where: { email: decoded.user } })
         if (user) req.user = user
         return next();
