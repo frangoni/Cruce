@@ -17,9 +17,9 @@ const userValidation = async (req, res, next) => {
       const token = jwt.sign(encrypt, privateKey, { algorithm: "HS256" });
       return res.send(token);
     }
-    res.status(401).send({ error: "acceso denegado" });
+    res.status(401).send({ error: "Contraseña incorrecta" });
   } catch (e) {
-    console.log(e);
+    res.send({ error: "Usuario invalido" });
   }
 };
 

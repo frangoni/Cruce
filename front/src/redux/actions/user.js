@@ -35,10 +35,14 @@ export const setError = (error) => {
 
 export const fetchRegister = (data) => (dispatch) => {
   dispatch(userRegister());
-  axios.post("/api/user/register", data).catch((err) => {
+  axios.post("/api/user/register", data).
+  then(() => {
+    dispatch(userRegister(false));
+  }).catch((err) => {
     dispatch(setError(err));
   });
 };
+
 
 export const fetchLogin = (data) => (dispatch) => {
   axios
@@ -49,7 +53,7 @@ export const fetchLogin = (data) => (dispatch) => {
       } else {
         dispatch(userLogin(data, res.data));
         //guardar token en localstorage?
-      }
+      } // data es el del front, no debe guardarse ese en ele stado global, sino el del back
     })
     .catch((err) => {
       dispatch(setError(err));

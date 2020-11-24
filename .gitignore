@@ -60,5 +60,6 @@ typings/
 # PACKAGE-LOCK.JSON
 package-lock.json
 
+#BUNDLE
 bundle.js
 bundle.js.map
