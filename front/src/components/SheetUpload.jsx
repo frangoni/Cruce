@@ -3,17 +3,24 @@ import XLSX from "xlsx";
 
 export default () => {
   const joinOrders = (arr, i = 0) => {
-    while (i + 1 < arr.length && arr[i].orderId == arr[i + 1].orderId) {
-      console.log(JSON.parse(arr[i].products));
-      console.log(JSON.parse(arr[i + 1].products)[0]);
-      JSON.parse(arr[i].products)[i + 1] = JSON.parse(arr[i + 1].products)[0];
-      console.log(JSON.parse(arr[i].products));
-      arr.splice(i + 1, 1);
-    }
-    i++;
-    if (i < arr.length - 1) {
-      joinOrders(arr, i);
-    } else console.log(arr);
+    const joinOrders = (arr) => {
+      let orders = [];
+      arr.map((item) => {
+        const index = orders.findIndex(
+          (order) => order.orderId === item.orderId
+        );
+        console.log("index", index);
+        if (index > -1) {
+          orders[index].products.push(...item.products);
+        } else {
+          orders.push(item);
+        }
+      });
+      return orders.map((order) => ({
+        ...order,
+        products: JSON.stringify(order.products),
+      }));
+    };
   };
 
   let orders = [];
