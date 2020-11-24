@@ -28,7 +28,6 @@ export default () => {
     const target = e.target;
     const fileExt = e.target.value.slice(e.target.value.indexOf("."));
     if (fileExt == ".xlsx") {
-
       let reader = new FileReader();
       reader.readAsArrayBuffer(target.files[0]);
       reader.onloadend = (e) => {
@@ -39,7 +38,6 @@ export default () => {
         );
         /*         console.log(new Date(planilla[0]["Creation Date"]).getTimezoneOffset());
         console.log("222", planilla[0]["Creation Date"]); */
- 
 
         planilla.map((order) =>
           orders.push({
@@ -76,15 +74,14 @@ export default () => {
                 totalValue: order["Total Value"],
               },
             ]),
-          });
-        });
-        console.log(orders);
-
-        orders = joinOrders(orders);
-        console.log(orders);
+          })
+        );
       };
-    } else {
+      console.log(orders);
 
+      orders = joinOrders(orders);
+      console.log(orders);
+    } else {
       alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
   };
