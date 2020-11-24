@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import XLSX from "xlsx";
 
 export default () => {
@@ -21,6 +21,7 @@ export default () => {
     const target = e.target;
     const fileExt = e.target.value.slice(e.target.value.indexOf("."));
     if (fileExt == ".xlsx") {
+
       let reader = new FileReader();
       reader.readAsArrayBuffer(target.files[0]);
       reader.onloadend = (e) => {
@@ -31,9 +32,9 @@ export default () => {
         );
         /*         console.log(new Date(planilla[0]["Creation Date"]).getTimezoneOffset());
         console.log("222", planilla[0]["Creation Date"]); */
+ 
 
-        planilla.map((order) => {
-          console.log(order);
+        planilla.map((order) =>
           orders.push({
             from: order.Origin,
             orderId: order.Order,
@@ -76,7 +77,8 @@ export default () => {
         console.log(orders);
       };
     } else {
-      alert(`${fileExt} extension not supported. Please use "xls" `);
+
+      alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
   };
 
