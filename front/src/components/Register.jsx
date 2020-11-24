@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister, setError } from "../redux/actions/user";
-import { useDispatch, useSelector } from "react-redux";
 
+import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
@@ -19,6 +20,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+
+
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,11 +54,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
-
   const userInput = useInput("fullName");
   const userEmail = useInput("email");
   const userPassword = useInput("password");
-  //const userCompany = useInput("company");
+  const userCompany = useInput("company");
 
   const [role, setRole] = useState("Empresa");
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
@@ -64,15 +66,18 @@ export default function SignUp() {
     name: "",
     email: "",
     password: "",
+    company: ""
   };
 
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
+  errorRegisterFront.company ? (classInput.password = classes.root) : null
 
   const dispatch = useDispatch();
 
   let isLoadingRegister = useSelector((state) => state.user.isLoadingRegister);
+  console.log('is loading register', isLoadingRegister)
   let statusRegister = useSelector((state) => state.user.statusRegister);
   let errorBack = useSelector((state) => state.user.errorBack);
 
@@ -82,13 +87,13 @@ export default function SignUp() {
     if (statusRegister === 201) {
       history.push("/login");
     }
-  }, [statusRegister]);
+  }, [statusRegister]); 
 
   useEffect(() => {
     if (errorBack != "") {
       dispatch(setError(""));
     }
-  }, [userInput.value, userEmail.value, userPassword.value]);
+  }, [userInput.value, userEmail.value, userPassword.value/* , userCompany.value */]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -107,7 +112,8 @@ export default function SignUp() {
           name: userInput.value,
           email: userEmail.value,
           password: userPassword.value,
-          role,
+          /* company: userCompany.value, */
+          role
         })
       );
     } 
@@ -181,8 +187,9 @@ export default function SignUp() {
                 {...userPassword}
               />
             </Grid>
-            {/* <Grid item xs={12}>
+{/*             <Grid item xs={12}>
               <TextField
+                className={classInput.name}
                 variant="outlined"
                 required
                 fullWidth
@@ -190,7 +197,7 @@ export default function SignUp() {
                 type="company"
                 id="company"
                 autoComplete="company"
-                {...userPassword}
+                {...userCompany}
               />
             </Grid> */}
             <RadioGroup
@@ -221,7 +228,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoadingRegister == true ? true : false}
+            disabled={isLoadingRegister ? true : false}
           >
             Sign Up
           </Button>

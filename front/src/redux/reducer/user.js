@@ -8,7 +8,7 @@ import {
 const initialState = {
   user: {},
   token: "",
-  isLoadingRegister: "",
+  isLoadingRegister: false,
   statusRegister: "",
   errorBack: "",
   isLoadingLogin: ""
@@ -17,11 +17,14 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case USER_REGISTER:
+      console.log('isLoadingRegister Reducer', state.isLoadingRegister)
       return {
         ...state,
         isLoadingRegister: action.isLoadingRegister,
+        
         statusRegister: action.statusRegister,
       };
+    
     case USER_LOGIN:
       return {
         ...state,

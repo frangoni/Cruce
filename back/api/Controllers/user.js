@@ -8,7 +8,7 @@ const userValidation = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email } });
     const hash = await user.hash(password);
-    if (hash == user.password) {
+    if (hash == user.password && user.accepted) {
       //generar un jwt
       const encrypt = {
         user: user.email,
@@ -17,16 +17,18 @@ const userValidation = async (req, res, next) => {
       const token = jwt.sign(encrypt, privateKey, { algorithm: "HS256" });
       return res.send(token);
     }
-    res.status(401).send({ error: "acceso denegado" });
+    res.status(401).send({ error: "Contraseña incorrecta" });
   } catch (e) {
-    res.status(400).send(e);
+    res.send({ error: "Usuario invalido" });
   }
 };
 
 const userCreation = async (req, res, next) => {
   try {
     const user = await User.create(req.body);
+    console.log('REQ BODY', req.body)
     res.status(201).send(user);
+ 
   } catch (err) {
     res.status(400).send(err);
   }

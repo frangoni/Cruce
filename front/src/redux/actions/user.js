@@ -37,17 +37,19 @@ export const setError = (error) => {
 };
 
 export const fetchRegister = (data) => (dispatch) => {
-  dispatch(userRegister(true));
-  axios
+  /* dispatch(userRegister(true, null)); */
+  /* axios
     .post("/api/user/register", data)
     .then((res) => {
+      console.log('res status', res.status)
       dispatch(userRegister(false, res.status));
     })
     .catch((err) => {
       dispatch(userRegister(false, 400));
       dispatch(setError(err));
-    });
+    }); */
 };
+
 
 export const fetchLogin = (data) => (dispatch) => {
   dispatch(userLogin('','', true))

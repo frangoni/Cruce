@@ -123,7 +123,7 @@ export default function SignIn() {
 
         {errorBack ? (
             <Alert severity="error" style={{ margin: "25px auto" }}>
-              Los datos ingresados no son válidos o ya existen, intente nuevamente. 
+              Los datos ingresados no son válidos, intente nuevamente. 
             </Alert>
         ) : null}
         
