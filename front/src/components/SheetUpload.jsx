@@ -2,26 +2,11 @@ import React from "react";
 import XLSX from "xlsx";
 
 export default () => {
-  const joinOrders = (arr, i = 0) => {
-    while (i + 1 < arr.length && arr[i].orderId == arr[i + 1].orderId) {
-      console.log(JSON.parse(arr[i].products));
-      console.log(JSON.parse(arr[i + 1].products)[0]);
-      JSON.parse(arr[i].products)[i + 1] = JSON.parse(arr[i + 1].products)[0];
-      console.log(JSON.parse(arr[i].products));
-      arr.splice(i + 1, 1);
-    }
-    i++;
-    if (i < arr.length - 1) {
-      joinOrders(arr, i);
-    } else console.log(arr);
-  };
-
   let orders = [];
   const handleInputChange = (e) => {
     const target = e.target;
     const fileExt = e.target.value.slice(e.target.value.indexOf("."));
-    if (fileExt == ".xlsx") {
-
+    if (fileExt == ".xlsx" || fileExt == ".ods") {
       let reader = new FileReader();
       reader.readAsArrayBuffer(target.files[0]);
       reader.onloadend = (e) => {
@@ -30,10 +15,6 @@ export default () => {
         let planilla = XLSX.utils.sheet_to_row_object_array(
           workBook.Sheets[workBook.SheetNames]
         );
-        /*         console.log(new Date(planilla[0]["Creation Date"]).getTimezoneOffset());
-        console.log("222", planilla[0]["Creation Date"]); */
- 
-
         planilla.map((order) =>
           orders.push({
             from: order.Origin,
@@ -58,26 +39,20 @@ export default () => {
               estimatedDelivery: order["Estimate Delivery Date"],
               courier: order.Courrier,
             }),
-            products: JSON.stringify([
-              {
-                sku: order.ID_SKU,
-                quantity: order.Quantity_SKU,
-                name: order["SKU NAME"],
-                skuValue: order["SKU VALUE"],
-                discountsTotals: order["Discounts Totals"],
-                shippingValue: order["Shipping Value"],
-                totalValue: order["Total Value"],
-              },
-            ]),
-          });
-        });
-        console.log(orders);
-
-        orders = joinOrders(orders);
+            products: JSON.stringify({
+              sku: order.ID_SKU,
+              quantity: order.Quantity_SKU,
+              name: order["SKU NAME"],
+              skuValue: order["SKU VALUE"],
+              discountsTotals: order["Discounts Totals"],
+              shippingValue: order["Shipping Value"],
+              totalValue: order["Total Value"],
+            }),
+          })
+        );
         console.log(orders);
       };
     } else {
-
       alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
   };
