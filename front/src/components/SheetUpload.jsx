@@ -63,7 +63,7 @@ export default () => {
               estimatedDelivery: order["Estimate Delivery Date"],
               courier: order.Courrier,
             }),
-            products: JSON.stringify([
+            products: [
               {
                 sku: order.ID_SKU,
                 quantity: order.Quantity_SKU,
@@ -73,7 +73,7 @@ export default () => {
                 shippingValue: order["Shipping Value"],
                 totalValue: order["Total Value"],
               },
-            ]),
+            ],
           })
         );
       };
