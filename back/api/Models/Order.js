@@ -42,7 +42,7 @@ Order.init(
           "Entregado",
         ],
       }),
-      defaultValue="Pendiente de retiro en sucursal",
+      defaultValue:"Pendiente de retiro en sucursal",
     },
     assignedDate: {
       type: DataTypes.DATE,
