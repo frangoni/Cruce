@@ -14,25 +14,24 @@ Order.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    creationDate : {
-      type : DataTypes.DATE,
-      allowNull:true, 
+    creationDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     // STRINGIFY JSON/////
-    client : {
-      type :  DataTypes.STRING,
-      allowNull:true
+    client: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    destination : {
-      type :DataTypes.STRING,
-     allowNull:true
-
+    destination: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    products : {
-      type : DataTypes.STRING,
-      allowNull:true
+    products: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
- // STRINGIFY JSON/////
+    // STRINGIFY JSON/////
     state: {
       type: DataTypes.ENUM({
         values: [
