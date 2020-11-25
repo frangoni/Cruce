@@ -4,7 +4,6 @@ const privateKey = "clavesecreta1234";
 
 const userValidation = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(req.body);
   try {
     const user = await User.findOne({ where: { email } });
     const hash = await user.hash(password);
@@ -15,19 +14,17 @@ const userValidation = async (req, res, next) => {
         exp: Math.floor(Date.now() / 1000) + 3600,
       };
       const token = jwt.sign(encrypt, privateKey, { algorithm: "HS256" });
-      return res.send(token);
+      return res.status(200).send(token);
     }
-    res.status(401).send({ error: "Contraseña incorrecta" });
+    res.status(403).send({ error: "Contraseña incorrecta" });
   } catch (e) {
-    res.send({ error: "Usuario invalido" });
+    res.status(403).send({ error: "Usuario invalido" });
   }
 };
 
 const userCreation = async (req, res, next) => {
-  console.log("en el user creation");
   try {
     const user = await User.create(req.body);
-    console.log("estoy mandando el 201");
     res.status(201).send(user);
   } catch (err) {
     res.status(400).send(err);

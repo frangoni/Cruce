@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import user from "./user";
-import users from './users'
-
-
+import users from "./users";
+import animations from "./animations";
 
 export default combineReducers({
   user,
-  users
+  users,
+  animations,
 });

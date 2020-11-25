@@ -1,25 +1,33 @@
 import {
-  USER_REGISTER,
+  USER_REGISTER_ANIMATION,
   USER_LOGIN,
+  USER_LOGIN_ANIMATION,
   USER_LOGOUT,
   SET_ERROR_USER_BACK,
 } from "../constants";
 import axios from "axios";
 
-export const userRegister = (valueLoading, valueStatus) => {
+export const userRegisterAnimation = (valueLoading, valueStatus) => {
   return {
-    type: USER_REGISTER,
+    type: USER_REGISTER_ANIMATION,
     isLoadingRegister: valueLoading,
     statusRegister: valueStatus,
   };
 };
 
-export const userLogin = (user, token, valueLoading) => {
+export const userLoginAnimation = (valueLogin, valueStatus) => {
+  return {
+    type: USER_LOGIN_ANIMATION,
+    isLoadingLogin: valueLogin,
+    statusLogin: valueStatus,
+  };
+};
+
+export const userLogin = (user, token) => {
   return {
     type: USER_LOGIN,
     payload: user,
     token: token,
-    isLoadingLogin: valueLoading,
   };
 };
 
@@ -37,31 +45,30 @@ export const setError = (error) => {
 };
 
 export const fetchRegister = (data) => (dispatch) => {
-  dispatch(userRegister(true, null));
+  dispatch(userRegisterAnimation(true, null));
   console.log("data", data);
   axios
     .post("/api/user/register", data)
     .then((res) => {
       console.log("res status", res.status);
-      dispatch(userRegister(false, res.status));
+      dispatch(userRegisterAnimation(false, res.status));
     })
     .catch((err) => {
-      dispatch(userRegister(false, 400));
+      dispatch(userRegisterAnimation(false, 400));
       dispatch(setError(err));
     });
 };
 
 export const fetchLogin = (data) => (dispatch) => {
-  dispatch(userLogin("", "", true));
+  dispatch(userLoginAnimation(true, null));
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      dispatch(userLogin(data, res.data, false));
-
-      //guardar token en localstorage?
+      dispatch(userLogin(data.email, res.data));
+      dispatch(userLoginAnimation(false, res.status));
     })
     .catch((err) => {
-      dispatch(userLogin("", "", false));
+      dispatch(userLoginAnimation(false, 403));
       dispatch(setError(err));
     });
 };

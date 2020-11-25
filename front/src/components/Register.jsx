@@ -70,21 +70,21 @@ export default function SignUp() {
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
-  errorRegisterFront.company ? (classInput.password = classes.root) : null;
+  errorRegisterFront.company ? (classInput.company = classes.root) : null;
 
   const dispatch = useDispatch();
 
-  let isLoadingRegister = useSelector((state) => state.user.isLoadingRegister);
-  console.log("is loading register", isLoadingRegister);
-  let statusRegister = useSelector((state) => state.user.statusRegister);
+  let isLoadingRegister = useSelector(
+    (state) => state.animations.isLoadingRegister
+  );
+  let statusRegister = useSelector((state) => state.animations.statusRegister);
   let errorBack = useSelector((state) => state.user.errorBack);
 
   let history = useHistory();
 
   useEffect(() => {
-    if (statusRegister === 200) {
-      console.log("Use effect con status 201");
-      //history.push("/login");
+    if (statusRegister === 201) {
+      history.push("/login");
     }
   }, [statusRegister]);
 
@@ -104,6 +104,7 @@ export default function SignUp() {
     }
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
+    if (userCompany.value.length == 0) error = { ...error, company: true };
     if (Object.keys(error).length) setErrorRegisterFront(error);
     if (Object.keys(error).length == 0) {
       dispatch(
@@ -187,7 +188,7 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                className={classInput.name}
+                className={classInput.company}
                 variant="outlined"
                 required
                 fullWidth

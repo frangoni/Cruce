@@ -18,7 +18,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -43,16 +42,23 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiInputLabel-outlined": {
       color: "red",
-    }
+    },
   },
 }));
 
 export default function SignIn() {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const userEmail = useInput("email");
   const userPassword = useInput("password");
   const [errorLoginFront, setErrorLoginFront] = useState({});
+
+  let history = useHistory();
+  let statusLogin = useSelector((state) => state.animations.statusLogin);
+  let isLoadingLogin = useSelector((state) => state.animations.isLoadingLogin);
+  let errorBack = useSelector((state) => state.user.errorBack);
 
   let classInput = {
     email: "",
@@ -62,11 +68,8 @@ export default function SignIn() {
   errorLoginFront.email ? (classInput.email = classes.root) : null;
   errorLoginFront.password ? (classInput.password = classes.root) : null;
 
-  const dispatch = useDispatch();
-
   const handleSubmit = (e) => {
     e.preventDefault();
-
 
     setErrorLoginFront({});
     let error = {};
@@ -83,10 +86,6 @@ export default function SignIn() {
       );
     }
   };
-  let history = useHistory();
-  let validUser = useSelector((state) => state.user.user);
-  let isLoadingLogin = useSelector((state) => state.user.isLoadingLogin);
-  let errorBack = useSelector((state) => state.user.errorBack);
 
   useEffect(() => {
     if (errorBack != "") {
@@ -95,11 +94,10 @@ export default function SignIn() {
   }, [userEmail.value, userPassword.value]);
 
   useEffect(() => {
-
-    if (validUser.email) {
-  history.push('/')
+    if (statusLogin === 200) {
+      history.push("/");
     }
-  }, [validUser]);
+  }, [statusLogin]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -112,21 +110,21 @@ export default function SignIn() {
           Sign in
         </Typography>
         {isLoadingLogin ? (
-            <CircularProgress style={{ margin: "25px auto" }} />
+          <CircularProgress style={{ margin: "25px auto" }} />
         ) : null}
-        
+
         {Object.keys(errorLoginFront).length ? (
-            <Alert severity="error" style={{ margin: "25px auto" }}>
-              Complete los datos obligatorios por favor.
-            </Alert>
-          ) : null}
+          <Alert severity="error" style={{ margin: "25px auto" }}>
+            Complete los datos obligatorios por favor.
+          </Alert>
+        ) : null}
 
         {errorBack ? (
-            <Alert severity="error" style={{ margin: "25px auto" }}>
-              Los datos ingresados no son válidos, intente nuevamente. 
-            </Alert>
+          <Alert severity="error" style={{ margin: "25px auto" }}>
+            Los datos ingresados no son válidos, intente nuevamente.
+          </Alert>
         ) : null}
-        
+
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"

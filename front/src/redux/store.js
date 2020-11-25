@@ -8,8 +8,6 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const persistedState = loadState();
 
-
-
 const store = createStore(
   reducer,
   persistedState,
@@ -18,10 +16,8 @@ const store = createStore(
 
 store.subscribe(() => {
   saveState({
-    ...store.getState(),
+    user: store.getState().user,
   });
 });
-
-
 
 export default store;
