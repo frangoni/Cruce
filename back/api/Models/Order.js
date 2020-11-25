@@ -20,15 +20,15 @@ Order.init(
     },
     // STRINGIFY JSON/////
     client: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     destination: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     products: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     // STRINGIFY JSON/////
@@ -41,24 +41,26 @@ Order.init(
           "Entregado",
         ],
       }),
-      defaultValu: "Pendiente de retiro en sucursal",
+      defaultValue: "Pendiente de retiro en sucursal",
     },
     assignedDate: {
       type: DataTypes.DATE,
-      allowNull: true,
+      defaultValue:null
+
     },
     pickedDate: {
       type: DataTypes.DATE,
-      allowNull: true,
+      defaultValue:null
+
     },
     deliveredDate: {
       type: DataTypes.DATE,
-      allowNull: true,
+      defaultValue:null
     },
     delay: {
       type: DataTypes.VIRTUAL,
       get() {
-        return this.getDataValue(deliveredDate) - this.getDataValue(pickedDate);
+        return this.getDataValue('deliveredDate') - this.getDataValue('pickedDate');
       },
     },
   },
