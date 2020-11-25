@@ -1,46 +1,42 @@
-import React from "react";
+import React, { useRef } from "react";
+import { useState } from "react";
 import XLSX from "xlsx";
-
+import { postOrders } from "../redux/actions/orders";
+import { DataGrid } from "@material-ui/data-grid";
 export default () => {
-  const joinOrders = (arr, i = 0) => {
-    const joinOrders = (arr) => {
-      let orders = [];
-      arr.map((item) => {
-        const index = orders.findIndex(
-          (order) => order.orderId === item.orderId
-        );
-        console.log("index", index);
-        if (index > -1) {
-          orders[index].products.push(...item.products);
-        } else {
-          orders.push(item);
-        }
-      });
-      return orders.map((order) => ({
-        ...order,
-        products: JSON.stringify(order.products),
-      }));
-    };
+  const fileInputRef = useRef();
+  const [orders, setOrders] = useState([]);
+  const joinOrders = (arr) => {
+    let orders = [];
+    arr.map((item) => {
+      const index = orders.findIndex((order) => order.orderId === item.orderId);
+      if (index > -1) {
+        orders[index].products.push(...item.products);
+      } else {
+        orders.push(item);
+      }
+    });
+    return orders.map((order) => ({
+      ...order,
+      products: JSON.stringify(order.products),
+    }));
   };
-
-  let orders = [];
   const handleInputChange = (e) => {
+    let ordenes = [];
     const target = e.target;
-    const fileExt = e.target.value.slice(e.target.value.indexOf("."));
-    if (fileExt == ".xlsx") {
+    const fileExt = e.target.value.slice(e.target.value.lastIndexOf("."));
+    if (fileExt == ".xls") {
       let reader = new FileReader();
       reader.readAsArrayBuffer(target.files[0]);
       reader.onloadend = (e) => {
         let data = new Uint8Array(e.target.result);
         let workBook = XLSX.read(data, { type: "array" });
-        let planilla = XLSX.utils.sheet_to_row_object_array(
-          workBook.Sheets[workBook.SheetNames]
+        let planilla = XLSX.utils.sheet_to_json(
+          workBook.Sheets[workBook.SheetNames],
+          { range: 1 }
         );
-        /*         console.log(new Date(planilla[0]["Creation Date"]).getTimezoneOffset());
-        console.log("222", planilla[0]["Creation Date"]); */
-
         planilla.map((order) =>
-          orders.push({
+          ordenes.push({
             from: order.Origin,
             orderId: order.Order,
             creationDate: order["Creation Date"],
@@ -76,24 +72,59 @@ export default () => {
             ],
           })
         );
+        setOrders(joinOrders(ordenes));
       };
-      console.log(orders);
-
-      orders = joinOrders(orders);
-      console.log(orders);
     } else {
       alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
   };
-
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    postOrders(orders);
+    fileInputRef.current.value = "";
+    setOrders([]);
+  };
+  console.log(orders);
+  const columns = [
+    { field: "from", headerName: "Origen", width: 300 },
+    { field: "orderId", headerName: "Id", width: 300 },
+    { field: "creationDate", headerName: "Fecha de Creacion", width: 300 },
+    {
+      field: "client",
+      headerName: "Cliente",
+      width: 300,
+    },
+    {
+      field: "products",
+      headerName: "N° de productos",
+      width: 300,
+    },
+  ];
   return (
-    <input
-      required
-      type="file"
-      name="file"
-      id="file"
-      onChange={handleInputChange}
-      placeholder="Archivo XLSX"
-    />
+    <div>
+      <input
+        required
+        type="file"
+        name="file"
+        ref={fileInputRef}
+        id="file"
+        onChange={handleInputChange}
+      />
+      <button onClick={handleSubmit}>Crear Ordenes</button>
+      {orders.length ? (
+        <div style={{ height: 400, width: "100%" }}>
+          <DataGrid
+            rows={orders.map((order, i) => ({
+              ...order,
+              id: i,
+              client: JSON.parse(order.client).name,
+              products: JSON.parse(order.products).length,
+            }))}
+            columns={columns}
+            pageSize={5}
+          />
+        </div>
+      ) : null}
+    </div>
   );
 };
