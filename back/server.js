@@ -9,7 +9,7 @@ const routes = require("./api/Routes/index");
 app.use(volleyball);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/', express.static(__dirname + '/public'));
+app.use("/", express.static(__dirname + "/public"));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////ROUTING
 app.use("/api", routes);
@@ -19,7 +19,7 @@ app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
-db.sync({ force: false}).then(() => {
+db.sync({ force: false }).then(() => {
   app.listen(8000, (req, res) => {
     console.log("SERVER EN PUERTO 8000");
   });

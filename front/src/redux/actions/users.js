@@ -1,12 +1,12 @@
 import { GET_ALL_CADETES, GET_ALL_EMPRESAS, UPDATE_CADETE, UPDATE_EMPRESA } from "../constants";
 import axios from 'axios'
 
-export const userRegister = () => {
+/* export const userRegister = () => {
     return {
         type: USER_REGISTER
     };
-};
-
+}; 
+ */
 export const setCadetes = (cadetes) => {
     return {
         type: GET_ALL_CADETES,

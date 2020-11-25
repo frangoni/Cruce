@@ -77,6 +77,7 @@ export default () => {
     } else {
       alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
+    console.log("orders", orders);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -84,7 +85,6 @@ export default () => {
     fileInputRef.current.value = "";
     setOrders([]);
   };
-  console.log(orders);
   const columns = [
     { field: "from", headerName: "Origen", width: 300 },
     { field: "orderId", headerName: "Id", width: 300 },

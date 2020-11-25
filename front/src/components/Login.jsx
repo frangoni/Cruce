@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { fetchLogin } from "../redux/actions/user";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLogin, setError } from "../redux/actions/user";
 import { useInput } from "../hooks/useInput";
+import { useHistory } from "react-router-dom";
+import Alert from "@material-ui/lab/Alert";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -14,6 +16,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,25 +36,68 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  root: {
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: "red",
+    },
+    "& .MuiInputLabel-outlined": {
+      color: "red",
+    },
+  },
 }));
 
 export default function SignIn() {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const userEmail = useInput("email");
   const userPassword = useInput("password");
+  const [errorLoginFront, setErrorLoginFront] = useState({});
 
-  const dispatch = useDispatch();
+  let history = useHistory();
+  let statusLogin = useSelector((state) => state.animations.statusLogin);
+  let isLoadingLogin = useSelector((state) => state.animations.isLoadingLogin);
+  let errorBack = useSelector((state) => state.user.errorBack);
+
+  let classInput = {
+    email: "",
+    password: "",
+  };
+
+  errorLoginFront.email ? (classInput.email = classes.root) : null;
+  errorLoginFront.password ? (classInput.password = classes.root) : null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(
-      fetchLogin({
-        email: userEmail.value,
-        password: userPassword.value,
-      })
-    );
+
+    setErrorLoginFront({});
+    let error = {};
+
+    if (userEmail.value.length == 0) error = { ...error, email: true };
+    if (userPassword.value.length == 0) error = { ...error, password: true };
+    if (Object.keys(error).length) setErrorLoginFront(error);
+    if (Object.keys(error).length == 0) {
+      dispatch(
+        fetchLogin({
+          email: userEmail.value,
+          password: userPassword.value,
+        })
+      );
+    }
   };
+
+  useEffect(() => {
+    if (errorBack != "") {
+      dispatch(setError(""));
+    }
+  }, [userEmail.value, userPassword.value]);
+
+  useEffect(() => {
+    if (statusLogin === 200) {
+      history.push("/");
+    }
+  }, [statusLogin]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -63,6 +109,22 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        {isLoadingLogin ? (
+          <CircularProgress style={{ margin: "25px auto" }} />
+        ) : null}
+
+        {Object.keys(errorLoginFront).length ? (
+          <Alert severity="error" style={{ margin: "25px auto" }}>
+            Complete los datos obligatorios por favor.
+          </Alert>
+        ) : null}
+
+        {errorBack ? (
+          <Alert severity="error" style={{ margin: "25px auto" }}>
+            Los datos ingresados no son válidos, intente nuevamente.
+          </Alert>
+        ) : null}
+
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
@@ -75,6 +137,7 @@ export default function SignIn() {
             autoComplete="email"
             autoFocus
             {...userEmail}
+            className={classInput.email}
           />
           <TextField
             variant="outlined"
@@ -87,6 +150,7 @@ export default function SignIn() {
             id="password"
             autoComplete="current-password"
             {...userPassword}
+            className={classInput.password}
           />
           <Button
             type="submit"

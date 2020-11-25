@@ -1,7 +1,11 @@
-import React, { useState } from "react";
-//import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { useInput } from "../hooks/useInput";
+import { fetchRegister, setError } from "../redux/actions/user";
+
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
+import Alert from "@material-ui/lab/Alert";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -15,8 +19,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
-import { useInput } from "../hooks/useInput";
-import { fetchRegister } from "../redux/actions/user";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -32,11 +34,19 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  root: {
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: "red",
+    },
+    "& .MuiInputLabel-outlined": {
+      color: "red",
+    },
   },
 }));
 
@@ -45,25 +55,68 @@ export default function SignUp() {
   const userInput = useInput("fullName");
   const userEmail = useInput("email");
   const userPassword = useInput("password");
-  const [role, setRole] = useState("Empresa");
-  const dispatch = useDispatch();
-  let register = "";
+  const userCompany = useInput("company");
 
-  useSelector((state) => (register = state.user.register));
+  const [role, setRole] = useState("Empresa");
+  const [errorRegisterFront, setErrorRegisterFront] = useState({});
+
+  let classInput = {
+    name: "",
+    email: "",
+    password: "",
+    company: "",
+  };
+
+  errorRegisterFront.name ? (classInput.name = classes.root) : null;
+  errorRegisterFront.email ? (classInput.email = classes.root) : null;
+  errorRegisterFront.password ? (classInput.password = classes.root) : null;
+  errorRegisterFront.company ? (classInput.company = classes.root) : null;
+
+  const dispatch = useDispatch();
+
+  let isLoadingRegister = useSelector(
+    (state) => state.animations.isLoadingRegister
+  );
+  let statusRegister = useSelector((state) => state.animations.statusRegister);
+  let errorBack = useSelector((state) => state.user.errorBack);
+
+  let history = useHistory();
+
+  useEffect(() => {
+    if (statusRegister === 201) {
+      history.push("/login");
+    }
+  }, [statusRegister]);
+
+  useEffect(() => {
+    if (errorBack != "") {
+      dispatch(setError(""));
+    }
+  }, [userInput.value, userEmail.value, userPassword.value, userCompany.value]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(
-      fetchRegister({
-        name: userInput.value,
-        email: userEmail.value,
-        password: userPassword.value,
-        role,
-      })
-    ); /* .then(() => {
-      let history = useHistory();
-      history.push("/login");
-    }); */
+    setErrorRegisterFront({});
+    let error = {};
+
+    if (userInput.value.length == 0) {
+      error = { ...error, name: true };
+    }
+    if (userEmail.value.length == 0) error = { ...error, email: true };
+    if (userPassword.value.length == 0) error = { ...error, password: true };
+    if (userCompany.value.length == 0) error = { ...error, company: true };
+    if (Object.keys(error).length) setErrorRegisterFront(error);
+    if (Object.keys(error).length == 0) {
+      dispatch(
+        fetchRegister({
+          name: userInput.value,
+          email: userEmail.value,
+          password: userPassword.value,
+          company: userCompany.value,
+          role,
+        })
+      );
+    }
   };
 
   return (
@@ -76,13 +129,30 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        <Grid container justify="flex-end">
+          {errorBack ? (
+            <Alert severity="error" style={{ margin: "25px auto" }}>
+              Los datos ingresados no son válidos o ya existen, intente
+              nuevamente.
+            </Alert>
+          ) : null}
+          {Object.keys(errorRegisterFront).length ? (
+            <Alert severity="error" style={{ margin: "25px auto" }}>
+              Complete los datos obligatorios por favor.
+            </Alert>
+          ) : null}
+          {isLoadingRegister ? (
+            <CircularProgress style={{ margin: "25px auto" }} />
+          ) : null}
+        </Grid>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
+                className={classInput.name}
+                required={true}
                 autoComplete="fname"
                 variant="outlined"
-                required
                 fullWidth
                 id="firstName"
                 label="Full Name"
@@ -93,6 +163,7 @@ export default function SignUp() {
 
             <Grid item xs={12}>
               <TextField
+                className={classInput.email}
                 variant="outlined"
                 required
                 fullWidth
@@ -104,6 +175,7 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                className={classInput.password}
                 variant="outlined"
                 required
                 fullWidth
@@ -112,6 +184,19 @@ export default function SignUp() {
                 id="password"
                 autoComplete="current-password"
                 {...userPassword}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                className={classInput.company}
+                variant="outlined"
+                required
+                fullWidth
+                label="Company"
+                type="company"
+                id="company"
+                autoComplete="company"
+                {...userCompany}
               />
             </Grid>
             <RadioGroup
@@ -142,6 +227,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={isLoadingRegister ? true : false}
           >
             Sign Up
           </Button>
@@ -152,7 +238,6 @@ export default function SignUp() {
               </Link>
             </Grid>
           </Grid>
-          {/* {register ? <CircularProgress /> : null} */}
         </form>
       </div>
       <Box mt={5}></Box>

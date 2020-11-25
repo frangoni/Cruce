@@ -1,14 +1,25 @@
 import {
-  USER_REGISTER,
+  USER_REGISTER_ANIMATION,
   USER_LOGIN,
+  USER_LOGIN_ANIMATION,
   USER_LOGOUT,
-  SET_ERROR,
+  SET_ERROR_USER_BACK,
 } from "../constants";
 import axios from "axios";
 
-export const userRegister = () => {
+export const userRegisterAnimation = (valueLoading, valueStatus) => {
   return {
-    type: USER_REGISTER,
+    type: USER_REGISTER_ANIMATION,
+    isLoadingRegister: valueLoading,
+    statusRegister: valueStatus,
+  };
+};
+
+export const userLoginAnimation = (valueLogin, valueStatus) => {
+  return {
+    type: USER_LOGIN_ANIMATION,
+    isLoadingLogin: valueLogin,
+    statusLogin: valueStatus,
   };
 };
 
@@ -28,34 +39,36 @@ export const userLogout = () => {
 
 export const setError = (error) => {
   return {
-    type: SET_ERROR,
+    type: SET_ERROR_USER_BACK,
     payload: error,
   };
 };
 
 export const fetchRegister = (data) => (dispatch) => {
-  dispatch(userRegister());
-  axios.post("/api/user/register", data).
-  then(() => {
-    dispatch(userRegister(false));
-  }).catch((err) => {
-    dispatch(setError(err));
-  });
+  dispatch(userRegisterAnimation(true, null));
+  console.log("data", data);
+  axios
+    .post("/api/user/register", data)
+    .then((res) => {
+      console.log("res status", res.status);
+      dispatch(userRegisterAnimation(false, res.status));
+    })
+    .catch((err) => {
+      dispatch(userRegisterAnimation(false, 400));
+      dispatch(setError(err));
+    });
 };
 
-
 export const fetchLogin = (data) => (dispatch) => {
+  dispatch(userLoginAnimation(true, null));
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      if (res.data.error) {
-        return alert(res.data.error);
-      } else {
-        dispatch(userLogin(data, res.data));
-        //guardar token en localstorage?
-      } // data es el del front, no debe guardarse ese en ele stado global, sino el del back
+      dispatch(userLogin(data.email, res.data));
+      dispatch(userLoginAnimation(false, res.status));
     })
     .catch((err) => {
+      dispatch(userLoginAnimation(false, 403));
       dispatch(setError(err));
     });
 };
