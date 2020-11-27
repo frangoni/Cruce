@@ -64,7 +64,7 @@ export const fetchLogin = (data) => (dispatch) => {
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      dispatch(userLogin(data.email, res.data));
+      dispatch(userLogin(res.data.user, res.data.token));
       dispatch(userLoginAnimation(false, res.status));
     })
     .catch((err) => {

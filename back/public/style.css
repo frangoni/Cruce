@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+#modal {
+  box-shadow: 10px 10px 53px 10px rgba(0, 0, 0, 0.75);
+  height: 50%;
+  width: 75%;
+  margin: 10% auto 2%;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.42198886390493695) 0%,
+    rgba(110, 49, 181, 1) 93%
+  );
+}
+
+.modalButton {
+  text-align: center;
+}
+.modalButton button:hover {
+  transform: scale(1.2);
+  transition: 0.4s;
+}
+
+#add:hover {
+  transform: scale(1.2);
+  transition: 0.4s;
+}

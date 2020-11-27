@@ -14,8 +14,9 @@ const userValidation = async (req, res, next) => {
         exp: Math.floor(Date.now() / 1000) + 3600,
       };
       const token = jwt.sign(encrypt, privateKey, { algorithm: "HS256" });
-      return res.status(200).send(token);
+      return res.status(200).send({ user, token });
     }
+
     res.status(403).send({ error: "Contraseña incorrecta" });
   } catch (e) {
     res.status(403).send({ error: "Usuario invalido" });
