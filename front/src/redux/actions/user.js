@@ -61,10 +61,12 @@ export const fetchRegister = (data) => (dispatch) => {
 
 export const fetchLogin = (data) => (dispatch) => {
   dispatch(userLoginAnimation(true, null));
+  
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      dispatch(userLogin(data.email, res.data));
+      console.log('res', res.data.user)
+      dispatch(userLogin(res.data.user, res.data.token));
       dispatch(userLoginAnimation(false, res.status));
     })
     .catch((err) => {

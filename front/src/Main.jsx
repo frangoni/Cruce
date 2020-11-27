@@ -9,11 +9,11 @@ import { useSelector } from 'react-redux'
 export default function Main() {
   const history = useHistory();
   const user = useSelector(state => state.user.user.email)
-  useEffect(() => {
+ /*  useEffect(() => {
     if (!user)
       history.push("/splash")
     return () => { }
-  }, [user])
+  }, [user]) */
 
   return (
     <>

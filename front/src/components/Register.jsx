@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister, setError } from "../redux/actions/user";
-
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Alert from "@material-ui/lab/Alert";
@@ -12,15 +11,21 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
-
+import FormGroup from "@material-ui/core/FormGroup";
+import Switch from "@material-ui/core/Switch";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
+import FormatAlignCenterIcon from "@material-ui/icons/FormatAlignCenter";
+import FormatAlignRightIcon from "@material-ui/icons/FormatAlignRight";
+import FormatAlignJustifyIcon from "@material-ui/icons/FormatAlignJustify";
+import ToggleButton from "@material-ui/core/ToggleButton";
+import ToggleButtonGroup from "@material-ui/core/ToggleButtonGroup";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -56,8 +61,21 @@ export default function SignUp() {
   const userEmail = useInput("email");
   const userPassword = useInput("password");
   const userCompany = useInput("company");
+  const userAddress = useInput("address");
+  const userDni = useInput("dni");
+  const userLicensePlate = useInput("licensePlate");
+
+  /*   const [role, setRole] = useState("Empresa"); */
+  const [moto, setMoto] = useState({
+    checkedA: false,
+  });
 
   const [role, setRole] = useState("Empresa");
+
+  const handleRole = (event, role) => {
+    setRole(role);
+  };
+
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
 
   let classInput = {
@@ -65,12 +83,21 @@ export default function SignUp() {
     email: "",
     password: "",
     company: "",
+    address: "",
+    dni: "",
+  };
+
+  const handleSwitchChange = (event) => {
+    setMoto({ ...moto, [event.target.name]: event.target.checked });
+    console.log("moto", moto);
   };
 
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
   errorRegisterFront.company ? (classInput.company = classes.root) : null;
+  errorRegisterFront.address ? (classInput.address = classes.root) : null;
+  errorRegisterFront.dni ? (classInput.dni = classes.root) : null;
 
   const dispatch = useDispatch();
 
@@ -92,7 +119,15 @@ export default function SignUp() {
     if (errorBack != "") {
       dispatch(setError(""));
     }
-  }, [userInput.value, userEmail.value, userPassword.value, userCompany.value]);
+  }, [
+    userInput.value,
+    userEmail.value,
+    userPassword.value,
+    userCompany.value,
+    userAddress.value,
+    userDni.value,
+    userLicensePlate.value,
+  ]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -105,6 +140,11 @@ export default function SignUp() {
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
     if (userCompany.value.length == 0) error = { ...error, company: true };
+    if (userAddress.value.length == 0 && role === "Empresa")
+      error = { ...error, address: true };
+    if (userDni.value.length == 0 && role === "Cadete")
+      error = { ...error, dni: true };
+
     if (Object.keys(error).length) setErrorRegisterFront(error);
     if (Object.keys(error).length == 0) {
       dispatch(
@@ -114,6 +154,9 @@ export default function SignUp() {
           password: userPassword.value,
           company: userCompany.value,
           role,
+          // address
+          // dni
+          // licensePlate
         })
       );
     }
@@ -127,26 +170,41 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Registrate
         </Typography>
+
         <Grid container justify="flex-end">
-          {errorBack ? (
-            <Alert severity="error" style={{ margin: "25px auto" }}>
-              Los datos ingresados no son válidos o ya existen, intente
-              nuevamente.
-            </Alert>
-          ) : null}
-          {Object.keys(errorRegisterFront).length ? (
-            <Alert severity="error" style={{ margin: "25px auto" }}>
-              Complete los datos obligatorios por favor.
-            </Alert>
-          ) : null}
           {isLoadingRegister ? (
             <CircularProgress style={{ margin: "25px auto" }} />
           ) : null}
         </Grid>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
+
+          
           <Grid container spacing={2}>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              alignItems="center"
+              style = {{ "marginBottom" : "5%"}}
+            >
+              <ToggleButtonGroup
+                value={role}
+                exclusive
+                onChange={handleRole}
+                aria-label="text alignment"
+              >
+                <ToggleButton value="Empresa" label="Empresa" disabled = {isLoadingRegister ? true : false}>
+                  Empresa
+                </ToggleButton>
+                <ToggleButton value="Cadete" label="Cadete" disabled = {isLoadingRegister ? true : false}>
+                  Cadete
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
+
+
             <Grid item xs={12}>
               <TextField
                 className={classInput.name}
@@ -155,7 +213,7 @@ export default function SignUp() {
                 variant="outlined"
                 fullWidth
                 id="firstName"
-                label="Full Name"
+                label="Nombre Completo"
                 autoFocus
                 {...userInput}
               />
@@ -168,8 +226,8 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
-                autoComplete="email"
+                label="Email"
+                autoComplete="Email"
                 {...userEmail}
               />
             </Grid>
@@ -179,7 +237,7 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                label="Password"
+                label="Contraseña"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -192,35 +250,97 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                label="Company"
+                label="Empresa"
                 type="company"
                 id="company"
                 autoComplete="company"
                 {...userCompany}
               />
             </Grid>
-            <RadioGroup
-              aria-label="gender"
-              name="gender1"
-              style={{ margin: "0 auto" }}
-              value={role}
-              onChange={(e, v) => {
-                setRole(v);
-              }}
-            >
-              <FormControlLabel
-                value="Empresa"
-                control={<Radio />}
-                label="Empresa"
-              />
 
-              <FormControlLabel
-                value="Cadete"
-                control={<Radio />}
-                label="Cadete"
-              />
-            </RadioGroup>
+            {role === "Empresa" ? (
+              <Grid item xs={12}>
+                <TextField
+                  className={classInput.address}
+                  variant="outlined"
+                  required
+                  fullWidth
+                  label="Direccion"
+                  type="address"
+                  id="address"
+                  autoComplete="address"
+                  {...userAddress}
+                />
+              </Grid>
+            ) : (
+              <React.Fragment>
+                <Grid item xs={12}>
+                  <TextField
+                    className={classInput.dni}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="DNI"
+                    type="dni"
+                    id="dni"
+                    autoComplete="dni"
+                    {...userDni}
+                  />
+                </Grid>
+
+                <Grid
+                  container
+                  direction="column"
+                  justify="center"
+                  alignItems="center"
+                >
+                  <FormGroup row>
+                    <FormControlLabel
+                      labelPlacement="start"
+                      control={
+                        <Switch
+                          checked={moto.checkedA}
+                          onChange={handleSwitchChange}
+                          name="checkedA"
+                          color="primary"
+                          disabled = {isLoadingRegister ? true : false}
+                        />
+                      }
+                      label="Tengo moto"
+                    />
+                  </FormGroup>
+                </Grid>
+
+                {moto.checkedA ? (
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      label="Patente"
+                      type="licensePlate"
+                      id="licensePlate"
+                      autoComplete="licensePlate"
+                      {...userLicensePlate}
+                    />
+                  </Grid>
+                ) : null}
+              </React.Fragment>
+            )}
           </Grid>
+          <Grid container justify="flex-end">
+            {errorBack ? (
+              <Alert severity="error" style={{ margin: "25px auto" }}>
+                Los datos ingresados no son válidos o ya existen, intente
+                nuevamente.
+              </Alert>
+            ) : null}
+            {Object.keys(errorRegisterFront).length ? (
+              <Alert severity="error" style={{ margin: "25px auto" }}>
+                Complete los datos obligatorios por favor.
+              </Alert>
+            ) : null}
+          </Grid>
+
           <Button
             type="submit"
             fullWidth
@@ -229,18 +349,17 @@ export default function SignUp() {
             className={classes.submit}
             disabled={isLoadingRegister ? true : false}
           >
-            Sign Up
+            Enviar
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
               <Link href="/login" variant="body2">
-                Already have an account? Sign in
+                ¿Ya tiene una cuenta? Inicie sesión.
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
-      <Box mt={5}></Box>
     </Container>
   );
 }
