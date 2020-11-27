@@ -107,7 +107,7 @@ export default function SignIn() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Iniciar Sesión 
         </Typography>
         {isLoadingLogin ? (
           <CircularProgress style={{ margin: "25px auto" }} />
@@ -132,7 +132,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email"
             name="email"
             autoComplete="email"
             autoFocus
@@ -145,7 +145,7 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -159,12 +159,12 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Enviar
           </Button>
           <Grid container>
             <Grid item>
               <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+                {"¿No tiene una cuenta? Regístrese"}
               </Link>
             </Grid>
           </Grid>
