@@ -8,7 +8,7 @@ import Splash from "./components/splash"
 import { useSelector } from 'react-redux'
 export default function Main() {
   const history = useHistory();
-  const user = useSelector(state => state.user.user.email)
+  const user = useSelector(state => state.user.token)
   useEffect(() => {
     if (!user)
       history.push("/splash")
