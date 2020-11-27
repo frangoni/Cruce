@@ -1,11 +1,17 @@
-import React, { useRef } from "react";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import XLSX from "xlsx";
 import { postOrders } from "../redux/actions/orders";
 import { DataGrid } from "@material-ui/data-grid";
+import { Modal, IconButton } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import { useSelector } from "react-redux";
 export default () => {
+  const user = useSelector((state) => state.user.user);
+
   const fileInputRef = useRef();
   const [orders, setOrders] = useState([]);
+  const [open, setOpen] = useState(false);
   const joinOrders = (arr) => {
     let orders = [];
     arr.map((item) => {
@@ -37,7 +43,7 @@ export default () => {
         );
         planilla.map((order) =>
           ordenes.push({
-            from: order.Origin,
+            from: order.Courrier,
             orderId: order.Order,
             creationDate: order["Creation Date"],
             client: JSON.stringify({
@@ -57,7 +63,6 @@ export default () => {
               reference: order.Reference ? order.Reference : "",
               postalCode: order["Postal Code"],
               estimatedDelivery: order["Estimate Delivery Date"],
-              courier: order.Courrier,
             }),
             products: [
               {
@@ -73,58 +78,71 @@ export default () => {
           })
         );
         setOrders(joinOrders(ordenes));
+        setOpen(true);
       };
     } else {
       alert(`${fileExt} extension not supported. Please use "xlsx"`);
     }
-    console.log("orders", orders);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    postOrders(orders);
+    postOrders({ orders, user });
     fileInputRef.current.value = "";
     setOrders([]);
+    setOpen(false);
+  };
+  const handleReject = (e) => {
+    e.preventDefault();
+    fileInputRef.current.value = "";
+    setOrders([]);
+    setOpen(false);
+  };
+  const handleClick = () => {
+    fileInputRef.current.click();
   };
   const columns = [
     { field: "from", headerName: "Origen", width: 300 },
     { field: "orderId", headerName: "Id", width: 300 },
     { field: "creationDate", headerName: "Fecha de Creacion", width: 300 },
-    {
-      field: "client",
-      headerName: "Cliente",
-      width: 300,
-    },
-    {
-      field: "products",
-      headerName: "N° de productos",
-      width: 300,
-    },
+    { field: "client", headerName: "Cliente", width: 300 },
+    { field: "products", headerName: "N° de productos", width: 100 },
   ];
   return (
-    <div>
+    <>
+      <IconButton id="add" onClick={handleClick} style={{ float: "right" }}>
+        <AddCircleIcon style={{ fontSize: 70, color: "#6f20f0" }} />
+      </IconButton>
       <input
         required
         type="file"
-        name="file"
+        style={{ display: "none" }}
         ref={fileInputRef}
-        id="file"
         onChange={handleInputChange}
       />
-      <button onClick={handleSubmit}>Crear Ordenes</button>
-      {orders.length ? (
-        <div style={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={orders.map((order, i) => ({
-              ...order,
-              id: i,
-              client: JSON.parse(order.client).name,
-              products: JSON.parse(order.products).length,
-            }))}
-            columns={columns}
-            pageSize={5}
-          />
-        </div>
-      ) : null}
-    </div>
+      <Modal open={open} onClose={handleReject}>
+        <>
+          <div id="modal" style={{}}>
+            <DataGrid
+              rows={orders.map((order, i) => ({
+                ...order,
+                id: i,
+                client: JSON.parse(order.client).name,
+                products: JSON.parse(order.products).length,
+              }))}
+              columns={columns}
+              pageSize={5}
+            />
+          </div>
+          <div className="modalButton">
+            <IconButton onClick={handleSubmit}>
+              <AddCircleIcon style={{ fontSize: 50, color: "#6f20f0" }} />
+            </IconButton>
+            <IconButton onClick={handleReject}>
+              <DeleteIcon style={{ fontSize: 50 }} color="disabled" />
+            </IconButton>
+          </div>
+        </>
+      </Modal>
+    </>
   );
 };

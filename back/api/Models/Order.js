@@ -43,24 +43,28 @@ Order.init(
       }),
       defaultValue: "Pendiente de retiro en sucursal",
     },
+    comments: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     assignedDate: {
       type: DataTypes.DATE,
-      defaultValue:null
-
+      defaultValue: null,
     },
     pickedDate: {
       type: DataTypes.DATE,
-      defaultValue:null
-
+      defaultValue: null,
     },
     deliveredDate: {
       type: DataTypes.DATE,
-      defaultValue:null
+      defaultValue: null,
     },
     delay: {
       type: DataTypes.VIRTUAL,
       get() {
-        return this.getDataValue('deliveredDate') - this.getDataValue('pickedDate');
+        return (
+          this.getDataValue("deliveredDate") - this.getDataValue("pickedDate")
+        );
       },
     },
   },
