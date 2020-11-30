@@ -1,7 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
+const { io } = require("../../io")
 
-class Order extends Model {}
+class Order extends Model { }
 
 Order.init(
   {
@@ -35,27 +36,28 @@ Order.init(
     state: {
       type: DataTypes.ENUM({
         values: [
+          "Pendiente",
           "Pendiente de retiro en sucursal",
           "Retirado",
           "En progreso",
           "Entregado",
         ],
       }),
-      defaultValue: "Pendiente de retiro en sucursal",
+      defaultValue: "Pendiente",
     },
     assignedDate: {
       type: DataTypes.DATE,
-      defaultValue:null
+      defaultValue: null
 
     },
     pickedDate: {
       type: DataTypes.DATE,
-      defaultValue:null
+      defaultValue: null
 
     },
     deliveredDate: {
       type: DataTypes.DATE,
-      defaultValue:null
+      defaultValue: null
     },
     delay: {
       type: DataTypes.VIRTUAL,
@@ -66,5 +68,32 @@ Order.init(
   },
   { sequelize: db, modelName: "order" }
 );
+
+Order.addHook('afterBulkCreate', async (order, options) => {
+  // We can use `options.transaction` to perform some other call
+  // using the same transaction of the call that triggered this hook
+  // const orders = await Order.findAll({ where: {}, raw: true })
+  const parsedOrders = order.map(order => ({
+    ...order.dataValues,
+    client: JSON.parse(order.dataValues.client),
+    destination: JSON.parse(order.dataValues.destination),
+    products: JSON.parse(order.dataValues.products)
+  }))
+  io.to('cadetes').emit("dbModifications", JSON.stringify(parsedOrders))
+
+});
+Order.addHook('afterUpdate', async (order, options) => {
+  // We can use `options.transaction` to perform some other call
+  // using the same transaction of the call that triggered this hook
+  // const orders = await Order.findAll({ where: {}, raw: true })
+  // const parsedOrders = order.map(order => ({
+  //   ...order.dataValues,
+  //   client: JSON.parse(order.dataValues.client),
+  //   destination: JSON.parse(order.dataValues.destination),
+  //   products: JSON.parse(order.dataValues.products)
+  // }))
+  // io.to('cadetes').emit("dbModifications", JSON.stringify(parsedOrders))
+  console.log(order)
+});
 
 module.exports = Order;

@@ -1,4 +1,5 @@
 const Order = require("../Models/Order");
+const User = require("../Models/User");
 
 const postOrders = (req, res, next) => {
   Order.bulkCreate(req.body).then((a) => res.send(a));
@@ -10,9 +11,21 @@ const getOrders = (req, res, next) => {
   }).then((orders) => res.status(200).send(orders));
 };
 
+const pickUp = async (req, res, next) => {
+  const { cadeteId, orderId } = req.body
+  const user = await User.findByPk(cadeteId)
+  const order = await Order.findByPk(orderId)
+  order.setCadete(user)
+  order.state = "Pendiente de retiro en sucursal"
+  order.assignedDate = Date.now()
+  order.save()
+  res.send(order)
+
+}
+
 const getAllOrdes = async (req, res, next) => {
   try {
-    const orders = await Order.findAll({ raw: true })
+    const orders = await Order.findAll({ where: {}, raw: true })
     const parsedOrders = orders.map(order => ({
       ...order,
       client: JSON.parse(order.client),
@@ -27,4 +40,4 @@ const getAllOrdes = async (req, res, next) => {
   }
 };
 
-module.exports = { postOrders, getOrders, getAllOrdes };
+module.exports = { postOrders, getOrders, getAllOrdes, pickUp };
