@@ -5,7 +5,7 @@ const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
   if (user.role == "Empresa") {
     User.findByPk(user.id).then((user) => {
-      Order.bulkCreate(orders).then((all) => {
+      Order.bulkCreate(orders, { individualHooks: false }).then((all) => {
         all.map((orden) => orden.setEmpresa(user));
       });
     });
@@ -21,8 +21,9 @@ const getOrders = (req, res, next) => {
 };
 
 const pickUp = async (req, res, next) => {
-  const { cadeteId, orderId } = req.body
-  const user = await User.findByPk(cadeteId)
+  console.log(req.body)
+  const { userId, orderId } = req.body
+  const user = await User.findByPk(userId)
   const order = await Order.findByPk(orderId)
   order.setCadete(user)
   order.state = "Pendiente de retiro en sucursal"
@@ -34,7 +35,7 @@ const pickUp = async (req, res, next) => {
 
 const getAllOrdes = async (req, res, next) => {
   try {
-    const orders = await Order.findAll({ where: {}, raw: true })
+    const orders = await Order.findAll({ where: { state: "Pendiente" }, raw: true })
     const parsedOrders = orders.map(order => ({
       ...order,
       client: JSON.parse(order.client),
