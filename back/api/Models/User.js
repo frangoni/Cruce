@@ -43,6 +43,18 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    dni: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    licensePlate: {
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   },
   { sequelize: db, modelName: "user" }
 );

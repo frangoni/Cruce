@@ -65,7 +65,6 @@ export default function SignUp() {
   const userDni = useInput("dni");
   const userLicensePlate = useInput("licensePlate");
 
-  /*   const [role, setRole] = useState("Empresa"); */
   const [moto, setMoto] = useState({
     checkedA: false,
   });
@@ -111,7 +110,9 @@ export default function SignUp() {
 
   useEffect(() => {
     if (statusRegister === 201) {
-      history.push("/login");
+      setTimeout(() => {
+        history.push("/splash")
+      }, 5000)
     }
   }, [statusRegister]);
 
@@ -146,6 +147,16 @@ export default function SignUp() {
       error = { ...error, dni: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
+    console.log('OBJETO', {
+      name: userInput.value,
+      email: userEmail.value,
+      password: userPassword.value,
+      company: userCompany.value,
+      role,
+      address: userAddress.value,
+      dni: userDni.value,
+      licensePlate: userLicensePlate.value
+    })
     if (Object.keys(error).length == 0) {
       dispatch(
         fetchRegister({
@@ -154,9 +165,9 @@ export default function SignUp() {
           password: userPassword.value,
           company: userCompany.value,
           role,
-          // address
-          // dni
-          // licensePlate
+          address: userAddress.value,
+          dni: userDni.value || null,
+          licensePlate: userLicensePlate.value
         })
       );
     }
@@ -179,15 +190,13 @@ export default function SignUp() {
           ) : null}
         </Grid>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
-
-          
           <Grid container spacing={2}>
             <Grid
               container
               direction="column"
               justify="center"
               alignItems="center"
-              style = {{ "marginBottom" : "5%"}}
+              style={{ marginBottom: "5%" }}
             >
               <ToggleButtonGroup
                 value={role}
@@ -195,15 +204,22 @@ export default function SignUp() {
                 onChange={handleRole}
                 aria-label="text alignment"
               >
-                <ToggleButton value="Empresa" label="Empresa" disabled = {isLoadingRegister ? true : false}>
+                <ToggleButton
+                  value="Empresa"
+                  label="Empresa"
+                  disabled={isLoadingRegister ? true : false}
+                >
                   Empresa
                 </ToggleButton>
-                <ToggleButton value="Cadete" label="Cadete" disabled = {isLoadingRegister ? true : false}>
+                <ToggleButton
+                  value="Cadete"
+                  label="Cadete"
+                  disabled={isLoadingRegister ? true : false}
+                >
                   Cadete
                 </ToggleButton>
               </ToggleButtonGroup>
             </Grid>
-
 
             <Grid item xs={12}>
               <TextField
@@ -303,7 +319,7 @@ export default function SignUp() {
                           onChange={handleSwitchChange}
                           name="checkedA"
                           color="primary"
-                          disabled = {isLoadingRegister ? true : false}
+                          disabled={isLoadingRegister ? true : false}
                         />
                       }
                       label="Tengo moto"
@@ -341,13 +357,21 @@ export default function SignUp() {
             ) : null}
           </Grid>
 
+          {statusRegister == 201 ? (
+            <Grid container justify="flex-end">
+              <Alert severity="info" style={{ margin: "25px auto" }}>
+                Se ha registrado correctamente. Aguarda a recibir un email de confirmación. Te esperamos!
+              </Alert>
+            </Grid>
+          ) : null}
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            disabled={isLoadingRegister ? true : false}
+            disabled={isLoadingRegister || statusRegister == 201 ? true : false}
           >
             Enviar
           </Button>
