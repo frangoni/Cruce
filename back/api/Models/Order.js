@@ -22,6 +22,11 @@ Order.init(
     creationDate: {
       type: DataTypes.DATE,
       allowNull: true,
+      /*    get() {
+        return this.getDataValue("creationDate").setHours(
+          this.getDataValue("creationDate").getHours() - 3
+        );
+      }, */
     },
     // STRINGIFY JSON/////
     client: {
