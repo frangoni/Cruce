@@ -9,6 +9,11 @@ Order.init(
     from: {
       type: DataTypes.STRING,
       allowNull: true,
+      get() {
+        return `https://www.google.com/maps/search/?api=1&query=${this.getDataValue(
+          "from"
+        )}`;
+      },
     },
     orderId: {
       type: DataTypes.STRING,
