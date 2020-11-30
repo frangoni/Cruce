@@ -50,7 +50,7 @@ export const fetchRegister = (data) => (dispatch) => {
   axios
     .post("/api/user/register", data)
     .then((res) => {
-      console.log("res status", res.status);
+      console.log("res status", res);
       dispatch(userRegisterAnimation(false, res.status));
     })
     .catch((err) => {
@@ -61,10 +61,12 @@ export const fetchRegister = (data) => (dispatch) => {
 
 export const fetchLogin = (data) => (dispatch) => {
   dispatch(userLoginAnimation(true, null));
+
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      dispatch(userLogin(data.email, res.data));
+      console.log("res", res.data.user);
+      dispatch(userLogin(res.data.user, res.data.token));
       dispatch(userLoginAnimation(false, res.status));
     })
     .catch((err) => {
