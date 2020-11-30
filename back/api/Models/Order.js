@@ -10,6 +10,11 @@ Order.init(
     from: {
       type: DataTypes.STRING,
       allowNull: true,
+      get() {
+        return `https://www.google.com/maps/search/?api=1&query=${this.getDataValue(
+          "from"
+        )}`;
+      },
     },
     orderId: {
       type: DataTypes.STRING,
@@ -45,6 +50,10 @@ Order.init(
       }),
       defaultValue: "Pendiente",
     },
+    comments: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     assignedDate: {
       type: DataTypes.DATE,
       defaultValue: null
@@ -62,7 +71,9 @@ Order.init(
     delay: {
       type: DataTypes.VIRTUAL,
       get() {
-        return this.getDataValue('deliveredDate') - this.getDataValue('pickedDate');
+        return (
+          this.getDataValue("deliveredDate") - this.getDataValue("pickedDate")
+        );
       },
     },
   },

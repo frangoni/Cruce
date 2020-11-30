@@ -8,9 +8,7 @@ const {
 const auth = require("../Middleware/auth");
 
 router.post("/login", userValidation);
-
 router.post("/register", userCreation);
-
 router.get("/me", auth, userData);
 
 module.exports = router;

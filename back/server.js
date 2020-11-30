@@ -6,9 +6,8 @@ const { server, io, app } = require("./io")
 
 const volleyball = require("volleyball");
 const path = require("path");
-const db = require("./api/db/index");
+const db = require("./api/Models/index");
 const routes = require("./api/Routes/index");
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////MIDDLEWARES
 app.use(volleyball);
 app.use(express.json());

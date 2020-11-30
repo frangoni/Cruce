@@ -2,7 +2,16 @@ const Order = require("../Models/Order");
 const User = require("../Models/User");
 
 const postOrders = (req, res, next) => {
-  Order.bulkCreate(req.body).then((a) => res.send(a));
+  const { orders, user } = req.body;
+  if (user.role == "Empresa") {
+    User.findByPk(user.id).then((user) => {
+      Order.bulkCreate(orders).then((all) => {
+        all.map((orden) => orden.setEmpresa(user));
+      });
+    });
+  } else {
+    res.send("Solo empresas pueden cargar ordenes");
+  }
 };
 
 const getOrders = (req, res, next) => {
