@@ -52,7 +52,10 @@ const getAllOrdes = async (req, res, next) => {
 };
 
 const getSingleOrder = (req, res, next) => {
-  Order.findOne({ where: { orderId: req.params.id } })
+  Order.findOne({
+    where: { orderId: req.params.id },
+    include: [{ model: User, as: "empresa" }],
+  })
     .then((order) => {
       res.status(200).send(order);
     })
