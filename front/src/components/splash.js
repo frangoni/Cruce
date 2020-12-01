@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 const Splash = () => {
   return (
@@ -14,12 +15,16 @@ const Splash = () => {
         <img className="logo" src={"./arbol.png"} />
         <img className="logo2" src={"./cruce.png"} />
         <div className="buttons">
-          <Button variant="outlined" color="primary">
-            <p>Login</p>
-          </Button>
-          <Button variant="outlined" color="primary">
-            <p>Register</p>
-          </Button>
+          <Link to="/login">
+            <Button variant="outlined" color="primary">
+              <p>Login</p>
+            </Button>
+          </Link>
+          <Link to="/register">
+            <Button variant="outlined" color="primary">
+              <p>Register</p>
+            </Button>
+          </Link>
         </div>
       </div>
       <div className="barco">
