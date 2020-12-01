@@ -16,16 +16,13 @@ const WebSocket = () => {
 
     useEffect(() => {
         axios.get('/api/order').then(data => setOrders(data.data))
-        const socket = io.connect('http://localhost:8000', { 'forceNew': true });
+        const socket = io.connect(`${window.location.origin}`, { 'forceNew': true });
         socket.on('ordersCreated', (data) => {
             setOrders(orders => [...orders, ...JSON.parse(data)])
         });
 
         socket.on('dbModifications', (data) => {
-            console.log("dentro de dbModifications")
-
             const orderId = JSON.parse(data).orderId
-            console.log(orderId)
             setOrders(orders => orders.filter(order => order.id !== orderId))
         });
 

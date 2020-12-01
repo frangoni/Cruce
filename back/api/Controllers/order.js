@@ -50,4 +50,30 @@ const getAllOrdes = async (req, res, next) => {
   }
 };
 
-module.exports = { postOrders, getOrders, getAllOrdes, pickUp };
+
+const getMyOrdes = async (req, res, next) => {
+  const cadeteId = req.user.id
+  const page = req.params.page
+  try {
+    const orders = await Order.findAndCountAll({
+      where: { cadeteId },
+      raw: true,
+      order: [['assignedDate', 'DESC'],],
+      limit: 10,
+      offset: 10 * page,
+    })
+    const parsedOrders = orders.rows.map(order => ({
+      ...order,
+      client: JSON.parse(order.client),
+      destination: JSON.parse(order.destination),
+      products: JSON.parse(order.products)
+    }))
+    res.status(200).send({ "count": orders.count, "results": parsedOrders });
+  }
+  catch (e) {
+    console.log(e)
+    res.status(503).end()
+  }
+}
+
+module.exports = { postOrders, getOrders, getAllOrdes, pickUp, getMyOrdes };

@@ -6,6 +6,7 @@ import AdminPanel from "./components/admin/panel";
 import SheetUpload from "./components/SheetUpload";
 import Splash from "./components/splash"
 import WebSocket from './components/websocket'
+import MyOrders from "./components/MyOrders"
 import { useSelector } from 'react-redux'
 export default function Main() {
   const history = useHistory();
@@ -27,6 +28,7 @@ export default function Main() {
       <Route path="/admin" component={AdminPanel} />
       <Route path="/splash" component={Splash} />
       <Route path="/socket" component={WebSocket} />
+      <Route path="/myorders" component={MyOrders} />
     </>
   );
 }
