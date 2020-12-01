@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
-const { io } = require("../../io")
+const { io } = require("../../io");
 
-class Order extends Model { }
+class Order extends Model {}
 
 Order.init(
   {
@@ -61,17 +61,15 @@ Order.init(
     },
     assignedDate: {
       type: DataTypes.DATE,
-      defaultValue: null
-
+      defaultValue: null,
     },
     pickedDate: {
       type: DataTypes.DATE,
-      defaultValue: null
-
+      defaultValue: null,
     },
     deliveredDate: {
       type: DataTypes.DATE,
-      defaultValue: null
+      defaultValue: null,
     },
     delay: {
       type: DataTypes.VIRTUAL,
@@ -85,25 +83,39 @@ Order.init(
   { sequelize: db, modelName: "order" }
 );
 
-Order.addHook('afterBulkCreate', async (order, options) => {
+Order.addHook("afterBulkCreate", async (order, options) => {
   // We can use `options.transaction` to perform some other call
   // using the same transaction of the call that triggered this hook
   // const orders = await Order.findAll({ where: {}, raw: true })
-  const parsedOrders = order.map(order => ({
+  const parsedOrders = order.map((order) => ({
     ...order.dataValues,
     client: JSON.parse(order.dataValues.client),
     destination: JSON.parse(order.dataValues.destination),
-    products: JSON.parse(order.dataValues.products)
-  }))
-  io.to('cadetes').emit("ordersCreated", JSON.stringify(parsedOrders))
-
+    products: JSON.parse(order.dataValues.products),
+  }));
+  io.to("cadetes").emit("ordersCreated", JSON.stringify(parsedOrders));
 });
-Order.addHook('afterUpdate', async (order, options) => {
+Order.addHook("afterUpdate", async (order, options) => {
   if (options.fields.includes("cadeteId")) {
-    io.to('cadetes').emit("dbModifications", JSON.stringify({ orderId: order.dataValues.id, cadeteId: order.dataValues.cadeteId, state: order.dataValues.state }))
+    io.to("cadetes").emit(
+      "dbModifications",
+      JSON.stringify({
+        orderId: order.dataValues.id,
+        cadeteId: order.dataValues.cadeteId,
+        state: order.dataValues.state,
+      })
+    );
   }
-  //console.log(order)
-  console.log(options)
+  if (options.fields.includes("state")) {
+    io.to("cadete").emit(
+      "stateUpdate",
+      JSON.stringify({
+        orderId: order.dataValues.id,
+        state: order.dataValues.state,
+      })
+    );
+  }
+  console.log(options);
 });
 
 module.exports = Order;
