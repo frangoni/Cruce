@@ -107,7 +107,7 @@ Order.addHook("afterUpdate", async (order, options) => {
     );
   }
   if (options.fields.includes("state")) {
-    io.to("cadete").emit(
+    io.to("cadetes").emit(
       "stateUpdate",
       JSON.stringify({
         orderId: order.dataValues.id,

@@ -12,27 +12,51 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchSingleOrder } from "../redux/actions/orders";
 import io from "socket.io-client";
 
+
 export default function SingleOrder({ match }) {
   const orderId = match.params.id;
   const dispatch = useDispatch();
-  const [order, setOrder] = useState({});
-  const stateOrder = useSelector((state) => state.orders.order);
+
+  const order = useSelector((state) => state.orders.order);
+
+  
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
-    setOrder(stateOrder);
+    
+    
     const socket = io.connect(window.location.origin, { forceNew: true });
     socket.on("stateUpdate", (data) => {
       if (order.orderId == JSON.parse(data).orderId) {
-        setOrder((order) => {
-          return { ...order, state: JSON.parse(data).state };
-        });
+        
+          order = { ...order, state: JSON.parse(data).state };
+        
       }
     });
     return () => {
       socket.disconnect();
     };
   }, []);
+
   return (
+    <>
+      {
+        order.id ?
+      <Paper elevation={0} className = 'paper'>
+            <p>
+            {order.client.name} {order.client.lastName}
+            </p> 
+            <p>{order.client.email}</p>
+           <a href = {`tel:${order.client.phone}`}>{order.client.phone}</a> 
+            <p>{order.destination.city}</p>
+            <p>{order.destination.street} {order.destination.number}</p>
+        
+      </Paper> : null
+      }
+<Paper />
+<Paper elevation={3} />
+
+  
+
     <TableContainer component={Paper}>
       <Table aria-label="spanning table">
         <TableHead>
@@ -43,20 +67,20 @@ export default function SingleOrder({ match }) {
             <TableCell align="right">Price</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Desc</TableCell>
-            <TableCell align="right">Qty.</TableCell>
-            <TableCell align="right">Unit</TableCell>
-            <TableCell align="right">Sum</TableCell>
+            <TableCell>Descripción</TableCell>
+            <TableCell align="right">Cantidad</TableCell>
+            <TableCell align="right">Precio Unitario</TableCell>
+            <TableCell align="right">Total</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {order.products &&
             order.products.map((product) => (
               <TableRow key={product.sku}>
-                <TableCell>{product.sku}</TableCell>
+                <TableCell>{product.sku} | {product.name}</TableCell>
                 <TableCell align="right">{product.quantity}</TableCell>
-                <TableCell align="right"></TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="right">{product.skuValue}</TableCell>
+                <TableCell align="right">{product.totalValue}</TableCell>
               </TableRow>
             ))}
 
@@ -77,5 +101,6 @@ export default function SingleOrder({ match }) {
         </TableBody>
       </Table>
     </TableContainer>
+            </>
   );
 }

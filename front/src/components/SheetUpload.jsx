@@ -66,11 +66,12 @@ export default () => {
               estimatedDelivery: order["Estimate Delivery Date"],
             }),
             products: [
-              {
+              { 
+
                 sku: order.ID_SKU,
                 quantity: order.Quantity_SKU,
-                name: order["SKU NAME"],
-                skuValue: order["SKU VALUE"],
+                name: order["SKU Name"],
+                skuValue: order["SKU Value"],
                 discountsTotals: order["Discounts Totals"],
                 shippingValue: order["Shipping Value"],
                 totalValue: order["Total Value"],

@@ -5,7 +5,7 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
   console.log("Conexión establecida");
-  socket.join("cadete");
+  socket.join("cadetes");
 });
 
 module.exports = { server, io, app };
