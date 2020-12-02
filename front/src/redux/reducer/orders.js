@@ -1,4 +1,4 @@
-import { GET_ORDERS, GET_ORDER } from "../constants";
+import { GET_ORDERS, GET_ORDER, SINGLE_ORDER_UPDATE } from "../constants";
 
 const initialState = {
   orders: [],
@@ -11,6 +11,8 @@ export default (state = initialState, action) => {
       return { ...state, orders: action.orders };
     case GET_ORDER:
       return { ...state, order: action.order };
+/*     case SINGLE_ORDER_UPDATE:
+      return {...state.order, order: action.estado} */
     default:
       return state;
   }

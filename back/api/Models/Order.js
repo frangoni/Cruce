@@ -49,8 +49,8 @@ Order.init(
           "Pendiente",
           "Pendiente de retiro en sucursal",
           "Retirado",
-          "En progreso",
           "Entregado",
+          "Cancelado"
         ],
       }),
       defaultValue: "Pendiente",

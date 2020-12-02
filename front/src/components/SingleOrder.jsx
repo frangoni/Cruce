@@ -7,14 +7,22 @@ import {
   TableHead,
   TableRow,
   Paper,
+  InputLabel,
+  FormHelperText,
+  FormControl,
+  Select,
+  NativeSelect,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSingleOrder } from "../redux/actions/orders";
+import { fetchSingleOrder, orderStateUpdate } from "../redux/actions/orders";
 import io from "socket.io-client";
+
 export default function SingleOrder({ match }) {
   const orderId = match.params.id;
   const dispatch = useDispatch();
   const order = useSelector((state) => state.orders.order);
+  const user = useSelector((state) => state.user.user);
+  const [state, setState] = useState('');
 
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
@@ -66,6 +74,28 @@ export default function SingleOrder({ match }) {
     },
   };
 
+  
+
+  useEffect(() => {
+    dispatch(orderStateUpdate(state, order.orderId));
+
+
+  }, [state]);
+
+  const handleChange = (event) => {
+    const name = event.target.value;
+    setState(name); 
+    
+  };
+
+
+  const estados = [
+    "Pendiente de retiro en sucursal",
+    "Retirado",
+    "Entregado"
+  ];
+  let i = estados.indexOf(state);
+
   return (
     <>
       {order.id ? (
@@ -97,7 +127,23 @@ export default function SingleOrder({ match }) {
             <Paper elevation={3} style={style.paper}>
               <h4>Datos del pedido:</h4>
               <p>Fecha: {order.creationDate}</p>
-              <p>Estado: {order.state}</p>
+
+              {user.id === order.cadeteId ? (
+                <FormControl>
+                  <NativeSelect
+                    value={state}
+                    name="state"
+                    onChange={handleChange}
+                  >
+                    <option value={state}>{state}</option>
+                    <option value={estados[i + 1]}>{estados[i + 1]}</option>
+                    <option value="Cancelado">Cancelado</option>
+                  </NativeSelect>
+                </FormControl>
+              ) : (
+                <p>Estado: {order.state}</p>
+              )}
+
               <p>Id: {order.orderId}</p>
             </Paper>
 

@@ -62,4 +62,43 @@ const getSingleOrder = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-module.exports = { postOrders, getOrders, getAllOrdes, pickUp, getSingleOrder };
+const singleOrderUpdate = (req, res, next) => {
+  const id = req.params.id;
+  const state = req.body.state;
+  
+  function date(state) {
+
+    switch (state) {
+      
+      case "Pendiente de retiro en sucursal":
+        return {state, assignedDate: Date.now()}
+      
+      case "Retirado":
+        return {state, pickedDate: Date.now()}
+       
+      case "Entregado":
+        return {state, deliveredDate: Date.now()}
+        
+  
+      default:
+        break;
+    }
+  }
+
+  Order.update(
+    date(state),
+    { where: { orderId: id }, returning: true, plain: true }
+  ).then((order) => {
+    console.log('order', order)
+    res.send(order.dataValues);
+  });
+};
+
+module.exports = {
+  postOrders,
+  getOrders,
+  getAllOrdes,
+  pickUp,
+  getSingleOrder,
+  singleOrderUpdate,
+};

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ORDER, GET_ORDERS } from "../constants";
+import { GET_ORDER, GET_ORDERS, SINGLE_ORDER_UPDATE } from "../constants";
 
 export const postOrders = (ordenes) => {
   return axios
@@ -21,6 +21,13 @@ const getSingleOrder = function (order) {
   };
 };
 
+/* const singleOrderUpdate = function (estado) {
+  return {
+    type: SINGLE_ORDER_UPDATE,
+    estado
+  }
+} */
+
 export const fetchOrders = () => (dispatch) => {
   axios.get("/api/order/excel").then((orders) => dispatch(getOrders(orders)));
 };
@@ -36,3 +43,14 @@ export const fetchSingleOrder = (id) => (dispatch) => {
     return dispatch(getSingleOrder(parsedOrder));
   });
 };
+
+export const orderStateUpdate = (estado, id) => (dispatch) => {
+  console.log('estado y id', estado, id )
+  return axios.put(`/api/order/${id}`, { state: estado })
+/*     .then((order) => {
+      console.log('order', order)
+      return dispatch(singleOrderUpdate(order.data.state))
+  }) */
+}
+
+
