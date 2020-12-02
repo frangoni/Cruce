@@ -18,11 +18,9 @@ import { fetchSingleOrder, orderStateUpdate } from "../redux/actions/orders";
 import io from "socket.io-client";
 
 export default function SingleOrder({ match }) {
+
   const orderId = match.params.id;
   const dispatch = useDispatch();
-  const order = useSelector((state) => state.orders.order);
-  const user = useSelector((state) => state.user.user);
-  const [state, setState] = useState('');
 
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
@@ -38,15 +36,21 @@ export default function SingleOrder({ match }) {
     };
   }, []);
 
+  const order = useSelector((state) => state.orders.order);
+  const user = useSelector((state) => state.user.user);
+  
+
+
+
   const factura = () => {
     let discounts = 0;
     let skuTotal = 0;
     let shipping = 0;
-    order.products.map((product) => {
+    order.products.length > 0 ? order.products.map((product) => {
       discounts += Number(product.discountsTotals);
       skuTotal += Number(product.skuValue);
       shipping += Number(product.shippingValue);
-    });
+    }) : null;
     return { discounts, skuTotal, shipping };
   };
 
@@ -75,16 +79,12 @@ export default function SingleOrder({ match }) {
   };
 
   
-
-  useEffect(() => {
-    dispatch(orderStateUpdate(state, order.orderId));
-
-
-  }, [state]);
+ 
 
   const handleChange = (event) => {
     const name = event.target.value;
-    setState(name); 
+   
+    dispatch(orderStateUpdate(name, order.orderId))
     
   };
 
@@ -92,9 +92,10 @@ export default function SingleOrder({ match }) {
   const estados = [
     "Pendiente de retiro en sucursal",
     "Retirado",
-    "Entregado"
+    "Entregado",
+    "Cancelado"
   ];
-  let i = estados.indexOf(state);
+  let i = estados.indexOf(order.state);
 
   return (
     <>
@@ -131,13 +132,17 @@ export default function SingleOrder({ match }) {
               {user.id === order.cadeteId ? (
                 <FormControl>
                   <NativeSelect
-                    value={state}
-                    name="state"
+                    value=''
                     onChange={handleChange}
                   >
-                    <option value={state}>{state}</option>
-                    <option value={estados[i + 1]}>{estados[i + 1]}</option>
-                    <option value="Cancelado">Cancelado</option>
+                    <option value={estados[i]}>{estados[i]}</option>
+                    {
+                      estados[i] == 'Entregado' || estados[i] == 'Cancelado' ? null : <><option value={estados[i + 1]}>{estados[i + 1]}</option>
+                      <option value='Cancelado'>Cancelado</option></>
+                    }
+                    
+              
+                    
                   </NativeSelect>
                 </FormControl>
               ) : (

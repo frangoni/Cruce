@@ -45,12 +45,17 @@ export const fetchSingleOrder = (id) => (dispatch) => {
 };
 
 export const orderStateUpdate = (estado, id) => (dispatch) => {
-  console.log('estado y id', estado, id )
-  return axios.put(`/api/order/${id}`, { state: estado })
-/*     .then((order) => {
-      console.log('order', order)
-      return dispatch(singleOrderUpdate(order.data.state))
-  }) */
+  
+  axios.put(`/api/order/${id}`, { state: estado })
+     .then((order) => {
+      let parsedOrder = {
+        ...order.data,
+        products: JSON.parse(order.data.products),
+        client: JSON.parse(order.data.client),
+        destination: JSON.parse(order.data.destination),
+      };
+      return dispatch(getSingleOrder(parsedOrder))
+  }) 
 }
 
 
