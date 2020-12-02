@@ -65,32 +65,32 @@ const getSingleOrder = (req, res, next) => {
 const singleOrderUpdate = (req, res, next) => {
   const id = req.params.id;
   const state = req.body.state;
-  
-  function date(state) {
 
+  function date(state) {
     switch (state) {
-      
       case "Pendiente de retiro en sucursal":
-        return {state, assignedDate: Date.now()}
-      
+        return { state, assignedDate: Date.now() };
+
       case "Retirado":
-        return {state, pickedDate: Date.now()}
-       
+        return { state, pickedDate: Date.now() };
+
       case "Entregado":
-        return {state, deliveredDate: Date.now()}
-        
-  
+        return { state, deliveredDate: Date.now() };
+
       default:
-        break;
+        return {state};
     }
   }
 
-  Order.update(
-    date(state),
-    { where: { orderId: id }, returning: true, plain: true }
-  ).then((order) => {
-    console.log('order', order)
-    res.send(order.dataValues);
+  Order.update(date(state), {
+    where: { orderId: id },
+  }).then(() => {
+    Order.findOne({
+      where: { orderId: id },
+      include: [{ model: User, as: "empresa" }],
+    }).then((orden) => {
+      res.send(orden);
+    });
   });
 };
 
