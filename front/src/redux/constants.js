@@ -15,3 +15,4 @@ export const UPDATE_EMPRESA = "UPDATE_EMPRESA";
 //Orders
 export const GET_ORDERS = "GET_ORDERS";
 export const GET_MY_ORDERS = "GET_MY_ORDERS"
+export const GET_ORDER = "GET_ORDER";
