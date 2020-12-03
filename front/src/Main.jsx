@@ -3,10 +3,12 @@ import { Route, Link, useHistory } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import AdminPanel from "./components/admin/panel";
-import SheetUpload from "./components/SheetUpload";
 import Splash from "./components/splash";
 import WebSocket from "./components/websocket";
+import SingleOrder from "./components/SingleOrder";
 import { useSelector } from "react-redux";
+import SheetUpload from "./components/SheetUpload";
+
 export default function Main() {
   const history = useHistory();
   const user = useSelector((state) => state.user.token);
@@ -18,11 +20,14 @@ export default function Main() {
   return (
     <>
       <Route path="/register" component={Register} />
-      <Route path="/excel" component={SheetUpload} />
+      <button>
+        <Link to="/admin"> Admin</Link>
+      </button>
       <Route path="/login" component={Login} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/splash" component={Splash} />
       <Route path="/socket" component={WebSocket} />
+      <Route path="/order/:id" component={SingleOrder} />
     </>
   );
 }

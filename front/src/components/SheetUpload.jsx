@@ -41,11 +41,12 @@ export default () => {
           workBook.Sheets[workBook.SheetNames],
           { range: 1 }
         );
-        planilla.map((order) =>
+        planilla.map((order) => {
+          let date = new Date(order["Creation Date"]);
           ordenes.push({
             from: order.Courrier,
             orderId: order.Order,
-            creationDate: order["Creation Date"],
+            creationDate: date.setHours(date.getHours() + 3),
             client: JSON.stringify({
               name: order["Client Name"],
               lastName: order["Client Last Name"],
@@ -65,18 +66,19 @@ export default () => {
               estimatedDelivery: order["Estimate Delivery Date"],
             }),
             products: [
-              {
+              { 
+
                 sku: order.ID_SKU,
                 quantity: order.Quantity_SKU,
-                name: order["SKU NAME"],
-                skuValue: order["SKU VALUE"],
+                name: order["SKU Name"],
+                skuValue: order["SKU Value"],
                 discountsTotals: order["Discounts Totals"],
                 shippingValue: order["Shipping Value"],
                 totalValue: order["Total Value"],
               },
             ],
-          })
-        );
+          });
+        });
         setOrders(joinOrders(ordenes));
         setOpen(true);
       };
