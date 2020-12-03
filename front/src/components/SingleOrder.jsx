@@ -7,10 +7,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  InputLabel,
-  FormHelperText,
   FormControl,
-  Select,
   NativeSelect,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
@@ -78,7 +75,6 @@ export default function SingleOrder({ match }) {
 
   const handleChange = (event) => {
     const name = event.target.value;
-
     dispatch(orderStateUpdate(name, order.orderId));
   };
 
