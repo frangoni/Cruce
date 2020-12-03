@@ -1,5 +1,6 @@
 import React from "react";
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
+import { useSelector } from "react-redux"
 import {
   Table,
   TableBody,
@@ -13,7 +14,6 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 
 const OrdersTable = ({ orders, handler }) => {
   const { pathname } = useLocation()
+  const { role } = useSelector(state => state.user.user)
   console.log("location", pathname)
   const classes = useStyles();
   return (
@@ -47,7 +48,7 @@ const OrdersTable = ({ orders, handler }) => {
                     <TableCell align="center">{order.client.email}</TableCell>
                     <TableCell align="center">{order.state}</TableCell>
                     <TableCell align="center">
-                      {pathname === "/socket" ? <IconButton
+                      {pathname === "/socket" && role === "Cadete" ? <IconButton
                         onClick={() => handler(order.id)}
                         aria-label="delete"
                         className={classes.margin}
@@ -55,7 +56,7 @@ const OrdersTable = ({ orders, handler }) => {
                       >
                         <CheckIcon fontSize="inherit" />
                       </IconButton> : null}
-                      <Link to={`/order/${order.orderId}`}>
+                      <Link to={`/order/${order.id}`}>
                         <IconButton size="medium">
                           <VisibilityOutlinedIcon fontSize="inherit" />
                         </IconButton>

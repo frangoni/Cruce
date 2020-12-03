@@ -3,13 +3,18 @@ import {
   GET_ORDER,
   GET_MY_ORDERS,
   ADD_ORDERS,
-  FILTER_ORDERS
+  FILTER_ORDERS, UPDATE_ORDER, UPDATE_SINGLE_ORDER
 } from "../constants";
 
 const initialState = {
   orders: [],
   order: {},
   myOrders: {}
+}
+
+const updateOrder = (orders, newOrder) => {
+  console.log(newOrder)
+  return orders.map(order => order.id === newOrder.orderId ? { ...order, state: newOrder.state } : order)
 }
 
 export default (state = initialState, action) => {
@@ -19,6 +24,8 @@ export default (state = initialState, action) => {
     case GET_ORDER: return { ...state, order: action.order };
     case ADD_ORDERS: return { ...state, orders: [...state.orders, ...action.payload] }
     case FILTER_ORDERS: return { ...state, orders: state.orders.filter(order => order.id !== action.payload) }
+    case UPDATE_ORDER: return { ...state, orders: updateOrder(state.orders, action.payload) }
+    case UPDATE_SINGLE_ORDER: return { ...state, order: { ...state.order, state: action.payload } }
     default: return state;
   }
 };

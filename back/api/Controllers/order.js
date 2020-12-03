@@ -3,9 +3,10 @@ const User = require("../Models/User");
 
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
+
   if (user.role == "Empresa") {
     User.findByPk(user.id).then((user) => {
-      Order.bulkCreate(orders, { individualHooks: false }).then((all) => {
+      Order.bulkCreate(orders, { individualHooks: false, user: user }).then((all) => {
         all.map((orden) => orden.setEmpresa(user));
       });
     });
@@ -34,9 +35,10 @@ const pickUp = async (req, res, next) => {
 };
 
 const getAllOrdes = async (req, res, next) => {
+  const { role, id } = req.user
   try {
     const orders = await Order.findAll({
-      where: { state: "Pendiente" },
+      where: role == "Cadete" ? { state: "Pendiente" } : { empresaId: id },
       raw: true,
     });
     const parsedOrders = orders.map((order) => ({
@@ -53,8 +55,7 @@ const getAllOrdes = async (req, res, next) => {
 };
 
 const getSingleOrder = (req, res, next) => {
-  Order.findOne({
-    where: { orderId: req.params.id },
+  Order.findByPk(req.params.id, {
     include: [{ model: User, as: "empresa" }],
   })
     .then((order) => {

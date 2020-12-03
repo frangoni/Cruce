@@ -4,8 +4,9 @@ const server = require("http").Server(app); //es necesario para usar websockets 
 const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
-  console.log("Conexión establecida");
-  socket.join("cadetes");
+  const room = socket.handshake.query.role
+  console.log("Conexión establecida", socket.handshake.query);
+  socket.join("Cadete");
 });
 
 module.exports = { server, io, app };

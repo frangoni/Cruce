@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -7,27 +7,26 @@ import {
   TableHead,
   TableRow,
   Paper,
-  InputLabel,
-  FormHelperText,
   FormControl,
-  Select,
   NativeSelect,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSingleOrder, orderStateUpdate } from "../redux/actions/orders";
+import { fetchSingleOrder, orderStateUpdate, updateSingleOrder } from "../redux/actions/orders";
 import io from "socket.io-client";
 
 export default function SingleOrder({ match }) {
   const orderId = match.params.id;
   const dispatch = useDispatch();
+  const order = useSelector((state) => state.orders.order);
+  const user = useSelector((state) => state.user.user);
 
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
 
     const socket = io.connect(window.location.origin, { forceNew: true });
-    socket.on("stateUpdate", (data) => {
-      if (order.orderId == JSON.parse(data).orderId) {
-        order = { ...order, state: JSON.parse(data).state };
+    socket.on("dbModifications", (data) => {
+      if (orderId == JSON.parse(data).orderId) {
+        dispatch(updateSingleOrder(JSON.parse(data).state));
       }
     });
     return () => {
@@ -35,8 +34,7 @@ export default function SingleOrder({ match }) {
     };
   }, []);
 
-  const order = useSelector((state) => state.orders.order);
-  const user = useSelector((state) => state.user.user);
+
 
   const factura = () => {
     let discounts = 0;
@@ -44,10 +42,10 @@ export default function SingleOrder({ match }) {
     let shipping = 0;
     order.products.length > 0
       ? order.products.map((product) => {
-          discounts += Number(product.discountsTotals);
-          skuTotal += Number(product.skuValue);
-          shipping += Number(product.shippingValue);
-        })
+        discounts += Number(product.discountsTotals);
+        skuTotal += Number(product.skuValue);
+        shipping += Number(product.shippingValue);
+      })
       : null;
     return { discounts, skuTotal, shipping };
   };
@@ -90,6 +88,8 @@ export default function SingleOrder({ match }) {
   ];
   let i = estados.indexOf(order.state);
 
+
+  console.log("estado de la orden ", order.state)
   return (
     <>
       {order.id ? (
@@ -127,17 +127,17 @@ export default function SingleOrder({ match }) {
                   <NativeSelect value="" onChange={handleChange}>
                     <option value={estados[i]}>{estados[i]}</option>
                     {estados[i] == "Entregado" ||
-                    estados[i] == "Cancelado" ? null : (
-                      <>
-                        <option value={estados[i + 1]}>{estados[i + 1]}</option>
-                        <option value="Cancelado">Cancelado</option>
-                      </>
-                    )}
+                      estados[i] == "Cancelado" ? null : (
+                        <>
+                          <option value={estados[i + 1]}>{estados[i + 1]}</option>
+                          <option value="Cancelado">Cancelado</option>
+                        </>
+                      )}
                   </NativeSelect>
                 </FormControl>
-              ) : (
+              ) :
                 <p>Estado: {order.state}</p>
-              )}
+              }
 
               <p>Id: {order.orderId}</p>
             </Paper>
