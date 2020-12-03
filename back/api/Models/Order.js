@@ -6,15 +6,9 @@ class Order extends Model {}
 
 Order.init(
   {
-    //URL DE GOOGLE MAPS
     from: {
       type: DataTypes.STRING,
       allowNull: true,
-      get() {
-        return `https://www.google.com/maps/search/?api=1&query=${this.getDataValue(
-          "from"
-        )}`;
-      },
     },
     orderId: {
       type: DataTypes.STRING,
@@ -23,11 +17,6 @@ Order.init(
     creationDate: {
       type: DataTypes.DATE,
       allowNull: true,
-      /*    get() {
-        return this.getDataValue("creationDate").setHours(
-          this.getDataValue("creationDate").getHours() - 3
-        );
-      }, */
     },
     // STRINGIFY JSON/////
     client: {
