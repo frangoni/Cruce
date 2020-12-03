@@ -76,7 +76,6 @@ export default function SingleOrder({ match }) {
 
   const handleChange = (event) => {
     const name = event.target.value;
-
     dispatch(orderStateUpdate(name, order.orderId));
   };
 

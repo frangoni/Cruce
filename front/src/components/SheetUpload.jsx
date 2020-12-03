@@ -123,7 +123,7 @@ export default () => {
       />
       <Modal open={open} onClose={handleReject}>
         <>
-          <div id="modal" style={{}}>
+          <div id="modal">
             <DataGrid
               rows={orders.map((order, i) => ({
                 ...order,
