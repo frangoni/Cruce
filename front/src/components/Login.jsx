@@ -95,7 +95,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (statusLogin === 200) {
-      history.push("/");
+      history.push("/admin"); //cambiar luego
     }
   }, [statusLogin]);
 
@@ -107,7 +107,7 @@ export default function SignIn() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Iniciar Sesión 
+          Iniciar Sesión
         </Typography>
         {isLoadingLogin ? (
           <CircularProgress style={{ margin: "25px auto" }} />
