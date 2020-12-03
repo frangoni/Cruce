@@ -14,3 +14,5 @@ export const UPDATE_EMPRESA = "UPDATE_EMPRESA";
 
 //Orders
 export const GET_ORDERS = "GET_ORDERS";
+export const GET_ORDER = "GET_ORDER";
+export const SINGLE_ORDER_UPDATE = "SINGLE_ORDER_UPDATE"

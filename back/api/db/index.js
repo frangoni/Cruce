@@ -1,5 +1,12 @@
 const Sequelize = require("sequelize");
 
+/* const db = new Sequelize("postgres://postgres:gustihero@localhost:5433/cruce", {
+  dialect: "postgres",
+  host: "localhost",
+  logging: false,
+}); */
+
+
 const db = new Sequelize("cruce", null, null, {
   dialect: "postgres",
   host: "localhost",
@@ -7,4 +14,5 @@ const db = new Sequelize("cruce", null, null, {
 });
 
 module.exports = db;
+
 //"postgres://postgres:gustihero@localhost:5433/cruce"
