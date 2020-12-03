@@ -60,10 +60,9 @@ img {
   flex-direction: row;
   justify-content: space-around;
   margin-top: 100px;
-}
-button {
   margin-left: 20px;
 }
+
 
 .imagenes {
   margin: auto;

@@ -5,11 +5,6 @@ import { Link } from "react-router-dom";
 
 const Splash = () => {
   return (
-    /*         <div>
-            <h1> Bienvenido Cadetear de Cruce </h1>
-            <p>No has iniciado sesion, haslo desde <Link to={"/login"}><buton> AQUI</buton></Link></p>
-            <p>No tienes una cuenta?, creala desde <Link to={"/register"}><buton> AQUI</buton></Link></p>
-        </div> */
     <div className="container">
       <div className="imagenes">
         <img className="logo" src={"./arbol.png"} />
@@ -17,12 +12,12 @@ const Splash = () => {
         <div className="buttons">
           <Link to="/login">
             <Button variant="outlined" color="primary">
-              <p>Login</p>
+              <p>Ingresar</p>
             </Button>
           </Link>
           <Link to="/register">
             <Button variant="outlined" color="primary">
-              <p>Register</p>
+              <p>Registrarse</p>
             </Button>
           </Link>
         </div>

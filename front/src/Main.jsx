@@ -9,9 +9,6 @@ import SingleOrder from "./components/SingleOrder";
 import MyOrders from "./components/MyOrders"
 import { useSelector } from "react-redux";
 
-
-
-
 export default function Main() {
   const history = useHistory();
   const user = useSelector((state) => state.user.token);
@@ -23,9 +20,6 @@ export default function Main() {
   return (
     <>
       <Route path="/register" component={Register} />
-      <button>
-        <Link to="/admin"> Admin</Link>
-      </button>
       <Route path="/login" component={Login} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/splash" component={Splash} />
