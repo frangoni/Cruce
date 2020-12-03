@@ -6,7 +6,6 @@ const Sequelize = require("sequelize");
   logging: false,
 }); */
 
-
 const db = new Sequelize("cruce", null, null, {
   dialect: "postgres",
   host: "localhost",

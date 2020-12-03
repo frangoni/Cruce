@@ -7,14 +7,15 @@ import Splash from "./components/splash";
 import WebSocket from "./components/websocket";
 import SingleOrder from "./components/SingleOrder";
 import { useSelector } from "react-redux";
+import SheetUpload from "./components/SheetUpload";
 
 export default function Main() {
   const history = useHistory();
   const user = useSelector((state) => state.user.token);
-  /*   useEffect(() => {
+  useEffect(() => {
     if (!user) history.push("/splash");
     return () => {};
-  }, [user]); */
+  }, [user]);
 
   return (
     <>
