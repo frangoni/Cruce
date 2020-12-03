@@ -1,4 +1,4 @@
-import { GET_MY_ORDERS, GET_ORDERS, GET_ORDER, ADD_ORDERS, FILTER_ORDERS } from "../constants";
+import { GET_MY_ORDERS, GET_ORDERS, GET_ORDER, ADD_ORDERS, FILTER_ORDERS, UPDATE_ORDER, UPDATE_SINGLE_ORDER } from "../constants";
 import axios from 'axios'
 
 export const postOrders = (ordenes) => {
@@ -25,6 +25,17 @@ export const filterOrders = function (orderId) {
     payload: orderId,
   };
 };
+
+export const updateOrder = order => ({
+  type: UPDATE_ORDER,
+  payload: order,
+})
+
+export const updateSingleOrder = order => ({
+  type: UPDATE_SINGLE_ORDER,
+  payload: order,
+})
+
 
 const getMyOrders = function (orders) {
   return {
