@@ -6,6 +6,7 @@ import AdminPanel from "./components/admin/panel";
 import Splash from "./components/splash";
 import WebSocket from "./components/websocket";
 import SingleOrder from "./components/SingleOrder";
+import MyOrders from "./components/MyOrders"
 import { useSelector } from "react-redux";
 
 export default function Main() {
@@ -13,19 +14,17 @@ export default function Main() {
   const user = useSelector((state) => state.user.token);
   useEffect(() => {
     if (!user) history.push("/splash");
-    return () => {};
+    return () => { };
   }, [user]);
 
   return (
     <>
       <Route path="/register" component={Register} />
-      <button>
-        <Link to="/admin"> Admin</Link>
-      </button>
       <Route path="/login" component={Login} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/splash" component={Splash} />
       <Route path="/socket" component={WebSocket} />
+      <Route path="/myorders" component={MyOrders} />
       <Route path="/order/:id" component={SingleOrder} />
     </>
   );
