@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -20,6 +21,8 @@ const useStyles = makeStyles({
 });
 
 const OrdersTable = ({ orders, handler }) => {
+  const { pathname } = useLocation()
+  console.log("location", pathname)
   const classes = useStyles();
   return (
     <>
@@ -44,14 +47,14 @@ const OrdersTable = ({ orders, handler }) => {
                     <TableCell align="center">{order.client.email}</TableCell>
                     <TableCell align="center">{order.state}</TableCell>
                     <TableCell align="center">
-                      <IconButton
+                      {pathname === "/socket" ? <IconButton
                         onClick={() => handler(order.id)}
                         aria-label="delete"
                         className={classes.margin}
                         size="medium"
                       >
                         <CheckIcon fontSize="inherit" />
-                      </IconButton>
+                      </IconButton> : null}
                       <Link to={`/order/${order.orderId}`}>
                         <IconButton size="medium">
                           <VisibilityOutlinedIcon fontSize="inherit" />
