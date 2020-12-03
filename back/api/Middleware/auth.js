@@ -23,7 +23,8 @@ const auth = async (req, res, next) => {
     if (user) req.user = user;
     return next();
   } catch (e) {
-    return next();
+    console.log(e)
+    return next(e);
   }
 };
 module.exports = auth;

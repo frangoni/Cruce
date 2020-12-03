@@ -10,7 +10,7 @@ const postOrders = (req, res, next) => {
       });
     });
   } else {
-    res.send("Solo empresas pueden cargar ordenes");
+    res.status(403).send("Solo empresas pueden cargar ordenes");
   }
 };
 
@@ -21,9 +21,10 @@ const getOrders = (req, res, next) => {
 };
 
 const pickUp = async (req, res, next) => {
-  console.log(req.body);
-  const { userId, orderId } = req.body;
-  const user = await User.findByPk(userId);
+  const { orderId } = req.body;
+  const { id } = req.user
+  console.log("order", req.body)
+  const user = await User.findByPk(id);
   const order = await Order.findByPk(orderId);
   order.setCadete(user);
   order.state = "Pendiente de retiro en sucursal";

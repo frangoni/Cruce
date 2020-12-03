@@ -1,33 +1,37 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect } from "react";
 import OrdersTable from "./OrderTable";
 import io from "socket.io-client";
-import { useSelector } from "react-redux";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchOrders, addOrders, filterOrders, fetchPickOrder } from "../redux/actions/orders"
 import SheetUpload from "./SheetUpload";
 
 const WebSocket = () => {
-  const [orders, setOrders] = useState([])
-  const userId = useSelector(state => state.user.user.id)
+  const dispatch = useDispatch()
+  const { orders } = useSelector(state => state.orders)
+
   const handler = (orderId) => {
-    axios.put("/api/order", { userId, orderId }).then(res => console.log(res))
+    dispatch(fetchPickOrder(orderId))
   }
 
   useEffect(() => {
-    axios.get('/api/order').then(data => setOrders(data.data))
+    dispatch(fetchOrders())
     const socket = io.connect(`${window.location.origin}`, { 'forceNew': true });
+
     socket.on('ordersCreated', (data) => {
-      setOrders(orders => [...orders, ...JSON.parse(data)])
+      dispatch(addOrders([...JSON.parse(data)]))
+
     });
 
     socket.on('dbModifications', (data) => {
       const orderId = JSON.parse(data).orderId
-      setOrders(orders => orders.filter(order => order.id !== orderId))
+      dispatch(filterOrders(orderId))
     });
 
     return () => {
       socket.disconnect()
     }
   }, [])
+
 
   return (
     <>

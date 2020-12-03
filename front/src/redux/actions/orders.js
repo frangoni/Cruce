@@ -1,14 +1,28 @@
-import { GET_MY_ORDERS, GET_ORDERS, GET_ORDER } from "../constants";
+import { GET_MY_ORDERS, GET_ORDERS, GET_ORDER, ADD_ORDERS, FILTER_ORDERS } from "../constants";
 import axios from 'axios'
 
 export const postOrders = (ordenes) => {
   return axios.post("/api/order/excel", ordenes).then((order) => console.log(order));
 }
 
-const getOrders = function (orders) {
+export const getOrders = function (orders) {
   return {
     type: GET_ORDERS,
     orders,
+  };
+};
+
+export const addOrders = function (orders) {
+  return {
+    type: ADD_ORDERS,
+    payload: orders,
+  };
+};
+
+export const filterOrders = function (orderId) {
+  return {
+    type: FILTER_ORDERS,
+    payload: orderId,
   };
 };
 
@@ -18,6 +32,18 @@ const getMyOrders = function (orders) {
     payload: orders
   }
 }
+
+export const fetchPickOrder = (orderId) => (dispatch, state) => {
+  const token = state().user.token
+  axios
+    ({
+      method: 'PUT',
+      url: "/api/order/",
+      headers: { Authorization: `Bearer ${token}` },
+      data: { orderId }
+    })
+}
+
 export const fetchMyOrders = (page) => (dispatch, state) => {
   const token = state().user.token
   axios.get(`/api/order/myorders/${page}`,
@@ -26,8 +52,11 @@ export const fetchMyOrders = (page) => (dispatch, state) => {
     })
 }
 
-export const fetchOrders = () => dispatch => {
-  axios.get("/api/order/excel").then(orders => dispatch(getOrders(orders)))
+export const fetchOrders = () => (dispatch, state) => {
+  const token = state().user.token
+  axios.get("/api/order/",
+    { headers: { Authorization: `Bearer ${token}` } })
+    .then(orders => dispatch(getOrders(orders.data)))
 }
 
 
