@@ -1,8 +1,8 @@
-const { Model, DataTypes, where } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
 const { io } = require("../../io");
 
-class Order extends Model { }
+class Order extends Model {}
 
 Order.init(
   {
@@ -39,7 +39,7 @@ Order.init(
           "Pendiente de retiro en sucursal",
           "Retirado",
           "Entregado",
-          "Cancelado"
+          "Cancelado",
         ],
       }),
       defaultValue: "Pendiente",
@@ -82,7 +82,10 @@ Order.addHook("afterBulkCreate", async (order, options) => {
     destination: JSON.parse(order.dataValues.destination),
     products: JSON.parse(order.dataValues.products),
   }));
-  io.to("Cadete").emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
+  io.to("Cadete").emit(
+    "ordersCreated",
+    JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders })
+  );
 });
 
 Order.addHook("afterUpdate", async (order, options) => {
