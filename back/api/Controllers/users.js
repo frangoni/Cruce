@@ -1,6 +1,6 @@
 const User = require("../Models/User");
 const nodemailer = require("nodemailer");
-
+const postEmail = require("../services/mail");
 const getAllCadetes = async (req, res, next) => {
   try {
     const users = await User.findAll({ where: { role: "Cadete" } });
@@ -33,41 +33,23 @@ const acceptById = async (req, res, next) => {
         returning: true,
         plain: true,
       }
-    ); /* .then((user) => {
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: "",
-          pass: "",
-        },
-      });
-      const mailOptions = {
-        from: "cruce@cruce.com",
-        to: user.email,
-        subject: `Ya podes empezar a tomar ordenes ${user.nombre}!`,
-        html: "",
-        attachments: [
-          {
-            filename: "",
-            cid: "",
-            //same cid value as in the html img src
-          },
-        ],
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("----- Email enviadoo ----- ");
-        }
-      });
-    }); */
-    console.log(changes, modified);
+    ).then(() =>
+      User.findOne({ where: { id: id } }).then((user) => postEmail(user))
+    );
     return res.send(modified);
   } catch (e) {
     console.log(e);
     return res.status(503).end();
   }
 };
-module.exports = { getAllCadetes, getAllEmpresas, acceptById };
+
+const userDelete = (req, res, next) => {
+  console.log(req.body);
+  const id = req.body.content;
+
+  User.destroy({ where: { id: id } })
+    .then(() => res.status(200).send("Eliminado"))
+    .catch((e) => res.status(500).send(e));
+};
+
+module.exports = { getAllCadetes, getAllEmpresas, acceptById, userDelete };

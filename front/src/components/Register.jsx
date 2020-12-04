@@ -77,7 +77,7 @@ export default function SignUp() {
 
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
 
-  let classInput = {
+  const classInput = {
     name: "",
     email: "",
     password: "",
@@ -100,13 +100,13 @@ export default function SignUp() {
 
   const dispatch = useDispatch();
 
-  let isLoadingRegister = useSelector(
+  const isLoadingRegister = useSelector(
     (state) => state.animations.isLoadingRegister
   );
-  let statusRegister = useSelector((state) => state.animations.statusRegister);
-  let errorBack = useSelector((state) => state.user.errorBack);
+  const statusRegister = useSelector((state) => state.animations.statusRegister);
+  const errorBack = useSelector((state) => state.user.errorBack);
 
-  let history = useHistory();
+  const history = useHistory();
 
   useEffect(() => {
     if (statusRegister === 201) {

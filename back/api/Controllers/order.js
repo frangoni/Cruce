@@ -3,9 +3,13 @@ const User = require("../Models/User");
 
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
+
   if (user.role == "Empresa") {
     User.findByPk(user.id).then((user) => {
-      Order.bulkCreate(orders, { individualHooks: false }).then((all) => {
+      Order.bulkCreate(orders, {
+        individualHooks: false,
+        user: user,
+      }).then((all) => {
         all.map((orden) => orden.setEmpresa(user));
       });
     });
@@ -22,8 +26,8 @@ const getOrders = (req, res, next) => {
 
 const pickUp = async (req, res, next) => {
   const { orderId } = req.body;
-  const { id } = req.user
-  console.log("order", req.body)
+  const { id } = req.user;
+  console.log("order", req.body);
   const user = await User.findByPk(id);
   const order = await Order.findByPk(orderId);
   order.setCadete(user);
@@ -34,9 +38,10 @@ const pickUp = async (req, res, next) => {
 };
 
 const getAllOrdes = async (req, res, next) => {
+  const { role, id } = req.user;
   try {
     const orders = await Order.findAll({
-      where: { state: "Pendiente" },
+      where: role == "Cadete" ? { state: "Pendiente" } : { empresaId: id },
       raw: true,
     });
     const parsedOrders = orders.map((order) => ({
@@ -53,8 +58,7 @@ const getAllOrdes = async (req, res, next) => {
 };
 
 const getSingleOrder = (req, res, next) => {
-  Order.findOne({
-    where: { orderId: req.params.id },
+  Order.findByPk(req.params.id, {
     include: [{ model: User, as: "empresa" }],
   })
     .then((order) => {
@@ -95,32 +99,29 @@ const singleOrderUpdate = (req, res, next) => {
   });
 };
 
-
 const getMyOrdes = async (req, res, next) => {
-  const cadeteId = req.user.id
-  const page = req.params.page
+  const cadeteId = req.user.id;
+  const page = req.params.page;
   try {
     const orders = await Order.findAndCountAll({
       where: { cadeteId },
       raw: true,
-      order: [['assignedDate', 'DESC'],],
+      order: [["assignedDate", "DESC"]],
       limit: 10,
       offset: 10 * page,
-    })
-    const parsedOrders = orders.rows.map(order => ({
+    });
+    const parsedOrders = orders.rows.map((order) => ({
       ...order,
       client: JSON.parse(order.client),
       destination: JSON.parse(order.destination),
-      products: JSON.parse(order.products)
-    }))
-    res.status(200).send({ "count": orders.count, "results": parsedOrders });
+      products: JSON.parse(order.products),
+    }));
+    res.status(200).send({ count: orders.count, results: parsedOrders });
+  } catch (e) {
+    console.log(e);
+    res.status(503).end();
   }
-  catch (e) {
-    console.log(e)
-    res.status(503).end()
-  }
-}
-
+};
 
 module.exports = {
   postOrders,
@@ -129,5 +130,5 @@ module.exports = {
   pickUp,
   getSingleOrder,
   singleOrderUpdate,
-  getMyOrdes
+  getMyOrdes,
 };

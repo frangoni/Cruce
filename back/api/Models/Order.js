@@ -82,10 +82,14 @@ Order.addHook("afterBulkCreate", async (order, options) => {
     destination: JSON.parse(order.dataValues.destination),
     products: JSON.parse(order.dataValues.products),
   }));
-  io.emit("ordersCreated", JSON.stringify(parsedOrders));
+  io.to("Cadete").emit(
+    "ordersCreated",
+    JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders })
+  );
 });
+
 Order.addHook("afterUpdate", async (order, options) => {
-  if (options.fields.includes("cadeteId")) {
+  if (options.fields.includes("state")) {
     io.to("Cadete").emit(
       "dbModifications",
       JSON.stringify({
@@ -95,16 +99,6 @@ Order.addHook("afterUpdate", async (order, options) => {
       })
     );
   }
-  if (options.fields.includes("state")) {
-    io.emit(
-      "stateUpdate",
-      JSON.stringify({
-        orderId: order.dataValues.id,
-        state: order.dataValues.state,
-      })
-    );
-  }
-  console.log(options);
 });
 
 module.exports = Order;
