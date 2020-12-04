@@ -45,16 +45,17 @@ User.init(
     },
     dni: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      unique: true,
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     licensePlate: {
       type: DataTypes.STRING,
-      allowNull: true
-    }
+      allowNull: true,
+    },
   },
   { sequelize: db, modelName: "user" }
 );
@@ -72,6 +73,6 @@ User.beforeCreate((user) => {
 
 User.prototype.hash = function (password) {
   return hash(password, this.salt);
-}
+};
 
 module.exports = User;

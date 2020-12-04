@@ -39,7 +39,7 @@ Order.init(
           "Pendiente de retiro en sucursal",
           "Retirado",
           "Entregado",
-          "Cancelado"
+          "Cancelado",
         ],
       }),
       defaultValue: "Pendiente",
@@ -82,11 +82,11 @@ Order.addHook("afterBulkCreate", async (order, options) => {
     destination: JSON.parse(order.dataValues.destination),
     products: JSON.parse(order.dataValues.products),
   }));
-  io.to("cadetes").emit("ordersCreated", JSON.stringify(parsedOrders));
+  io.emit("ordersCreated", JSON.stringify(parsedOrders));
 });
 Order.addHook("afterUpdate", async (order, options) => {
   if (options.fields.includes("cadeteId")) {
-    io.to("cadetes").emit(
+    io.to("Cadete").emit(
       "dbModifications",
       JSON.stringify({
         orderId: order.dataValues.id,
@@ -96,7 +96,7 @@ Order.addHook("afterUpdate", async (order, options) => {
     );
   }
   if (options.fields.includes("state")) {
-    io.to("cadetes").emit(
+    io.emit(
       "stateUpdate",
       JSON.stringify({
         orderId: order.dataValues.id,
