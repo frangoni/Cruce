@@ -1,3 +1,4 @@
+const Cadeteria = require("../Models/Cadeteria");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
 
@@ -5,8 +6,9 @@ const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
 
   if (user.role == "Empresa") {
-    User.findByPk(user.id).then((user) => {
-      Order.bulkCreate(orders, { individualHooks: false, user: user }).then((all) => {
+    User.findByPk(user.id).then(async (user) => {
+      const cadeterias = await user.getCadeteria({ raw: true })
+      Order.bulkCreate(orders, { individualHooks: false, user: user, cadeterias }).then((all) => {
         all.map((orden) => orden.setEmpresa(user));
       });
     });

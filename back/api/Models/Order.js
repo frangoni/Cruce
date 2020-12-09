@@ -82,7 +82,10 @@ Order.addHook("afterBulkCreate", async (order, options) => {
     destination: JSON.parse(order.dataValues.destination),
     products: JSON.parse(order.dataValues.products),
   }));
-  io.to("Cadete").emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
+
+  options.cadeterias.forEach(cadeteria => {
+    io.to(cadeteria.name).emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
+  });
 });
 
 Order.addHook("afterUpdate", async (order, options) => {
