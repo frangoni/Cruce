@@ -90,14 +90,17 @@ Order.addHook("afterBulkCreate", async (order, options) => {
 
 Order.addHook("afterUpdate", async (order, options) => {
   if (options.fields.includes("state")) {
-    io.to("Cadete").emit(
-      "dbModifications",
-      JSON.stringify({
-        orderId: order.dataValues.id,
-        cadeteId: order.dataValues.cadeteId,
-        state: order.dataValues.state,
-      })
-    );
+    console.log("options afterUpdate", options)
+    options.cadeterias.forEach(cadeteria => {
+      io.to(cadeteria.name).emit(
+        "dbModifications",
+        JSON.stringify({
+          orderId: order.dataValues.id,
+          cadeteId: order.dataValues.cadeteId,
+          state: order.dataValues.state,
+        })
+      );
+    });
   }
 });
 

@@ -26,13 +26,17 @@ const getOrders = (req, res, next) => {
 const pickUp = async (req, res, next) => {
   const { orderId } = req.body;
   const { id } = req.user
-  console.log("order", req.body)
-  const user = await User.findByPk(id);
+  const cadete = await User.findByPk(id);
+
   const order = await Order.findByPk(orderId);
-  order.setCadete(user);
+  order.setCadete(cadete);
   order.state = "Pendiente de retiro en sucursal";
   order.assignedDate = Date.now();
-  order.save();
+
+  const tienda = await order.getEmpresa({ include: Cadeteria })
+  const cadeterias = await tienda.getCadeteria({ raw: true })
+
+  order.save({ cadeterias });
   res.send(order);
 };
 
