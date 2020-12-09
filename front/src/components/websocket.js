@@ -16,7 +16,7 @@ const WebSocket = () => {
 
   useEffect(() => {
     dispatch(fetchOrders())
-    const socket = io.connect(`${window.location.origin}`, { query: { role } });
+    const socket = io.connect(`${window.location.origin}`, { query: { id } });
 
     socket.on('ordersCreated', (data) => {
       const orders = JSON.parse(data)

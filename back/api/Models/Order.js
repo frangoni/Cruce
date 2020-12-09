@@ -2,7 +2,7 @@ const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
 const { io } = require("../../io");
 
-class Order extends Model {}
+class Order extends Model { }
 
 Order.init(
   {
@@ -82,22 +82,25 @@ Order.addHook("afterBulkCreate", async (order, options) => {
     destination: JSON.parse(order.dataValues.destination),
     products: JSON.parse(order.dataValues.products),
   }));
-  io.to("Cadete").emit(
-    "ordersCreated",
-    JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders })
-  );
+
+  options.cadeterias.forEach(cadeteria => {
+    io.to(cadeteria.name).emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
+  });
 });
 
 Order.addHook("afterUpdate", async (order, options) => {
   if (options.fields.includes("state")) {
-    io.to("Cadete").emit(
-      "dbModifications",
-      JSON.stringify({
-        orderId: order.dataValues.id,
-        cadeteId: order.dataValues.cadeteId,
-        state: order.dataValues.state,
-      })
-    );
+    console.log("options afterUpdate", options)
+    options.cadeterias.forEach(cadeteria => {
+      io.to(cadeteria.name).emit(
+        "dbModifications",
+        JSON.stringify({
+          orderId: order.dataValues.id,
+          cadeteId: order.dataValues.cadeteId,
+          state: order.dataValues.state,
+        })
+      );
+    });
   }
 });
 
