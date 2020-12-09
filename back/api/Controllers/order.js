@@ -1,13 +1,17 @@
-const { Order, User } = require("../Models");
+const Cadeteria = require("../Models/Cadeteria");
+const Order = require("../Models/Order");
+const User = require("../Models/User");
 
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
 
   if (user.role == "Empresa") {
-    User.findByPk(user.id).then((user) => {
+    User.findByPk(user.id).then(async (user) => {
+      const cadeterias = await user.getCadeteria({ raw: true });
       Order.bulkCreate(orders, {
         individualHooks: false,
         user: user,
+        cadeterias,
       }).then((all) => {
         all.map((orden) => orden.setEmpresa(user));
       });
@@ -20,23 +24,36 @@ const postOrders = (req, res, next) => {
 const pickUp = async (req, res, next) => {
   const { orderId } = req.body;
   const { id } = req.user;
-  console.log("order", req.body);
-  const user = await User.findByPk(id);
+  const cadete = await User.findByPk(id);
+
   const order = await Order.findByPk(orderId);
-  order.setCadete(user);
+  order.setCadete(cadete);
   order.state = "Pendiente de retiro en sucursal";
   order.assignedDate = Date.now();
-  order.save();
+
+  const tienda = await order.getEmpresa({ include: Cadeteria });
+  const cadeterias = await tienda.getCadeteria({ raw: true });
+
+  order.save({ cadeterias });
   res.send(order);
 };
 
 const getAllOrdes = async (req, res, next) => {
-  const { role, id } = req.user;
   try {
+    const { role, id, cadeteria } = req.user;
+    const id_tiendas = [];
+    if (role == "Cadete") {
+      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true });
+      tiendas_cadeterias.map((user) => id_tiendas.push(user.id));
+    }
     const orders = await Order.findAll({
-      where: role == "Cadete" ? { state: "Pendiente" } : { empresaId: id },
+      where:
+        role == "Cadete"
+          ? { state: "Pendiente", empresaId: id_tiendas }
+          : { empresaId: id },
       raw: true,
     });
+    console.log("orders", orders.length);
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),
@@ -45,7 +62,6 @@ const getAllOrdes = async (req, res, next) => {
     }));
     res.status(200).send(parsedOrders);
   } catch (e) {
-    console.log(e);
     res.status(503).end();
   }
 };

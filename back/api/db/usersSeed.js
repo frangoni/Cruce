@@ -1,4 +1,6 @@
-const { User, Cadeteria, db } = require("../Models");
+const User = require("../Models/User");
+const Cadeteria = require("../Models/Cadeteria");
+const db = require("../Models/index");
 
 db.sync({ force: true }).then(async () => {
   const cadeterias = await Cadeteria.bulkCreate([
@@ -103,10 +105,26 @@ db.sync({ force: true }).then(async () => {
         role: "Cadete",
       },
       {
-        name: "Vitto",
+        name: "Farmacias del pueblo",
         email: "farma@gmail.com",
         password: "1234",
         company: "Farmacias del pueblo",
+        accepted: true,
+        role: "Empresa",
+      },
+      {
+        name: "Gabarino",
+        email: "garbarino@gmail.com",
+        password: "1234",
+        company: "Garbarino",
+        accepted: true,
+        role: "Empresa",
+      },
+      {
+        name: "GPS Farma",
+        email: "gpsfarma@gmail.com",
+        password: "1234",
+        company: "GPS Farma",
         accepted: true,
         role: "Empresa",
       },
@@ -115,9 +133,19 @@ db.sync({ force: true }).then(async () => {
   );
 
   users.map((user) => {
-    const start = Math.floor(Math.random() * 9);
-    const end = Math.floor(Math.random() * (9 - start) + start); //Math.floor(Math.random() *9 - start)
-    console.log("start ", start, "end ", end);
-    user.addCadeteria(cadeterias.slice(start, end));
+    let start = 0;
+    let end = 0;
+    do {
+      start = Math.floor(Math.random() * 9);
+      end = Math.floor(Math.random() * (9 - start) + start);
+    } while (end - start < 3);
+
+    const single = Math.floor(Math.random() * (9 - start) + start);
+    const shuffleCadeterias = [...cadeterias].sort(() => {
+      return 0.5 - Math.random();
+    });
+    if (user.role === "Empresa")
+      user.addCadeteria(shuffleCadeterias.slice(start, end));
+    else user.addCadeteria(shuffleCadeterias[single]);
   });
 });

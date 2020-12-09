@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
 
-class Cadeteria extends Model {}
+class Cadeteria extends Model { }
 
 Cadeteria.init(
   {
