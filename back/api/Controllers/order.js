@@ -41,12 +41,21 @@ const pickUp = async (req, res, next) => {
 };
 
 const getAllOrdes = async (req, res, next) => {
-  const { role, id } = req.user
   try {
+    const { role, id, cadeteria } = req.user;
+    const id_tiendas = [];
+    if (role == "Cadete") {
+      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true });
+      tiendas_cadeterias.map((user) => id_tiendas.push(user.id));
+    }
     const orders = await Order.findAll({
-      where: role == "Cadete" ? { state: "Pendiente" } : { empresaId: id },
+      where:
+        role == "Cadete"
+          ? { state: "Pendiente", empresaId: id_tiendas }
+          : { empresaId: id },
       raw: true,
     });
+    console.log("orders", orders.length);
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),
@@ -55,7 +64,6 @@ const getAllOrdes = async (req, res, next) => {
     }));
     res.status(200).send(parsedOrders);
   } catch (e) {
-    console.log(e);
     res.status(503).end();
   }
 };

@@ -20,7 +20,7 @@ const auth = async (req, res, next) => {
     //TODO  cambiar el obj user por los fields necesarios
     //const {name, id, role} = await User.findOne({ where: { email: decoded.user } })
     //if (id) req.user = {name  id :user. name}
-    const user = await User.findOne({ where: { email: decoded.user }, include: Cadeteria });
+    const user = await User.findOne({ where: { email: decoded.user }, include: { all: true }, });
     if (user) req.user = user;
     return next();
   } catch (e) {
