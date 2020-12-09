@@ -7,8 +7,12 @@ const postOrders = (req, res, next) => {
 
   if (user.role == "Empresa") {
     User.findByPk(user.id).then(async (user) => {
-      const cadeterias = await user.getCadeteria({ raw: true })
-      Order.bulkCreate(orders, { individualHooks: false, user: user, cadeterias }).then((all) => {
+      const cadeterias = await user.getCadeteria({ raw: true });
+      Order.bulkCreate(orders, {
+        individualHooks: false,
+        user: user,
+        cadeterias,
+      }).then((all) => {
         all.map((orden) => orden.setEmpresa(user));
       });
     });
@@ -17,15 +21,9 @@ const postOrders = (req, res, next) => {
   }
 };
 
-const getOrders = (req, res, next) => {
-  Order.findAll({
-    where: { state: "Pendiente de retiro en sucursal" },
-  }).then((orders) => res.status(200).send(orders));
-};
-
 const pickUp = async (req, res, next) => {
   const { orderId } = req.body;
-  const { id } = req.user
+  const { id } = req.user;
   const cadete = await User.findByPk(id);
 
   const order = await Order.findByPk(orderId);
@@ -33,8 +31,8 @@ const pickUp = async (req, res, next) => {
   order.state = "Pendiente de retiro en sucursal";
   order.assignedDate = Date.now();
 
-  const tienda = await order.getEmpresa({ include: Cadeteria })
-  const cadeterias = await tienda.getCadeteria({ raw: true })
+  const tienda = await order.getEmpresa({ include: Cadeteria });
+  const cadeterias = await tienda.getCadeteria({ raw: true });
 
   order.save({ cadeterias });
   res.send(order);
@@ -136,7 +134,6 @@ const getMyOrdes = async (req, res, next) => {
 
 module.exports = {
   postOrders,
-  getOrders,
   getAllOrdes,
   pickUp,
   getSingleOrder,
