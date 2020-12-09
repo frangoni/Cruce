@@ -1,5 +1,11 @@
-import { GET_ALL_CADETES, GET_ALL_EMPRESAS, UPDATE_CADETE, UPDATE_EMPRESA } from "../constants";
-import axios from 'axios'
+import {
+  GET_ALL_CADETES,
+  GET_ALL_EMPRESAS,
+  UPDATE_CADETE,
+  UPDATE_EMPRESA,
+} from "../constants";
+import { setError } from "../actions/user";
+import axios from "axios";
 
 /* export const userRegister = () => {
     return {
@@ -8,77 +14,85 @@ import axios from 'axios'
 }; 
  */
 export const setCadetes = (cadetes) => {
-    return {
-        type: GET_ALL_CADETES,
-        payload: cadetes,
-    };
+  return {
+    type: GET_ALL_CADETES,
+    payload: cadetes,
+  };
 };
 
 export const setEmpresas = (empresas) => {
-    return {
-        type: GET_ALL_EMPRESAS,
-        payload: empresas,
-    };
+  return {
+    type: GET_ALL_EMPRESAS,
+    payload: empresas,
+  };
 };
 
 const updateCadete = (id, data) => ({
-    type: UPDATE_CADETE,
-    payload: { id, data }
-})
+  type: UPDATE_CADETE,
+  payload: { id, data },
+});
 
 const updateEmpresa = (id, data) => ({
-    type: UPDATE_EMPRESA,
-    payload: { id, data }
-})
-
+  type: UPDATE_EMPRESA,
+  payload: { id, data },
+});
 
 export const fetchCadetes = (data) => (dispatch, state) => {
-    const { token } = state().user
-    axios
-        .get('/api/users/cadetes', {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then((cadetes) => {
-            dispatch(setCadetes(cadetes.data))
-        })
-        .catch((err) => {
-            console.log('ERROR DEL FETCH REGISTER', err)
-            dispatch(setError(err))
-        })
-}
+  const { token } = state().user;
+  axios
+    .get("/api/users/cadetes", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((cadetes) => {
+      dispatch(setCadetes(cadetes.data));
+    })
+    .catch((err) => {
+      console.log("ERROR DEL FETCH REGISTER", err);
+      dispatch(setError(err));
+    });
+};
 
 export const fetchEmpresas = (data) => (dispatch, state) => {
-    const { token } = state().user
-    axios
-        .get('/api/users/empresas', {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-        .then((empresas) => {
-            dispatch(setEmpresas(empresas.data))
-        })
-        .catch((err) => {
-            console.log('ERROR DEL FETCH REGISTER', err)
-            dispatch(setError(err))
-        })
-}
+  const { token } = state().user;
+  axios
+    .get("/api/users/empresas", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((empresas) => {
+      dispatch(setEmpresas(empresas.data));
+    })
+    .catch((err) => {
+      console.log("ERROR DEL FETCH REGISTER", err);
+      dispatch(setError(err));
+    });
+};
 
 export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
-    const { token } = state().user
-    console.log(token)
-    axios
-        ({
-            method: 'PUT',
-            url: `/api/users/${role.toLowerCase()}s/${id}`,
-            headers: { Authorization: `Bearer ${token}` },
-            data: {}
-        })
-        .then((res) => {
-            console.log(res.data)
-            if (role.toLowerCase() === "empresa") dispatch(updateEmpresa(id, res.data))
-            else dispatch(updateCadete(id, res.data))
-        })
-        .catch((err) => {
-            console.log('ERROR DEL FETCH REGISTER', err)
-            dispatch(setError(err))
-        })
-}
+  const { token } = state().user;
+  console.log(token);
+  axios({
+    method: "PUT",
+    url: `/api/users/${role.toLowerCase()}s/${id}`,
+    headers: { Authorization: `Bearer ${token}` },
+    data: {},
+  })
+    .then((res) => {
+      console.log(res.data);
+      if (role.toLowerCase() === "empresa")
+        dispatch(updateEmpresa(id, res.data));
+      else dispatch(updateCadete(id, res.data));
+    })
+    .catch((err) => {
+      console.log("ERROR DEL FETCH REGISTER", err);
+      dispatch(setError(err));
+    });
+};
+
+export const deleteUser = (data) => (dispatch) => {
+  axios
+    .post("/api/users/delete", data)
+    .then(() => console.log("hola"))
+    .catch((err) => {
+      dispatch(setError(err));
+    });
+};

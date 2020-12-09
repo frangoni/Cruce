@@ -1,4 +1,4 @@
-const { Model, DataTypes, where } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
 const { io } = require("../../io");
 
@@ -39,7 +39,7 @@ Order.init(
           "Pendiente de retiro en sucursal",
           "Retirado",
           "Entregado",
-          "Cancelado"
+          "Cancelado",
         ],
       }),
       defaultValue: "Pendiente",
