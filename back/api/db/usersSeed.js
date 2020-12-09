@@ -111,7 +111,7 @@ db.sync({ force: true }).then(async () => {
         role: "Empresa",
       },
     ],
-    { individualHooks: false }
+    { individualHooks: true }
   );
 
   users.map((user) => {

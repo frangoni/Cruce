@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,9 +9,16 @@ import {
   Paper,
   FormControl,
   NativeSelect,
+  IconButton,
 } from "@material-ui/core";
+import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
+import RoomIcon from "@material-ui/icons/Room";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSingleOrder, orderStateUpdate, updateSingleOrder } from "../redux/actions/orders";
+import {
+  fetchSingleOrder,
+  orderStateUpdate,
+  updateSingleOrder,
+} from "../redux/actions/orders";
 import io from "socket.io-client";
 
 export default function SingleOrder({ match }) {
@@ -34,44 +41,18 @@ export default function SingleOrder({ match }) {
     };
   }, []);
 
-
-
   const factura = () => {
     let discounts = 0;
     let skuTotal = 0;
     let shipping = 0;
     order.products.length > 0
       ? order.products.map((product) => {
-        discounts += Number(product.discountsTotals);
-        skuTotal += Number(product.skuValue);
-        shipping += Number(product.shippingValue);
-      })
+          discounts += Number(product.discountsTotals);
+          skuTotal += Number(product.skuValue);
+          shipping += Number(product.shippingValue);
+        })
       : null;
     return { discounts, skuTotal, shipping };
-  };
-
-  const style = {
-    orderDescription: {
-      display: "flex",
-      justifyContent: "space-evenly",
-      margin: "2%",
-    },
-    paper: {
-      width: "25%",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      paddingLeft: "2%",
-    },
-    container: {
-      width: "95%",
-      margin: "3% auto",
-      height: "100%",
-      padding: "1%",
-    },
-    links: {
-      textDecoration: "none",
-    },
   };
 
   const handleChange = (event) => {
@@ -87,38 +68,40 @@ export default function SingleOrder({ match }) {
   ];
   let i = estados.indexOf(order.state);
 
-
-  console.log("estado de la orden ", order.state)
   return (
     <>
       {order.id ? (
-        <Paper elevation={3} style={style.container}>
+        <Paper elevation={5} className="singleOrderContainer">
+          <p>{order.empresa.name}</p>
           <p>Pedido: {order.orderId}</p>
-          <p>{order.empresa.company}</p>
           <p>{order.empresa.email}</p>
-          <div style={style.orderDescription}>
-            <Paper elevation={3} style={style.paper}>
-              <h4>Datos del cliente:</h4>
+          <div className="singleOrderPapers">
+            <Paper elevation={3} className="paper">
+              <h4>Cliente:</h4>
               <p>
                 {order.client.name} {order.client.lastName}
               </p>
               <p>{order.client.email}</p>
-              <a style={style.links} href={`tel:${order.client.phone}`}>
-                {order.client.phone}
-              </a>
-              <a
-                style={style.links}
-                href={`https://www.google.com/maps/place/${order.destination.street}%20${order.destination.number}%20${order.destination.city}`}
-                target="_blank"
-              >
-                <p>{order.destination.city}</p>
+              <span className="links">
+                <p> {order.client.phone}</p>
+                <IconButton href={`tel:${order.client.phone}`}>
+                  <PhoneForwardedOutlinedIcon fontSize="large" />
+                </IconButton>
+              </span>
+              <p> {order.destination.city}</p>
+              <span className="links">
                 <p>
                   {order.destination.street} {order.destination.number}
                 </p>
-              </a>
+                <IconButton
+                  href={`https://www.google.com/maps/place/${order.destination.street}%20${order.destination.number}%20${order.destination.city}`}
+                >
+                  <RoomIcon fontSize="large" />
+                </IconButton>
+              </span>
             </Paper>
-            <Paper elevation={3} style={style.paper}>
-              <h4>Datos del pedido:</h4>
+            <Paper elevation={3} className="paper">
+              <h4>Pedido:</h4>
               <p>Fecha: {order.creationDate}</p>
 
               {user.id === order.cadeteId ? (
@@ -126,23 +109,23 @@ export default function SingleOrder({ match }) {
                   <NativeSelect value="" onChange={handleChange}>
                     <option value={estados[i]}>{estados[i]}</option>
                     {estados[i] == "Entregado" ||
-                      estados[i] == "Cancelado" ? null : (
-                        <>
-                          <option value={estados[i + 1]}>{estados[i + 1]}</option>
-                          <option value="Cancelado">Cancelado</option>
-                        </>
-                      )}
+                    estados[i] == "Cancelado" ? null : (
+                      <>
+                        <option value={estados[i + 1]}>{estados[i + 1]}</option>
+                        <option value="Cancelado">Cancelado</option>
+                      </>
+                    )}
                   </NativeSelect>
                 </FormControl>
-              ) :
+              ) : (
                 <p>Estado: {order.state}</p>
-              }
+              )}
 
               <p>Id: {order.orderId}</p>
             </Paper>
 
-            <Paper elevation={3} style={style.paper}>
-              <h4>Numero de factura: #54534</h4>
+            <Paper elevation={3} className="paper">
+              <h4>Facturación:</h4>
               <p>Subtotal: ${factura().skuTotal}</p>
               <p>Descuento: ${factura().discounts}</p>
               <p>Costo de envio: ${factura().shipping}</p>
@@ -156,7 +139,7 @@ export default function SingleOrder({ match }) {
               </p>
             </Paper>
           </div>
-          <TableContainer component={Paper} style={style.container}>
+          <TableContainer component={Paper} className="singleOrderContainer">
             <Table aria-label="spanning table">
               <TableHead>
                 <TableRow>
@@ -171,7 +154,7 @@ export default function SingleOrder({ match }) {
                   order.products.map((product) => (
                     <TableRow key={product.sku}>
                       <TableCell>
-                        {product.sku} | {product.name}
+                        SKU {product.sku} | {product.name}
                       </TableCell>
                       <TableCell align="right">{product.quantity}</TableCell>
                       <TableCell align="right">{product.skuValue}</TableCell>

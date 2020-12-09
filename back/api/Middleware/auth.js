@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const privateKey = "clavesecreta1234";
-const User = require("../Models/User");
+const { User } = require("../Models");
 
 const auth = async (req, res, next) => {
   let idToken;
@@ -23,7 +23,7 @@ const auth = async (req, res, next) => {
     if (user) req.user = user;
     return next();
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return next(e);
   }
 };

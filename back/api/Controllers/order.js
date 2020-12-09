@@ -1,5 +1,4 @@
-const Order = require("../Models/Order");
-const User = require("../Models/User");
+const { Order, User } = require("../Models");
 
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
@@ -16,12 +15,6 @@ const postOrders = (req, res, next) => {
   } else {
     res.status(403).send("Solo empresas pueden cargar ordenes");
   }
-};
-
-const getOrders = (req, res, next) => {
-  Order.findAll({
-    where: { state: "Pendiente de retiro en sucursal" },
-  }).then((orders) => res.status(200).send(orders));
 };
 
 const pickUp = async (req, res, next) => {
@@ -125,7 +118,6 @@ const getMyOrdes = async (req, res, next) => {
 
 module.exports = {
   postOrders,
-  getOrders,
   getAllOrdes,
   pickUp,
   getSingleOrder,

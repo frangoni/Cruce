@@ -63,7 +63,6 @@ img {
   margin-left: 20px;
 }
 
-
 .imagenes {
   margin: auto;
   display: flex;
@@ -127,4 +126,43 @@ p {
 #add:hover {
   transform: scale(1.2);
   transition: 0.4s;
+}
+/* SINGLE ORDER VIEW */
+.singleOrderPapers {
+  margin: 2%;
+  display: flex;
+  justify-content: space-evenly;
+}
+.singleOrderContainer {
+  width: 95%;
+  margin: 3% auto;
+  height: 100%;
+  padding: 1%;
+}
+.paper {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2%;
+}
+.links {
+  display: flex;
+  justify-content: space-between;
+  text-decoration: none;
+  margin-right: 1%;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .singleOrderPapers {
+    display: "flex";
+    flex-flow: column wrap;
+    justify-content: "space-evenly";
+    margin: "2%";
+  }
+  .paper {
+    width: 80vw;
+    height: 30vh;
+    margin: 2% auto;
+  }
 }
