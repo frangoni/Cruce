@@ -9,12 +9,12 @@ const Splash = () => {
         <img className="logo2" src={"./cruce.svg"} />
       </div>
       <div className="buttons">
-        <Link className="boton" to="/login">
+        <Link className="boton" to="/ingreso">
           <Button variant="contained" color="primary">
             Ingresar
           </Button>
         </Link>
-        <Link className="boton2" to="/register">
+        <Link className="boton2" to="/registro">
           <Button variant="contained" color="primary">
             Registrarse
           </Button>
