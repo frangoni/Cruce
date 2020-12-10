@@ -12,7 +12,7 @@ const {
 router.get("/", getAllCadeterias);
 router.post("/", createCadeteria);
 router.put("/", auth, assignCadeterias)
-router.get("/:id", auth, getSingleCadeteria);
+router.get("/miscadetes", auth, getSingleCadeteria);
 
 
 module.exports = router;
