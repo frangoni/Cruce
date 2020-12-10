@@ -66,7 +66,7 @@ export default () => {
               estimatedDelivery: order["Estimate Delivery Date"],
             }),
             products: [
-              { 
+              {
 
                 sku: order.ID_SKU,
                 quantity: order.Quantity_SKU,
@@ -111,7 +111,7 @@ export default () => {
   ];
   return (
     <>
-      <IconButton id="add" onClick={handleClick} style={{ float: "right" }}>
+      <IconButton id="add" onClick={handleClick} style={{ float: "right", position: "fixed" }}>
         <AddCircleIcon style={{ fontSize: 70, color: "#6f20f0" }} />
       </IconButton>
       <input
