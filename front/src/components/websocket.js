@@ -12,18 +12,12 @@ import {
   updateOrder,
 } from "../redux/actions/orders";
 import SheetUpload from "./SheetUpload";
-import { userLogout } from "../redux/actions/user";
-import { useHistory } from "react-router-dom";
+
 const WebSocket = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { orders } = useSelector((state) => state.orders);
   const { role, id } = useSelector((state) => state.user.user);
 
-  const setLogout = () => {
-    dispatch(userLogout());
-    history.push("/splash");
-  };
   const handler = (orderId) => {
     dispatch(fetchPickOrder(orderId));
   };
@@ -52,9 +46,6 @@ const WebSocket = () => {
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={setLogout}>
-        Logout
-      </Button>
       <SheetUpload />
       {orders.length ? (
         <div style={{ height: 800, width: "100%" }}>
