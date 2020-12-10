@@ -67,7 +67,6 @@ export default () => {
             }),
             products: [
               {
-
                 sku: order.ID_SKU,
                 quantity: order.Quantity_SKU,
                 name: order["SKU Name"],
@@ -111,7 +110,11 @@ export default () => {
   ];
   return (
     <>
-      <IconButton id="add" onClick={handleClick} style={{ float: "right", position: "fixed" }}>
+      <IconButton
+        id="add"
+        onClick={handleClick}
+        style={{ float: "right", position: "fixed", bottom: "0" }}
+      >
         <AddCircleIcon style={{ fontSize: 70, color: "#6f20f0" }} />
       </IconButton>
       <input

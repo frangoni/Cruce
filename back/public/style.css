@@ -94,11 +94,7 @@ a {
   height: 50%;
   width: 75%;
   margin: 10% auto 2%;
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.42198886390493695) 0%,
-    rgba(110, 49, 181, 1) 93%
-  );
+  background-color: white;
 }
 
 .modalButton {
