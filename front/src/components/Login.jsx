@@ -96,7 +96,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (statusLogin === 200) {
-    user.role === "Admin" ? history.push("/admin") : history.push("/socket")
+      user.role === "Admin" ? history.push("/admin") : history.push("/ordenes")
     }
   }, [statusLogin]);
 
