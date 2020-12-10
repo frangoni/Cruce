@@ -46,13 +46,12 @@ const WebSocket = () => {
 
   return (
     <>
-
       {orders.length ? (
         <div style={{ height: 800, width: "100%" }}>
           <OrdersTable orders={orders} handler={handler} />
         </div>
       ) : null}
-      <SheetUpload />
+      {role === "Empresa" ? <SheetUpload /> : null}
     </>
   );
 };
