@@ -8,6 +8,8 @@ import Splash from "./components/splash";
 import WebSocket from "./components/websocket";
 import SingleOrder from "./components/SingleOrder";
 import MyOrders from "./components/MyOrders"
+import Cadeterias from './components/cadeterias'
+
 import { useSelector } from "react-redux";
 
 import SideBar from "./components/SideBar"
@@ -32,6 +34,7 @@ export default function Main() {
       <Route path="/ordenes" render={() => (<SideBar title="Ordenes Activas" ><WebSocket /></SideBar>)} />
       <Route path="/misordenes" render={() => (<SideBar title="Mis Ordenes"><MyOrders /></SideBar>)} />
       <Route path="/orden/:id" render={({ match }) => (<SideBar title="Orden"><SingleOrder match={match} /></SideBar>)} />
+      <Route path="/cadeterias" render={({ match }) => (<SideBar title="Orden"><Cadeterias match={match} /></SideBar>)} />
       {user ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
     </Switch>
     </>

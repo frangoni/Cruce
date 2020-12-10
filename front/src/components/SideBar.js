@@ -52,13 +52,13 @@ export default function SideBar(props) {
   );
   useEffect(() => {
     dispatch(fetchEmpresas());
-    return () => {};
+    return () => { };
   }, []);
 
   const cadetes = useSelector((state) => state.users.cadetes);
   useEffect(() => {
     dispatch(fetchCadetes());
-    return () => {};
+    return () => { };
   }, []);
 
   const [users, setUsers] = useState(cadetes);
@@ -80,7 +80,7 @@ export default function SideBar(props) {
     } else if (selected === "tiendas") {
       setUsers(empresas);
     }
-    return () => {};
+    return () => { };
   }, [cadetes, empresas]);
 
   const handleDrawerOpen = () => {
@@ -135,8 +135,8 @@ export default function SideBar(props) {
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-              <ChevronLeftIcon />
-            )}
+                <ChevronLeftIcon />
+              )}
             <ListItemText primary={"Cruce"} />
           </IconButton>
         </div>
@@ -151,7 +151,7 @@ export default function SideBar(props) {
               onClick={() => handlerSelected("cadetes")}
             >
               <ListItemIcon>
-                <MotorcycleIcon />{" "}
+                <MotorcycleIcon />
               </ListItemIcon>
               <ListItemText primary={"Cadetes"} />
             </ListItem>
@@ -162,49 +162,51 @@ export default function SideBar(props) {
               onClick={() => handlerSelected("tiendas")}
             >
               <ListItemIcon>
-                <ApartmentIcon />{" "}
+                <ApartmentIcon />
               </ListItemIcon>
               <ListItemText primary={"Tiendas"} />
             </ListItem>
           </List>
         ) : (
-          <List>
-            <Link style={{ textDecoration: "none" }} to="/misordenes">
-              {" "}
-              <ListItem button key={"orden"}>
-                <ListItemIcon>
-                  {" "}
-                  <LibraryAddCheckIcon style={{ color: "green" }} />{" "}
-                </ListItemIcon>
-                <ListItemText primary={"Mis Ordenes"} />
-              </ListItem>
-            </Link>
-            <Link style={{ textDecoration: "none" }} to="/ordenes">
-              {" "}
-              <ListItem button key={"ordenes"}>
-                <ListItemIcon>
-                  {" "}
-                  <LibraryAddIcon style={{ color: "blue" }} />{" "}
-                </ListItemIcon>
-                <ListItemText primary={"Ordenes Activas"} />
-              </ListItem>
-            </Link>
-            <ListItem button key={"perfil"}>
-              <ListItemIcon>
-                {" "}
-                <AccountBoxIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary={"Mi perfil"} />
-            </ListItem>{" "}
-          </List>
-        )}
+            <List>
+              <Link style={{ textDecoration: "none" }} to="/misordenes">
+
+                <ListItem button key={"orden"}>
+                  <ListItemIcon>
+
+                    <LibraryAddCheckIcon style={{ color: "green" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Mis Ordenes"} />
+                </ListItem>
+              </Link>
+              <Link style={{ textDecoration: "none" }} to="/ordenes">
+
+                <ListItem button key={"ordenes"}>
+                  <ListItemIcon>
+
+                    <LibraryAddIcon style={{ color: "blue" }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Ordenes Activas"} />
+                </ListItem>
+              </Link>
+              <Link style={{ textDecoration: "none" }} to="/cadeterias">
+                <ListItem button key={"perfil"}>
+                  <ListItemIcon>
+
+                    <AccountBoxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Mi perfil"} />
+                </ListItem>
+              </Link>
+            </List>
+          )}
         <Divider />
 
         <Divider />
         <ListItem button key={"Salir"} onClick={setLogout}>
           <ListItemIcon>
-            {" "}
-            <PowerSettingsNewIcon color="error" />{" "}
+
+            <PowerSettingsNewIcon color="error" />
           </ListItemIcon>
           <ListItemText primary={"Salir"} />
         </ListItem>

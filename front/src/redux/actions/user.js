@@ -46,7 +46,6 @@ export const setError = (error) => {
 
 export const fetchRegister = (data) => (dispatch) => {
   dispatch(userRegisterAnimation(true, null));
-  console.log("data", data);
   axios
     .post("/api/user/register", data)
     .then((res) => {
@@ -65,7 +64,6 @@ export const fetchLogin = (data) => (dispatch) => {
   axios
     .post("/api/user/login", data)
     .then((res) => {
-      console.log("res", res.data.user);
       dispatch(userLogin(res.data.user, res.data.token));
       dispatch(userLoginAnimation(false, res.status));
     })
