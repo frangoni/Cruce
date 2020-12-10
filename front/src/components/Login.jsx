@@ -55,12 +55,13 @@ export default function SignIn() {
   const userPassword = useInput("password");
   const [errorLoginFront, setErrorLoginFront] = useState({});
 
-  let history = useHistory();
-  let statusLogin = useSelector((state) => state.animations.statusLogin);
-  let isLoadingLogin = useSelector((state) => state.animations.isLoadingLogin);
-  let errorBack = useSelector((state) => state.user.errorBack);
+  const history = useHistory();
+  const statusLogin = useSelector((state) => state.animations.statusLogin);
+  const isLoadingLogin = useSelector((state) => state.animations.isLoadingLogin);
+  const errorBack = useSelector((state) => state.user.errorBack);
+  const user = useSelector((state) => state.user.user);
 
-  let classInput = {
+  const classInput = {
     email: "",
     password: "",
   };
@@ -95,7 +96,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (statusLogin === 200) {
-      history.push("/");
+      user.role === "Admin" ? history.push("/admin") : history.push("/ordenes")
     }
   }, [statusLogin]);
 
@@ -107,7 +108,7 @@ export default function SignIn() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Iniciar Sesión
         </Typography>
         {isLoadingLogin ? (
           <CircularProgress style={{ margin: "25px auto" }} />
@@ -132,7 +133,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email"
             name="email"
             autoComplete="email"
             autoFocus
@@ -145,7 +146,7 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Contraseña"
             type="password"
             id="password"
             autoComplete="current-password"
@@ -159,12 +160,12 @@ export default function SignIn() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Enviar
           </Button>
           <Grid container>
             <Grid item>
               <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+                {"¿No tiene una cuenta? Regístrese"}
               </Link>
             </Grid>
           </Grid>

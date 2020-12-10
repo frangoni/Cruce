@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const privateKey = "clavesecreta1234";
 const User = require("../Models/User");
+const Cadeteria = require("../Models/Cadeteria");
 
 const auth = async (req, res, next) => {
   let idToken;
@@ -16,13 +17,18 @@ const auth = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(idToken, privateKey);
-    //TODO  cambiar el obj user por los fields necesarios      
+    //TODO  cambiar el obj user por los fields necesarios
     //const {name, id, role} = await User.findOne({ where: { email: decoded.user } })
     //if (id) req.user = {name  id :user. name}
-    const user = await User.findOne({ where: { email: decoded.user } })
-    if (user) req.user = user
+    const user = await User.findOne({
+      where: { email: decoded.user },
+      include: { all: true },
+    });
+    if (user) req.user = user;
     return next();
+  } catch (e) {
+    console.log(e);
+    return next(e);
   }
-  catch (e) { return next() }
-}
+};
 module.exports = auth;

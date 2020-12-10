@@ -18,9 +18,6 @@ User.init(
       type: DataTypes.STRING,
       // allowNull: false,
     },
-    company: {
-      type: DataTypes.STRING,
-    },
     email: {
       type: DataTypes.STRING,
       unique: true,
@@ -43,6 +40,19 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    dni: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      unique: true,
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    licensePlate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   { sequelize: db, modelName: "user" }
 );
@@ -60,6 +70,6 @@ User.beforeCreate((user) => {
 
 User.prototype.hash = function (password) {
   return hash(password, this.salt);
-}
+};
 
 module.exports = User;

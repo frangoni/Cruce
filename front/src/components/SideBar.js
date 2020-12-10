@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from "react-router-dom"
 import { useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -21,13 +22,17 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import LibraryAddCheckIcon from '@material-ui/icons/LibraryAddCheck';
+import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 //Iconos de la barra lateral
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import MotorcycleIcon from '@material-ui/icons/Motorcycle';
 
 import { useStyles } from '../style/sidebar'
 
-import Panel from "./admin/panel"
+
 
 export default function SideBar(props) {
     const classes = useStyles();
@@ -36,6 +41,7 @@ export default function SideBar(props) {
     const dispatch = useDispatch();
 
     const empresas = useSelector(state => state.users.empresas)
+    const isAdmin = useSelector(state => state.user.user.role === "Admin" ? true : false)
     useEffect(() => {
         dispatch(fetchEmpresas())
         return () => { }
@@ -56,8 +62,8 @@ export default function SideBar(props) {
             setSelected("cadetes")
             setUsers(cadetes)
         }
-        else if (selected === "empresas") {
-            setSelected("empresas")
+        else if (selected === "tiendas") {
+            setSelected("tiendas")
             setUsers(empresas)
         }
     }
@@ -66,7 +72,7 @@ export default function SideBar(props) {
         if (selected === "cadetes") {
             setUsers(cadetes)
         }
-        else if (selected === "empresas") {
+        else if (selected === "tiendas") {
             setUsers(empresas)
         }
         return () => { }
@@ -102,8 +108,8 @@ export default function SideBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        Panel de Administrador
-          </Typography>
+                        {props.title}
+                    </Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -118,27 +124,56 @@ export default function SideBar(props) {
                         [classes.drawerClose]: !open,
                     }),
                 }}
+
             >
                 <div className={classes.toolbar}>
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        <ListItemText primary={"Cruce"} />
                     </IconButton>
                 </div>
                 <Divider />
-                <List>
-                    <ListItem button key={"Cadetes"}>
-                        <ListItemIcon><MotorcycleIcon onClick={() => handlerSelected("cadetes")} /> </ListItemIcon>
+
+                {isAdmin ? <List>
+                    <ListItemText primary={"Administrar usuarios"} />
+                    <ListItem button key={"Cadetes"} onClick={() => handlerSelected("cadetes")}>
+                        <ListItemIcon><MotorcycleIcon /> </ListItemIcon>
                         <ListItemText primary={"Cadetes"} />
                     </ListItem>
 
-                    <ListItem button key={"Empresas"}>
-                        <ListItemIcon><ApartmentIcon onClick={() => handlerSelected("empresas")} /> </ListItemIcon>
-                        <ListItemText primary={"Empresas"} />
+                    <ListItem button key={"Tiendas"} onClick={() => handlerSelected("tiendas")} >
+                        <ListItemIcon><ApartmentIcon /> </ListItemIcon>
+                        <ListItemText primary={"Tiendas"} />
                     </ListItem>
+                </List> :
+                    <List>
+                        <Link style={{ textDecoration: 'none' }} to="/misordenes" > <ListItem button key={"orden"}>
+                            <ListItemIcon> <LibraryAddCheckIcon style={{ color: "green" }} /> </ListItemIcon>
+                            <ListItemText primary={"Mis Ordenes"} />
+                        </ListItem>
+                        </Link>
 
-                </List>
+                        <Link style={{ textDecoration: 'none' }} to="/ordenes" > <ListItem button key={"ordenes"}>
+                            <ListItemIcon> <LibraryAddIcon style={{ color: "blue" }} /> </ListItemIcon>
+                            <ListItemText primary={"Ordenes Activas"} />
+                        </ListItem>
+                        </Link>
+
+
+                        <ListItem button key={"perfil"}>
+                            <ListItemIcon> <AccountBoxIcon /> </ListItemIcon>
+                            <ListItemText primary={"Mi perfil"} />
+                        </ListItem> </List>}
                 <Divider />
+
+
+                <Divider />
+                <ListItem button key={"Salir"}>
+                    <ListItemIcon> <PowerSettingsNewIcon color="error" /> </ListItemIcon>
+                    <ListItemText primary={"Salir"} />
+                </ListItem>
             </Drawer>
+
             <main className={classes.content}>
                 <div className={classes.toolbar} />
 

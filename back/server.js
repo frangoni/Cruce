@@ -1,10 +1,10 @@
 const express = require("express");
-const app = express();
+const { server, app } = require("./io");
+
 const volleyball = require("volleyball");
 const path = require("path");
-const db = require("./api/db/index");
+const db = require("./api/Models/index");
 const routes = require("./api/Routes/index");
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////MIDDLEWARES
 app.use(volleyball);
 app.use(express.json());
@@ -20,7 +20,7 @@ app.get("/*", (req, res) => {
 });
 
 db.sync({ force: false }).then(() => {
-  app.listen(8000, (req, res) => {
+  server.listen(8000, () => {
     console.log("SERVER EN PUERTO 8000");
   });
 });
