@@ -48,7 +48,7 @@ const OrdersTable = ({ orders, handler }) => {
                     <TableCell align="center">{order.client.email}</TableCell>
                     <TableCell align="center">{order.state}</TableCell>
                     <TableCell align="center">
-                      {pathname === "/socket" && role === "Cadete" ? <IconButton
+                      {pathname === "/ordenes" && role === "Cadete" ? <IconButton
                         onClick={() => handler(order.id)}
                         aria-label="delete"
                         className={classes.margin}
@@ -56,7 +56,7 @@ const OrdersTable = ({ orders, handler }) => {
                       >
                         <CheckIcon fontSize="inherit" />
                       </IconButton> : null}
-                      <Link to={`/order/${order.id}`}>
+                      <Link to={`/orden/${order.id}`}>
                         <IconButton size="medium">
                           <VisibilityOutlinedIcon fontSize="inherit" />
                         </IconButton>
