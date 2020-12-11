@@ -29,6 +29,7 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 //Iconos de la barra lateral
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import MotorcycleIcon from "@material-ui/icons/Motorcycle";
+import StoreIcon from '@material-ui/icons/Store';
 
 import { useStyles } from "../style/sidebar";
 import { userLogout } from "../redux/actions/user";
@@ -145,16 +146,31 @@ export default function SideBar(props) {
         {isAdmin ? (
           <List>
             <ListItemText primary={"Administrar usuarios"} />
+            
+
+
+            <ListItem
+              button
+              key={"Cadeterias"}
+              /* onClick={() => handlerSelected("tiendas")} */
+            >
+              <ListItemIcon>
+                <StoreIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Cadeterias"} />
+            </ListItem>
+
             <ListItem
               button
               key={"Cadetes"}
               onClick={() => handlerSelected("cadetes")}
             >
               <ListItemIcon>
-                <MotorcycleIcon />{" "}
+                <MotorcycleIcon />
               </ListItemIcon>
               <ListItemText primary={"Cadetes"} />
             </ListItem>
+
 
             <ListItem
               button
@@ -162,10 +178,12 @@ export default function SideBar(props) {
               onClick={() => handlerSelected("tiendas")}
             >
               <ListItemIcon>
-                <ApartmentIcon />{" "}
+                <ApartmentIcon />
               </ListItemIcon>
               <ListItemText primary={"Tiendas"} />
             </ListItem>
+
+
           </List>
         ) : (
           <List>

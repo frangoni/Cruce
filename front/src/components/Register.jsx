@@ -29,7 +29,7 @@ import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
 
-import { fetchCadeterias } from "../redux/actions/cadeteria";
+import { fetchAcceptedCadeterias, createCadeteria } from "../redux/actions/cadeteria";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -102,11 +102,12 @@ export default function SignUp() {
   const userInput = useInput("fullName");
   const userEmail = useInput("email");
   const userPassword = useInput("password");
-  const userCompany = useInput("company");
+  /* const userCompany = useInput("company"); */
   const userAddress = useInput("address");
   const userDni = useInput("dni");
   const userLicensePlate = useInput("licensePlate");
   const userCadeteria = useInput("cadeteria");
+  const userNewCadeteria = useInput('newCadeteria')
 
   const [moto, setMoto] = useState({
     checkedA: false,
@@ -117,6 +118,8 @@ export default function SignUp() {
   const handleRole = (event, role) => {
     setRole(role);
   };
+  
+  const [selectCadeteria, setSelectCadeteria] = useState("");
 
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
 
@@ -124,10 +127,10 @@ export default function SignUp() {
     name: "",
     email: "",
     password: "",
-    company: "",
+  /*   company: "", */
     address: "",
     dni: "",
-    cadeteria: "",
+    cadeteria: ""
   };
 
   const handleSwitchChange = (event) => {
@@ -137,7 +140,7 @@ export default function SignUp() {
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
-  errorRegisterFront.company ? (classInput.company = classes.root) : null;
+  /* errorRegisterFront.company ? (classInput.company = classes.root) : null; */
   errorRegisterFront.address ? (classInput.address = classes.root) : null;
   errorRegisterFront.dni ? (classInput.dni = classes.root) : null;
 
@@ -150,12 +153,17 @@ export default function SignUp() {
     (state) => state.animations.statusRegister
   );
   const errorBack = useSelector((state) => state.user.errorBack);
-  const cadeterias = useSelector((state) => state.cadeterias.cadeterias);
+  const cadeterias = useSelector((state) => state.cadeterias.acceptedCadeterias);
 
   const history = useHistory();
 
+  const handleCadeteriaChange = (e) => {
+    const event = e.target.value;
+    setSelectCadeteria(event);
+  };
+
   useEffect(() => {
-    dispatch(fetchCadeterias());
+    dispatch(fetchAcceptedCadeterias());
   }, []);
 
   useEffect(() => {
@@ -174,7 +182,7 @@ export default function SignUp() {
     userInput.value,
     userEmail.value,
     userPassword.value,
-    userCompany.value,
+    /* userCompany.value, */
     userAddress.value,
     userDni.value,
     userLicensePlate.value,
@@ -190,37 +198,31 @@ export default function SignUp() {
     }
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
-    if (userCompany.value.length == 0) error = { ...error, company: true };
+    /* if (userCompany.value.length == 0 && role === "Empresa") error = { ...error, company: true }; */
     if (userAddress.value.length == 0 && role === "Empresa")
       error = { ...error, address: true };
     if (userDni.value.length == 0 && role === "Cadete")
       error = { ...error, dni: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
-    console.log("OBJETO", {
-      name: userInput.value,
-      email: userEmail.value,
-      password: userPassword.value,
-      company: userCompany.value,
-      role,
-      address: userAddress.value,
-      dni: userDni.value,
-      licensePlate: userLicensePlate.value,
-    });
+
     if (Object.keys(error).length == 0) {
       dispatch(
         fetchRegister({
           name: userInput.value,
           email: userEmail.value,
           password: userPassword.value,
-          company: userCompany.value,
+         /*  company: userCompany.value, */
           role,
           address: userAddress.value,
           dni: userDni.value || null,
           licensePlate: userLicensePlate.value,
-          cadeteria: userCadeteria.value,
+          cadeteria: userNewCadeteria.value === null ? userCadeteria.value : userNewCadeteria.value,
         })
-      );
+      )
+/*       if (userNewCadeteria.value != '') {
+        dispatch((userNewCadeteria.value))
+      } */
     }
   };
 
@@ -327,7 +329,7 @@ export default function SignUp() {
                     {...userAddress}
                   />
                 </Grid>
-                <Grid item xs={12}>
+               {/*  <Grid item xs={12}>
                   <TextField
                     className={classInput.company}
                     variant="outlined"
@@ -339,7 +341,7 @@ export default function SignUp() {
                     autoComplete="company"
                     {...userCompany}
                   />
-                </Grid>
+                </Grid> */}
               </>
             ) : (
               <React.Fragment>
@@ -358,16 +360,18 @@ export default function SignUp() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl className={classes.margin}>
+                  <FormControl
+                    className={classes.margin}
+                    onChange={handleCadeteriaChange}
+                  >
                     <NativeSelect
                       id="demo-customized-select-native"
                       input={<BootstrapInput />}
                       {...userCadeteria}
-                      >
-                      
+                    >
                       <option value="" disabled>
-                      Seleccione su cadetería:
-                      </option> 
+                        Seleccione su cadetería:
+                      </option>
                       {cadeterias.data.length > 0 &&
                         cadeterias.data.map((cadeteria) => {
                           return (
@@ -378,24 +382,27 @@ export default function SignUp() {
                             </>
                           );
                         })}
+                      <option value="Otra">Otra</option>
                     </NativeSelect>
                   </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <p className="parrafo">
-                    Si su cadetería no se encuentra en la lista previa,
-                    regístrela aquí.
-                  </p>
-
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    id="cadeteria"
-                    autoComplete="Cadeteria"
-                    {...userCadeteria}
-                  />
-                </Grid>
+                  </Grid>
+                  {
+                    selectCadeteria === 'Otra' ? 
+                    <Grid item xs={12}>
+                    <p className="parrafo">
+                      Si su cadetería no se encuentra en la lista previa,
+                      regístrela aquí.
+                    </p>
+  
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      id="cadeteria"
+                      autoComplete="Cadeteria"
+                      {...userNewCadeteria}
+                    />
+                  </Grid> : null
+                  }
 
                 <Grid
                   container
