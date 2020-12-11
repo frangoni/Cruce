@@ -53,7 +53,6 @@ const getAllOrdes = async (req, res, next) => {
           : { empresaId: id },
       raw: true,
     });
-    console.log("orders", orders.length);
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),
@@ -79,6 +78,7 @@ const getSingleOrder = (req, res, next) => {
 const singleOrderUpdate = (req, res, next) => {
   const id = req.params.id;
   const state = req.body.state;
+  const userId = req.body.userId;
 
   function date(state) {
     switch (state) {
@@ -95,17 +95,25 @@ const singleOrderUpdate = (req, res, next) => {
         return { state };
     }
   }
-
-  Order.update(date(state), {
-    where: { orderId: id },
-  }).then(() => {
-    Order.findOne({
-      where: { orderId: id },
-      include: [{ model: User, as: "empresa" }],
-    }).then((orden) => {
-      res.send(orden);
+  console.log("userId", userId);
+  User.findByPk(userId)
+    .then(async (user) => {
+      return await user.getCadeteria({ raw: true });
+    })
+    .then((cadeterias) => {
+      Order.update(date(state), {
+        where: { orderId: id },
+        individualHooks: true,
+        cadeterias,
+      }).then(() => {
+        Order.findOne({
+          where: { orderId: id },
+          include: [{ model: User, as: "empresa" }],
+        }).then((orden) => {
+          res.send(orden);
+        });
+      });
     });
-  });
 };
 
 const getMyOrdes = async (req, res, next) => {

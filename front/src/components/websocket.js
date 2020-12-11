@@ -34,6 +34,7 @@ const WebSocket = () => {
     });
 
     socket.on("dbModifications", (data) => {
+      console.log("estoy escuchando dbModifications");
       const order = JSON.parse(data);
       if (role === "Cadete") dispatch(filterOrders(order.orderId));
       else if (role === "Empresa") dispatch(updateOrder(order));
