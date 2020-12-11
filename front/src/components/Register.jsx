@@ -13,19 +13,23 @@ import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
+
 import FormGroup from "@material-ui/core/FormGroup";
 import Switch from "@material-ui/core/Switch";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
-import FormatAlignCenterIcon from "@material-ui/icons/FormatAlignCenter";
-import FormatAlignRightIcon from "@material-ui/icons/FormatAlignRight";
-import FormatAlignJustifyIcon from "@material-ui/icons/FormatAlignJustify";
+import InputLabel from "@material-ui/core/InputLabel";
+
 import ToggleButton from "@material-ui/core/ToggleButton";
 import ToggleButtonGroup from "@material-ui/core/ToggleButtonGroup";
+
+import FormControl from "@material-ui/core/FormControl";
+
+import NativeSelect from "@material-ui/core/NativeSelect";
+import InputBase from "@material-ui/core/InputBase";
+
+import { fetchCadeterias } from "../redux/actions/cadeteria";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -53,7 +57,45 @@ const useStyles = makeStyles((theme) => ({
       color: "red",
     },
   },
+  margin: {
+    width: "100%",
+  },
 }));
+
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    "label + &": {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}))(InputBase);
 
 export default function SignUp() {
   const classes = useStyles();
@@ -64,6 +106,7 @@ export default function SignUp() {
   const userAddress = useInput("address");
   const userDni = useInput("dni");
   const userLicensePlate = useInput("licensePlate");
+  const userCadeteria = useInput("cadeteria");
 
   const [moto, setMoto] = useState({
     checkedA: false,
@@ -84,11 +127,11 @@ export default function SignUp() {
     company: "",
     address: "",
     dni: "",
+    cadeteria: "",
   };
 
   const handleSwitchChange = (event) => {
     setMoto({ ...moto, [event.target.name]: event.target.checked });
-    console.log("moto", moto);
   };
 
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
@@ -103,16 +146,23 @@ export default function SignUp() {
   const isLoadingRegister = useSelector(
     (state) => state.animations.isLoadingRegister
   );
-  const statusRegister = useSelector((state) => state.animations.statusRegister);
+  const statusRegister = useSelector(
+    (state) => state.animations.statusRegister
+  );
   const errorBack = useSelector((state) => state.user.errorBack);
+  const cadeterias = useSelector((state) => state.cadeterias.cadeterias);
 
   const history = useHistory();
 
   useEffect(() => {
+    dispatch(fetchCadeterias());
+  }, []);
+
+  useEffect(() => {
     if (statusRegister === 201) {
       setTimeout(() => {
-        history.push("/splash")
-      }, 5000)
+        history.push("/splash");
+      }, 5000);
     }
   }, [statusRegister]);
 
@@ -147,7 +197,7 @@ export default function SignUp() {
       error = { ...error, dni: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
-    console.log('OBJETO', {
+    console.log("OBJETO", {
       name: userInput.value,
       email: userEmail.value,
       password: userPassword.value,
@@ -155,8 +205,8 @@ export default function SignUp() {
       role,
       address: userAddress.value,
       dni: userDni.value,
-      licensePlate: userLicensePlate.value
-    })
+      licensePlate: userLicensePlate.value,
+    });
     if (Object.keys(error).length == 0) {
       dispatch(
         fetchRegister({
@@ -167,7 +217,8 @@ export default function SignUp() {
           role,
           address: userAddress.value,
           dni: userDni.value || null,
-          licensePlate: userLicensePlate.value
+          licensePlate: userLicensePlate.value,
+          cadeteria: userCadeteria.value,
         })
       );
     }
@@ -260,34 +311,36 @@ export default function SignUp() {
                 {...userPassword}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                className={classInput.company}
-                variant="outlined"
-                required
-                fullWidth
-                label="Empresa"
-                type="company"
-                id="company"
-                autoComplete="company"
-                {...userCompany}
-              />
-            </Grid>
 
             {role === "Empresa" ? (
-              <Grid item xs={12}>
-                <TextField
-                  className={classInput.address}
-                  variant="outlined"
-                  required
-                  fullWidth
-                  label="Direccion"
-                  type="address"
-                  id="address"
-                  autoComplete="address"
-                  {...userAddress}
-                />
-              </Grid>
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    className={classInput.address}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="Direccion"
+                    type="address"
+                    id="address"
+                    autoComplete="address"
+                    {...userAddress}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    className={classInput.company}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="Empresa"
+                    type="company"
+                    id="company"
+                    autoComplete="company"
+                    {...userCompany}
+                  />
+                </Grid>
+              </>
             ) : (
               <React.Fragment>
                 <Grid item xs={12}>
@@ -301,6 +354,46 @@ export default function SignUp() {
                     id="dni"
                     autoComplete="dni"
                     {...userDni}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <FormControl className={classes.margin}>
+                    <NativeSelect
+                      id="demo-customized-select-native"
+                      input={<BootstrapInput />}
+                      {...userCadeteria}
+                      >
+                      
+                      <option value="" disabled>
+                      Seleccione su cadetería:
+                      </option> 
+                      {cadeterias.data.length > 0 &&
+                        cadeterias.data.map((cadeteria) => {
+                          return (
+                            <>
+                              <option value={cadeteria.name}>
+                                {cadeteria.name}
+                              </option>
+                            </>
+                          );
+                        })}
+                    </NativeSelect>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <p className="parrafo">
+                    Si su cadetería no se encuentra en la lista previa,
+                    regístrela aquí.
+                  </p>
+
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    id="cadeteria"
+                    autoComplete="Cadeteria"
+                    {...userCadeteria}
                   />
                 </Grid>
 
@@ -360,7 +453,8 @@ export default function SignUp() {
           {statusRegister == 201 ? (
             <Grid container justify="flex-end">
               <Alert severity="info" style={{ margin: "25px auto" }}>
-                Se ha registrado correctamente. Aguarda a recibir un email de confirmación. Te esperamos!
+                Se ha registrado correctamente. Aguarda a recibir un email de
+                confirmación. Te esperamos!
               </Alert>
             </Grid>
           ) : null}

@@ -25,8 +25,19 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
+  
   try {
     const user = await User.create(req.body);
+    Cadeteria.findOne({
+      where: {
+      name: req.body.cadeteria
+      }
+    })
+      .then((cadeteria) => {
+      user.setCadeteria(cadeteria.dataValues.id)
+    })
+    
+
     /*const cadeteria = await Cadeteria.findOrCreate({
       where: { name: req.body.cadeteria },
     });
