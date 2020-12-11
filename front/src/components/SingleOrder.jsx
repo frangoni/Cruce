@@ -30,7 +30,9 @@ export default function SingleOrder({ match }) {
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
 
-    const socket = io.connect(window.location.origin, { forceNew: true });
+    const socket = io.connect(`${window.location.origin}`, {
+      query: { id: user.id },
+    });
     socket.on("dbModifications", (data) => {
       if (orderId == JSON.parse(data).orderId) {
         dispatch(updateSingleOrder(JSON.parse(data).state));
@@ -57,7 +59,7 @@ export default function SingleOrder({ match }) {
 
   const handleChange = (event) => {
     const name = event.target.value;
-    dispatch(orderStateUpdate(name, order.orderId));
+    dispatch(orderStateUpdate(name, order.orderId, user.id));
   };
 
   const estados = [
