@@ -20,6 +20,8 @@ import {
   fetchEmpresas,
 } from "../../redux/actions/users";
 
+import {fetchAcceptCadeteriaById, fetchCadeterias, deleteCadeteria} from '../../redux/actions/cadeteria'
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -29,18 +31,35 @@ const useStyles = makeStyles({
 export default function UsersTable({ users, showCheck }) {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+
   const handlerCheckClick = (id, role) => {
-    dispatch(fetchAcceptUserById(id, role));
-    dispatch(fetchCadetes());
-    dispatch(fetchEmpresas());
+    if (!role) {
+      console.log('estoy en el if')
+      dispatch(fetchAcceptCadeteriaById(id))
+      dispatch(fetchCadeterias())
+      
+    } else {
+      dispatch(fetchAcceptUserById(id, role));
+      dispatch(fetchCadetes());
+      dispatch(fetchEmpresas());
+    }
   };
 
-  const handlerDeleteClick = (id) => {
-    dispatch(deleteUser({ content: id }));
-    dispatch(fetchCadetes());
-    dispatch(fetchEmpresas());
+  const handlerDeleteClick = (id, role) => {
+    if (!role) {
+      console.log('estoy en el if')
+      dispatch(deleteCadeteria({ content: id }))
+      dispatch(fetchCadeterias())  
+    } else {
+      dispatch(deleteUser({ content: id }));
+      dispatch(fetchCadetes());
+      dispatch(fetchEmpresas());
+    }
   };
 
+  console.log('showcheck', showCheck)
+  
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="caption table">
@@ -66,10 +85,11 @@ export default function UsersTable({ users, showCheck }) {
                   aria-label="delete"
                   className={classes.margin}
                   size="medium"
+                  onClick={() => handlerDeleteClick(user.id, user.role)}
                 >
                   <DeleteIcon
                     fontSize="inherit"
-                    onClick={() => handlerDeleteClick(user.id)}
+                    
                   />
                 </IconButton>
                 {showCheck ? (

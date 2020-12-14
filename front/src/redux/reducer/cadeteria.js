@@ -1,7 +1,7 @@
-import { GET_ACCEPTED_CADETERIAS, GET_ALL_CADETERIAS } from "../constants";
+import {GET_ALL_CADETERIAS, UPDATE_CADETERIA, GET_ACCEPTED_CADETERIAS
+} from "../constants";
 
 const initialState = {
-  acceptedCadeterias: [],
   cadeterias: []
 };
 
@@ -10,8 +10,7 @@ export default (state = initialState, action) => {
     case GET_ACCEPTED_CADETERIAS:
       return { ...state, acceptedCadeterias: action.payload };
     case GET_ALL_CADETERIAS:
-      return {...state, cadeterias: action.payload}
-
+      return { ...state, cadeterias: action.payload }
     default:
       return state;
   }

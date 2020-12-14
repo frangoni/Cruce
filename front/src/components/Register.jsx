@@ -169,7 +169,7 @@ export default function SignUp() {
   useEffect(() => {
     if (statusRegister === 201) {
       setTimeout(() => {
-        history.push("/splash");
+        history.push("/inicio");
       }, 5000);
     }
   }, [statusRegister]);
