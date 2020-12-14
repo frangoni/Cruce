@@ -2,9 +2,9 @@ const Cadeteria = require("../Models/Cadeteria");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
 const { Op } = require("sequelize");
+
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
-
   if (user.role == "Empresa") {
     User.findByPk(user.id).then(async (user) => {
       const cadeterias = await user.getCadeteria({ raw: true });
@@ -25,7 +25,6 @@ const pickUp = async (req, res, next) => {
   const { orderId } = req.body;
   const { id } = req.user;
   const cadete = await User.findByPk(id);
-
   const order = await Order.findByPk(orderId);
   if (order.cadeteId) {
     res.send("Esta orden ya fue tomada!");

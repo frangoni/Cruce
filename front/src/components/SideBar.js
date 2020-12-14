@@ -3,19 +3,15 @@ import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-
 import clsx from "clsx";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCadetes, fetchEmpresas } from "../redux/actions/users";
-
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -29,7 +25,6 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 //Iconos de la barra lateral
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import MotorcycleIcon from "@material-ui/icons/Motorcycle";
-
 import { useStyles } from "../style/sidebar";
 import { userLogout } from "../redux/actions/user";
 import { useHistory } from "react-router-dom";
