@@ -2,6 +2,7 @@ const Cadeteria = require("../Models/Cadeteria");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
 const { Op } = require("sequelize");
+
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
 
@@ -53,9 +54,9 @@ const getAllOrdes = async (req, res, next) => {
         role == "Cadete"
           ? { state: "Pendiente", empresaId: id_tiendas }
           : {
-            empresaId: id,
-            state: { [Op.notIn]: ["Entregado", "Cancelado"] },
-          },
+              empresaId: id,
+              state: "Pendiente",
+            },
       raw: true,
     });
     const parsedOrders = orders.map((order) => ({
@@ -125,13 +126,26 @@ const getMyOrdes = async (req, res, next) => {
   const role = req.user.role;
   const page = req.params.page;
   const { fecha, estado } = req.query;
-  console.log("QUERY", req.query)
+  const parsedFecha = JSON.parse(fecha);
+  console.log(parsedFecha);
   try {
     const orders = await Order.findAndCountAll({
       where:
         role == "Empresa"
-          ? { empresaId: userId, state: ["Entregado", "Cancelado"] }
-          : { cadeteId: userId, state: estado },
+          ? {
+              empresaId: userId,
+              state: estado,
+              creationDate: {
+                [Op.between]: [parsedFecha.de, parsedFecha.hasta],
+              },
+            }
+          : {
+              cadeteId: userId,
+              state: estado,
+              creationDate: {
+                [Op.between]: [parsedFecha.de, parsedFecha.hasta],
+              },
+            },
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,
@@ -145,7 +159,6 @@ const getMyOrdes = async (req, res, next) => {
     }));
     res.status(200).send({ count: orders.count, results: parsedOrders });
   } catch (e) {
-    console.log(e);
     res.status(503).end();
   }
 };

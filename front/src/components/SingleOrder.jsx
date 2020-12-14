@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
 import RoomIcon from "@material-ui/icons/Room";
-import Confirmacion from "./Confirmacion"
+import Confirmacion from "./Confirmacion";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -28,13 +28,13 @@ export default function SingleOrder({ match }) {
   const dispatch = useDispatch();
   const order = useSelector((state) => state.orders.order);
   const user = useSelector((state) => state.user.user);
-  const [open, setOpen] = useState(false)
-  const [name, setName] = useState()
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState();
 
   const handleChange = (event) => {
     const name = event.target.value;
-    setName(name)
-    setOpen(true)
+    setName(name);
+    setOpen(true);
     //dispatch(orderStateUpdate(name, order.orderId, user.id));
   };
 
@@ -47,14 +47,14 @@ export default function SingleOrder({ match }) {
   const i = estados.indexOf(order.state);
 
   const accept = () => {
-    setOpen(false)
+    setOpen(false);
     dispatch(orderStateUpdate(name, order.orderId, user.id));
-  }
+  };
 
   const deny = () => {
-    setOpen(false)
-    setName(order.state)
-  }
+    setOpen(false);
+    setName(order.state);
+  };
 
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
@@ -78,20 +78,24 @@ export default function SingleOrder({ match }) {
     let shipping = 0;
     order.products.length > 0
       ? order.products.map((product) => {
-        discounts += Number(product.discountsTotals);
-        skuTotal += Number(product.skuValue);
-        shipping += Number(product.shippingValue);
-      })
+          discounts += Number(product.discountsTotals);
+          skuTotal += Number(product.skuValue);
+          shipping += Number(product.shippingValue);
+        })
       : null;
     return { discounts, skuTotal, shipping };
   };
-
 
   return (
     <>
       {order.id ? (
         <div>
-          <Confirmacion open={open} accept={accept} title={"Alerta!"} deny={deny} />
+          <Confirmacion
+            open={open}
+            accept={accept}
+            title={"Alerta!"}
+            deny={deny}
+          />
           <Paper elevation={5} className="singleOrderContainer">
             <p>{order.empresa.name}</p>
             <p>Pedido: {order.orderId}</p>
@@ -130,17 +134,19 @@ export default function SingleOrder({ match }) {
                     <NativeSelect value="" onChange={handleChange}>
                       <option value={estados[i]}>{estados[i]}</option>
                       {estados[i] == "Entregado" ||
-                        estados[i] == "Cancelado" ? null : (
-                          <>
-                            <option value={estados[i + 1]}>{estados[i + 1]}</option>
-                            <option value="Cancelado">Cancelado</option>
-                          </>
-                        )}
+                      estados[i] == "Cancelado" ? null : (
+                        <>
+                          <option value={estados[i + 1]}>
+                            {estados[i + 1]}
+                          </option>
+                          <option value="Cancelado">Cancelado</option>
+                        </>
+                      )}
                     </NativeSelect>
                   </FormControl>
                 ) : (
-                    <p>Estado: {order.state}</p>
-                  )}
+                  <p>Estado: {order.state}</p>
+                )}
 
                 <p>Id: {order.orderId}</p>
               </Paper>
@@ -152,7 +158,7 @@ export default function SingleOrder({ match }) {
                 <p>Costo de envio: ${factura().shipping}</p>
                 <p>
                   Total: $
-                {(
+                  {(
                     factura().skuTotal +
                     factura().discounts +
                     factura().shipping
@@ -179,7 +185,9 @@ export default function SingleOrder({ match }) {
                         </TableCell>
                         <TableCell align="right">{product.quantity}</TableCell>
                         <TableCell align="right">{product.skuValue}</TableCell>
-                        <TableCell align="right">{product.totalValue}</TableCell>
+                        <TableCell align="right">
+                          {product.totalValue}
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
