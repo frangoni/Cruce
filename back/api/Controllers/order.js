@@ -45,7 +45,7 @@ const getAllOrdes = async (req, res, next) => {
     const { role, id, cadeteria } = req.user;
     const id_tiendas = [];
     if (role == "Cadete") {
-      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true });
+      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true }); //cadeteria[0] porque es un array, que si sos cadete solo tiene un elemento
       tiendas_cadeterias.map((user) => id_tiendas.push(user.id));
     }
     const orders = await Order.findAll({
@@ -53,9 +53,9 @@ const getAllOrdes = async (req, res, next) => {
         role == "Cadete"
           ? { state: "Pendiente", empresaId: id_tiendas }
           : {
-              empresaId: id,
-              state: { [Op.notIn]: ["Entregado", "Cancelado"] },
-            },
+            empresaId: id,
+            state: { [Op.notIn]: ["Entregado", "Cancelado"] },
+          },
       raw: true,
     });
     const parsedOrders = orders.map((order) => ({
@@ -124,12 +124,14 @@ const getMyOrdes = async (req, res, next) => {
   const userId = req.user.id;
   const role = req.user.role;
   const page = req.params.page;
+  const { fecha, estado } = req.query;
+  console.log("QUERY", req.query)
   try {
     const orders = await Order.findAndCountAll({
       where:
         role == "Empresa"
           ? { empresaId: userId, state: ["Entregado", "Cancelado"] }
-          : { cadeteId: userId },
+          : { cadeteId: userId, state: estado },
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,
