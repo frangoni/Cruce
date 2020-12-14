@@ -4,8 +4,8 @@ const db = require("../Models/index");
 
 db.sync({ force: true }).then(async () => {
   const cadeterias = await Cadeteria.bulkCreate([
-    { name: "Avioneta veloz", accepted: true },
-    { name: "Camioneta veloz", accepted: true },
+    { name: "Avioneta veloz", accepted: false },
+    { name: "Camioneta veloz", accepted: false },
     { name: "Motoneta Veloz", accepted: true },
     { name: "Motoneta Agil", accepted: true },
     { name: "Motoneta Rapida", accepted: true },
