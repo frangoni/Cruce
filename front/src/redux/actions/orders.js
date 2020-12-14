@@ -6,6 +6,7 @@ import {
   FILTER_ORDERS,
   UPDATE_ORDER,
   UPDATE_SINGLE_ORDER,
+  PICKED_UP,
 } from "../constants";
 import axios from "axios";
 
@@ -52,6 +53,16 @@ const getMyOrders = function (orders) {
     payload: orders,
   };
 };
+const orderPickUp = function (mensaje) {
+  return {
+    type: PICKED_UP,
+    payload: mensaje,
+  };
+};
+
+export const deleteMessage = () => (dispatch) => {
+  dispatch(orderPickUp(""));
+};
 
 export const fetchPickOrder = (orderId) => (dispatch, state) => {
   const token = state().user.token;
@@ -60,7 +71,7 @@ export const fetchPickOrder = (orderId) => (dispatch, state) => {
     url: "/api/order/",
     headers: { Authorization: `Bearer ${token}` },
     data: { orderId },
-  });
+  }).then((res) => dispatch(orderPickUp(res.data)));
 };
 
 export const fetchMyOrders = (page) => (dispatch, state) => {
