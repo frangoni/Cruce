@@ -1,45 +1,64 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from "react-redux"
-import { fetchMyOrders } from "../redux/actions/orders"
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchMyOrders } from "../redux/actions/orders";
 import Button from "@material-ui/core/Button";
-import OrdersTable from './OrderTable'
+import OrdersTable from "./OrderTable";
+import { Link } from "react-router-dom";
 
 const MyOrders = () => {
-    const MAX_ORDERS_PER_PAGE = 10
-    const results = useSelector(state => state.orders.myOrders)
-    const dispatch = useDispatch()
-    const [page, setPage] = useState(0)
+  const MAX_ORDERS_PER_PAGE = 10;
+  const results = useSelector((state) => state.orders.myOrders);
+  const dispatch = useDispatch();
+  const [page, setPage] = useState(0);
 
-    useEffect(() => {
-        dispatch(fetchMyOrders(page))
-        return () => { }
-    }, [page])
+  useEffect(() => {
+    dispatch(fetchMyOrders(page));
+    return () => {};
+  }, [page]);
 
-    const handler = () => {
-        console.log("deja de hacer click en cualquier lado")
+  const handler = () => {
+    console.log("deja de hacer click en cualquier lado");
+  };
+  const handlerPage = (action) => {
+    switch (action) {
+      case "sub":
+        if (page) setPage((page) => page - 1);
+        break;
+      case "add":
+        if (page < Math.ceil(results.count / MAX_ORDERS_PER_PAGE) - 1)
+          setPage((page) => page + 1);
+        break;
     }
-    const handlerPage = action => {
-
-        console.log(Math.ceil(results.count / MAX_ORDERS_PER_PAGE))
-        console.log("count", results.count)
-        switch (action) {
-            case "sub":
-                if (page) setPage(page => page - 1)
-                break;
-            case "add": if (page < Math.ceil(results.count / MAX_ORDERS_PER_PAGE) - 1) setPage(page => page + 1)
-                break;
-        }
-
-    }
-
-    return (
-        <div>
-            <p>Mis ordenes</p>
-            {results.results ? < OrdersTable orders={results.results} handler={handler} /> : null}
-            <Button disabled={!page} onClick={() => handlerPage("sub")} >Anterior</Button> {page + 1} <Button disabled={!(page < Math.ceil(results.count / MAX_ORDERS_PER_PAGE) - 1)} onClick={() => handlerPage("add")}>Siguiente</Button>
-
-        </div>
-    )
-}
+  };
+  return (
+    <>
+      {results.results && results.results.length > 0 ? (
+        <>
+          <p>Mis ordenes</p>
+          <OrdersTable orders={results.results} handler={handler} />
+          <Button disabled={!page} onClick={() => handlerPage("sub")}>
+            Anterior
+          </Button>
+          {page + 1}
+          <Button
+            disabled={
+              !(page < Math.ceil(results.count / MAX_ORDERS_PER_PAGE) - 1)
+            }
+            onClick={() => handlerPage("add")}
+          >
+            Siguiente
+          </Button>
+        </>
+      ) : (
+        <>
+          <p>Sin ordenes activas!</p>
+          <Link to="/ordenes">
+            <Button>Asignar nuevas</Button>
+          </Link>
+        </>
+      )}
+    </>
+  );
+};
 
 export default MyOrders;

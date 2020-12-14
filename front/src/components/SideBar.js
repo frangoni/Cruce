@@ -180,7 +180,9 @@ export default function SideBar(props) {
                 <ListItemIcon>
                   <LibraryAddCheckIcon style={{ color: "green" }} />
                 </ListItemIcon>
-                <ListItemText primary={"Mis Ordenes"} />
+                <ListItemText
+                  primary={isTienda ? "Ordenes Finalizadas" : "Mis Ordenes"}
+                />
               </ListItem>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/ordenes">

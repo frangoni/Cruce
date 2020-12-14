@@ -1,7 +1,7 @@
 const Cadeteria = require("../Models/Cadeteria");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
-
+const { Op } = require("sequelize");
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
 
@@ -27,15 +27,17 @@ const pickUp = async (req, res, next) => {
   const cadete = await User.findByPk(id);
 
   const order = await Order.findByPk(orderId);
-  order.setCadete(cadete);
-  order.state = "Pendiente de retiro en sucursal";
-  order.assignedDate = Date.now();
-
-  const tienda = await order.getEmpresa({ include: Cadeteria });
-  const cadeterias = await tienda.getCadeteria({ raw: true });
-
-  order.save({ cadeterias });
-  res.send(order);
+  if (order.cadeteId) {
+    res.send("Esta orden ya fue tomada!");
+  } else {
+    order.setCadete(cadete);
+    order.state = "Pendiente de retiro en sucursal";
+    order.assignedDate = Date.now();
+    const tienda = await order.getEmpresa({ include: Cadeteria });
+    const cadeterias = await tienda.getCadeteria({ raw: true });
+    order.save({ cadeterias });
+    res.send("Te asignaste correctamente!");
+  }
 };
 
 const getAllOrdes = async (req, res, next) => {
@@ -50,7 +52,10 @@ const getAllOrdes = async (req, res, next) => {
       where:
         role == "Cadete"
           ? { state: "Pendiente", empresaId: id_tiendas }
-          : { empresaId: id },
+          : {
+              empresaId: id,
+              state: { [Op.notIn]: ["Entregado", "Cancelado"] },
+            },
       raw: true,
     });
     const parsedOrders = orders.map((order) => ({
@@ -95,7 +100,6 @@ const singleOrderUpdate = (req, res, next) => {
         return { state };
     }
   }
-  console.log("userId", userId);
   User.findByPk(userId)
     .then(async (user) => {
       return await user.getCadeteria({ raw: true });
@@ -117,11 +121,15 @@ const singleOrderUpdate = (req, res, next) => {
 };
 
 const getMyOrdes = async (req, res, next) => {
-  const cadeteId = req.user.id;
+  const userId = req.user.id;
+  const role = req.user.role;
   const page = req.params.page;
   try {
     const orders = await Order.findAndCountAll({
-      where: { cadeteId },
+      where:
+        role == "Empresa"
+          ? { empresaId: userId, state: ["Entregado", "Cancelado"] }
+          : { cadeteId: userId },
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,

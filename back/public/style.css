@@ -148,3 +148,14 @@ a {
     margin: 2% auto;
   }
 }
+
+#alertaPickUp {
+  position: fixed;
+  margin: 25vh 40vw;
+  text-align: center;
+  align-items: center;
+  background-color: cadetblue;
+  color: white;
+  padding: 30px;
+  border: 1px thin;
+}

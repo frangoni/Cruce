@@ -8,6 +8,9 @@ const Splash = () => {
       <div className="logo">
         <img className="logo2" src={"./cruce.svg"} />
       </div>
+      <div className="barco2">
+        <img src={"./barca.png"}></img>
+      </div>
       <div className="buttons">
         <Link className="boton" to="/ingreso">
           <Button variant="contained" color="primary">
@@ -19,9 +22,6 @@ const Splash = () => {
             Registrarse
           </Button>
         </Link>
-      </div>
-      <div className="barco2">
-        <img src={"./barca.png"}></img>
       </div>
     </div>
   );

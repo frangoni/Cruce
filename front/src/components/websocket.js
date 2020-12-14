@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import OrdersTable from "./OrderTable";
 import io from "socket.io-client";
-import Button from "@material-ui/core/Button";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -10,17 +9,30 @@ import {
   filterOrders,
   fetchPickOrder,
   updateOrder,
+  deleteMessage,
 } from "../redux/actions/orders";
 import SheetUpload from "./SheetUpload";
+import { Paper } from "@material-ui/core";
 
 const WebSocket = () => {
   const dispatch = useDispatch();
-  const { orders } = useSelector((state) => state.orders);
+  const { orders, message } = useSelector((state) => state.orders);
   const { role, id } = useSelector((state) => state.user.user);
+  const [display, setDisplay] = useState("none");
 
   const handler = (orderId) => {
     dispatch(fetchPickOrder(orderId));
   };
+
+  useEffect(() => {
+    if (message) {
+      setDisplay("flex");
+      setTimeout(() => {
+        setDisplay("none");
+        dispatch(deleteMessage());
+      }, 3000);
+    }
+  }, [message]);
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -28,13 +40,11 @@ const WebSocket = () => {
 
     socket.on("ordersCreated", (data) => {
       const orders = JSON.parse(data);
-      console.log("orders del bulkcreate", orders);
       if (role === "Cadete" || orders.empresa === id)
         dispatch(addOrders(orders.ordenes));
     });
 
     socket.on("dbModifications", (data) => {
-      console.log("estoy escuchando dbModifications");
       const order = JSON.parse(data);
       if (role === "Cadete") dispatch(filterOrders(order.orderId));
       else if (role === "Empresa") dispatch(updateOrder(order));
@@ -47,6 +57,9 @@ const WebSocket = () => {
 
   return (
     <>
+      <Paper elevation={15} style={{ display }} id="alertaPickUp">
+        <h3>{message}</h3>
+      </Paper>
       {orders.length ? (
         <div style={{ height: 800, width: "100%" }}>
           <OrdersTable orders={orders} handler={handler} />
