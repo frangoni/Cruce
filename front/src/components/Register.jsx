@@ -29,7 +29,10 @@ import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
 
-import { fetchAcceptedCadeterias, createCadeteria } from "../redux/actions/cadeteria";
+import {
+  fetchAcceptedCadeterias,
+  createCadeteria,
+} from "../redux/actions/cadeteria";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -107,7 +110,7 @@ export default function SignUp() {
   const userDni = useInput("dni");
   const userLicensePlate = useInput("licensePlate");
   const userCadeteria = useInput("cadeteria");
-  const userNewCadeteria = useInput('newCadeteria')
+  const userNewCadeteria = useInput("newCadeteria");
 
   const [moto, setMoto] = useState({
     checkedA: false,
@@ -118,7 +121,7 @@ export default function SignUp() {
   const handleRole = (event, role) => {
     setRole(role);
   };
-  
+
   const [selectCadeteria, setSelectCadeteria] = useState("");
 
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
@@ -127,10 +130,10 @@ export default function SignUp() {
     name: "",
     email: "",
     password: "",
-  /*   company: "", */
+    /*   company: "", */
     address: "",
     dni: "",
-    cadeteria: ""
+    cadeteria: "",
   };
 
   const handleSwitchChange = (event) => {
@@ -153,7 +156,9 @@ export default function SignUp() {
     (state) => state.animations.statusRegister
   );
   const errorBack = useSelector((state) => state.user.errorBack);
-  const cadeterias = useSelector((state) => state.cadeterias.acceptedCadeterias);
+  const cadeterias = useSelector(
+    (state) => state.cadeterias.acceptedCadeterias
+  );
 
   const history = useHistory();
 
@@ -170,6 +175,7 @@ export default function SignUp() {
     if (statusRegister === 201) {
       setTimeout(() => {
         history.push("/inicio");
+        //una vez hecho el push hay que pasar el status register a ""
       }, 5000);
     }
   }, [statusRegister]);
@@ -212,15 +218,18 @@ export default function SignUp() {
           name: userInput.value,
           email: userEmail.value,
           password: userPassword.value,
-         /*  company: userCompany.value, */
+          /*  company: userCompany.value, */
           role,
           address: userAddress.value,
           dni: userDni.value || null,
           licensePlate: userLicensePlate.value,
-          cadeteria: userNewCadeteria.value === null ? userCadeteria.value : userNewCadeteria.value,
+          cadeteria:
+            userNewCadeteria.value === null
+              ? userCadeteria.value
+              : userNewCadeteria.value,
         })
-      )
-/*       if (userNewCadeteria.value != '') {
+      );
+      /*       if (userNewCadeteria.value != '') {
         dispatch((userNewCadeteria.value))
       } */
     }
@@ -329,7 +338,7 @@ export default function SignUp() {
                     {...userAddress}
                   />
                 </Grid>
-               {/*  <Grid item xs={12}>
+                {/*  <Grid item xs={12}>
                   <TextField
                     className={classInput.company}
                     variant="outlined"
@@ -385,15 +394,14 @@ export default function SignUp() {
                       <option value="Otra">Otra</option>
                     </NativeSelect>
                   </FormControl>
-                  </Grid>
-                  {
-                    selectCadeteria === 'Otra' ? 
-                    <Grid item xs={12}>
+                </Grid>
+                {selectCadeteria === "Otra" ? (
+                  <Grid item xs={12}>
                     <p className="parrafo">
                       Si su cadetería no se encuentra en la lista previa,
                       regístrela aquí.
                     </p>
-  
+
                     <TextField
                       variant="outlined"
                       fullWidth
@@ -401,8 +409,8 @@ export default function SignUp() {
                       autoComplete="Cadeteria"
                       {...userNewCadeteria}
                     />
-                  </Grid> : null
-                  }
+                  </Grid>
+                ) : null}
 
                 <Grid
                   container

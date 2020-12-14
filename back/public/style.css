@@ -156,3 +156,9 @@ a {
 .parrafo {
   margin-bottom: 3%;
 }
+
+.aceptarPrimeroCadeteria strong {
+  color: red;
+  font-size: small;
+  width: 5px;
+}
