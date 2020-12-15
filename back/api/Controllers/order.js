@@ -127,7 +127,6 @@ const getMyOrdes = async (req, res, next) => {
   const page = req.params.page;
   const { fecha, estado } = req.query;
   const parsedFecha = JSON.parse(fecha);
-  console.log(parsedFecha);
   try {
     const orders = await Order.findAndCountAll({
       where:

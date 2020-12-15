@@ -76,7 +76,7 @@ export const fetchPickOrder = (orderId) => (dispatch, state) => {
 
 export const fetchMyOrders = (page, filter) => (dispatch, state) => {
   const token = state().user.token;
-  const query = queryGenerator(filter)
+  const query = queryGenerator(filter);
   axios
     .get(`/api/order/myorders/${page}${query}`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -124,17 +124,10 @@ export const orderStateUpdate = (estado, id, userId) => (dispatch) => {
   });
 };
 
-
-const queryGenerator = querys => {
-  // ?estado[]=Pendiente de retiro en sucursal&estado[]=Retirado&fecha=Json.str(filter.fecha)
-  // const filterTemplate = {
-  //   fecha: { de: 0, hasta: Date.now() },
-  //   estado: ["Pendiente de retiro en sucursal"]
-  // }
+const queryGenerator = (querys) => {
   const estado = querys.estado.reduce((acc, value) => {
-    return `${acc}estado[]=${value}&`
-  }, "?")
-  const result = `${estado}fecha=${JSON.stringify(querys.fecha)}`
-  console.log("array", result)
-  return result
-}
+    return `${acc}estado[]=${value}&`;
+  }, "?");
+  const result = `${estado}fecha=${JSON.stringify(querys.fecha)}`;
+  return result;
+};

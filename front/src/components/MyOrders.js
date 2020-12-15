@@ -69,6 +69,7 @@ const MyOrders = () => {
     setFromDate(e);
   };
   const handleDateHasta = (e) => {
+    e.setHours(23, 59, 59);
     setFilter((filter) => ({
       ...filter,
       fecha: { ...filter.fecha, hasta: e.getTime() },
@@ -89,19 +90,19 @@ const MyOrders = () => {
           name="Entregado"
           onChange={(e) => handleFilter(e)}
         />
-        Retirado
+        Retirado:
         <Switch
           defaultChecked
           name="Retirado"
           onChange={(e) => handleFilter(e)}
         />
-        Pendiente de retiro en sucursal
+        Pendiente de retiro en sucursal:
         <Switch
           defaultChecked
           name="Pendiente de retiro en sucursal"
           onChange={(e) => handleFilter(e)}
         />
-        Cancelado
+        Cancelado:
         <Switch
           defaultChecked
           name="Cancelado"
