@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
+import Alert from "@material-ui/lab/Alert";
 
 //Redux
 import { useDispatch } from "react-redux";
@@ -20,6 +21,12 @@ import {
   fetchEmpresas,
 } from "../../redux/actions/users";
 
+import {
+  fetchAcceptCadeteriaById,
+  fetchCadeterias,
+  deleteCadeteria,
+} from "../../redux/actions/cadeteria";
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -29,16 +36,27 @@ const useStyles = makeStyles({
 export default function UsersTable({ users, showCheck }) {
   const classes = useStyles();
   const dispatch = useDispatch();
+
   const handlerCheckClick = (id, role) => {
-    dispatch(fetchAcceptUserById(id, role));
-    dispatch(fetchCadetes());
+    if (!role) {
+      dispatch(fetchAcceptCadeteriaById(id));
+    } else {
+      dispatch(fetchAcceptUserById(id, role));
+    }
     dispatch(fetchEmpresas());
+    dispatch(fetchCadetes());
+    dispatch(fetchCadeterias());
   };
 
-  const handlerDeleteClick = (id) => {
-    dispatch(deleteUser({ content: id }));
-    dispatch(fetchCadetes());
+  const handlerDeleteClick = (id, role) => {
+    if (!role) {
+      dispatch(deleteCadeteria({ content: id }));
+    } else {
+      dispatch(deleteUser({ content: id }));
+    }
     dispatch(fetchEmpresas());
+    dispatch(fetchCadetes());
+    dispatch(fetchCadeterias());
   };
 
   return (
@@ -62,26 +80,34 @@ export default function UsersTable({ users, showCheck }) {
               <TableCell align="center">{user.email}</TableCell>
               <TableCell align="center">{user.company}</TableCell>
               <TableCell align="center">
-                <IconButton
-                  aria-label="delete"
-                  className={classes.margin}
-                  size="medium"
-                >
-                  <DeleteIcon
-                    fontSize="inherit"
-                    onClick={() => handlerDeleteClick(user.id)}
-                  />
-                </IconButton>
-                {showCheck ? (
-                  <IconButton
-                    onClick={() => handlerCheckClick(user.id, user.role)}
-                    aria-label="accept"
-                    className={classes.margin}
-                    size="medium"
-                  >
-                    <CheckIcon fontSize="inherit" />
-                  </IconButton>
-                ) : null}
+                {user.role == "Cadete" &&
+                user.cadeteria.length > 0 &&
+                user.cadeteria[0].accepted === false ? (
+                  <div className="aceptarPrimeroCadeteria">
+                    <strong>Aceptar primero la cadeteria</strong>
+                  </div>
+                ) : (
+                  <>
+                    <IconButton
+                      aria-label="delete"
+                      className={classes.margin}
+                      size="medium"
+                      onClick={() => handlerDeleteClick(user.id, user.role)}
+                    >
+                      <DeleteIcon fontSize="inherit" />
+                    </IconButton>
+                    {showCheck ? (
+                      <IconButton
+                        onClick={() => handlerCheckClick(user.id, user.role)}
+                        aria-label="accept"
+                        className={classes.margin}
+                        size="medium"
+                      >
+                        <CheckIcon fontSize="inherit" />
+                      </IconButton>
+                    ) : null}
+                  </>
+                )}
               </TableCell>
             </TableRow>
           ))}

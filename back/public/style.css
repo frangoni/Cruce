@@ -149,6 +149,16 @@ a {
   }
 }
 
+.parrafo {
+  margin-bottom: 3%;
+}
+
+.aceptarPrimeroCadeteria strong {
+  color: red;
+  font-size: small;
+  width: 5px;
+}
+
 #alertaPickUp {
   position: fixed;
   margin: 25vh 40vw;
