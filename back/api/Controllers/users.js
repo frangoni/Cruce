@@ -1,9 +1,14 @@
 const User = require("../Models/User");
 const nodemailer = require("nodemailer");
 const postEmail = require("../services/mail");
+const Cadeteria = require("../Models/Cadeteria");
+
 const getAllCadetes = async (req, res, next) => {
   try {
-    const users = await User.findAll({ where: { role: "Cadete" } });
+    const users = await User.findAll({
+      where: { role: "Cadete" },
+      include: [{ model: Cadeteria }],
+    });
     return res.send(users);
   } catch (e) {
     console.log(e);

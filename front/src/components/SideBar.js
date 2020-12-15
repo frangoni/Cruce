@@ -29,10 +29,13 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 //Iconos de la barra lateral
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import MotorcycleIcon from "@material-ui/icons/Motorcycle";
+import StoreIcon from "@material-ui/icons/Store";
 
 import { useStyles } from "../style/sidebar";
 import { userLogout } from "../redux/actions/user";
 import { useHistory } from "react-router-dom";
+
+import { fetchCadeterias } from "../redux/actions/cadeteria";
 
 export default function SideBar(props) {
   const classes = useStyles();
@@ -46,6 +49,8 @@ export default function SideBar(props) {
     history.push("/inicio");
   };
 
+  const cadeterias = useSelector((state) => state.cadeterias.cadeterias);
+
   const empresas = useSelector((state) => state.users.empresas);
   const isAdmin = useSelector((state) =>
     state.user.user.role === "Admin" ? true : false
@@ -57,14 +62,22 @@ export default function SideBar(props) {
 
   useEffect(() => {
     dispatch(fetchEmpresas());
+    dispatch(fetchCadetes());
+    dispatch(fetchCadeterias());
     return () => {};
   }, []);
 
   const cadetes = useSelector((state) => state.users.cadetes);
-  useEffect(() => {
+
+  /*  useEffect(() => {
     dispatch(fetchCadetes());
     return () => {};
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchCadeterias());
+    return () => {};
+  }, []); */
 
   const [users, setUsers] = useState(cadetes);
   const [selected, setSelected] = useState("cadetes");
@@ -76,6 +89,9 @@ export default function SideBar(props) {
     } else if (selected === "tiendas") {
       setSelected("tiendas");
       setUsers(empresas);
+    } else if (selected === "cadeterias") {
+      setSelected("cadeterias");
+      setUsers(cadeterias);
     }
   };
 
@@ -84,9 +100,11 @@ export default function SideBar(props) {
       setUsers(cadetes);
     } else if (selected === "tiendas") {
       setUsers(empresas);
+    } else if (selected === "cadeterias") {
+      setUsers(cadeterias);
     }
     return () => {};
-  }, [cadetes, empresas]);
+  }, [cadetes, empresas, cadeterias]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -151,6 +169,18 @@ export default function SideBar(props) {
         {isAdmin ? (
           <List>
             <ListItemText primary={"Administrar usuarios"} />
+
+            <ListItem
+              button
+              key={"Cadeterias"}
+              onClick={() => handlerSelected("cadeterias")}
+            >
+              <ListItemIcon>
+                <StoreIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Cadeterias"} />
+            </ListItem>
+
             <ListItem
               button
               key={"Cadetes"}
@@ -220,8 +250,6 @@ export default function SideBar(props) {
       <main className={classes.content}>
         <div className={classes.toolbar} />
 
-        {/* <Panel users={users} selected={selected} /> */}
-        {/* {props.children} */}
         {React.Children.map(props.children, (child) => {
           // checking isValidElement is the safe way and avoids a typescript error too
           if (React.isValidElement(child)) {
