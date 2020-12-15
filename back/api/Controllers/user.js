@@ -25,30 +25,26 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
-  console.log('req body', req.body)
+  console.log("req body", req.body);
   try {
     const user = await User.create(req.body);
     Cadeteria.findOrCreate({
       where: {
-      name: req.body.cadeteria
-      }
-    })
-      .then((cadeteria) => {
-      console.log('cadeteria', cadeteria)
-      user.setCadeteria(cadeteria[0].id)
-    })
-    
+        name: req.body.cadeteria,
+      },
+    }).then((cadeteria) => {
+      console.log("cadeteria", cadeteria);
+      user.setCadeteria(cadeteria[0].id);
+    });
+
     res.status(201).send(user);
   } catch (err) {
     res.status(400).send(err);
   }
 };
-
-
-
 const userData = (req, res, next) => {
-  if (req.user) return res.send(req.user);
-  res.status(401).send({ error: "token invalido" });
+  if (req.user) return res.status(200).send(req.user);
+  res.status(401).send({ error: "Token invalido" });
 };
 
 module.exports = { userValidation, userCreation, userData };
