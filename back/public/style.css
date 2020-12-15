@@ -94,11 +94,7 @@ a {
   height: 50%;
   width: 75%;
   margin: 10% auto 2%;
-  background: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.42198886390493695) 0%,
-    rgba(110, 49, 181, 1) 93%
-  );
+  background-color: white;
 }
 
 .modalButton {
@@ -161,4 +157,15 @@ a {
   color: red;
   font-size: small;
   width: 5px;
+}
+
+#alertaPickUp {
+  position: fixed;
+  margin: 25vh 40vw;
+  text-align: center;
+  align-items: center;
+  background-color: cadetblue;
+  color: white;
+  padding: 30px;
+  border: 1px thin;
 }

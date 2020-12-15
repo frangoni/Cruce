@@ -55,6 +55,10 @@ export default function SideBar(props) {
   const isAdmin = useSelector((state) =>
     state.user.user.role === "Admin" ? true : false
   );
+  const isTienda = useSelector((state) =>
+    state.user.user.role === "Empresa" ? true : false
+  );
+  const userName = useSelector((state) => state.user.user.name);
 
   useEffect(() => {
     dispatch(fetchEmpresas());
@@ -133,6 +137,7 @@ export default function SideBar(props) {
           </IconButton>
           <Typography variant="h6" noWrap>
             {props.title}
+            {` || ${userName} `}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -203,25 +208,32 @@ export default function SideBar(props) {
             <Link style={{ textDecoration: "none" }} to="/misordenes">
               <ListItem button key={"orden"}>
                 <ListItemIcon>
-                  <LibraryAddCheckIcon style={{ color: "green" }} />{" "}
+                  <LibraryAddCheckIcon style={{ color: "green" }} />
                 </ListItemIcon>
-                <ListItemText primary={"Mis Ordenes"} />
+                <ListItemText
+                  primary={isTienda ? "Ordenes Finalizadas" : "Mis Ordenes"}
+                />
               </ListItem>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/ordenes">
               <ListItem button key={"ordenes"}>
                 <ListItemIcon>
-                  <LibraryAddIcon style={{ color: "blue" }} />{" "}
+                  <LibraryAddIcon style={{ color: "blue" }} />
                 </ListItemIcon>
                 <ListItemText primary={"Ordenes Activas"} />
               </ListItem>
             </Link>
-            <ListItem button key={"perfil"}>
-              <ListItemIcon>
-                <AccountBoxIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Mi perfil"} />
-            </ListItem>
+            <Link
+              style={{ textDecoration: "none" }}
+              to={isTienda ? "/cadeterias" : "/"}
+            >
+              <ListItem button key={"perfil"}>
+                <ListItemIcon>
+                  <AccountBoxIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Mi perfil"} />
+              </ListItem>
+            </Link>
           </List>
         )}
         <Divider />

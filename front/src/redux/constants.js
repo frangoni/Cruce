@@ -23,3 +23,12 @@ export const ADD_ORDERS = "ADD_ORDERS";
 export const FILTER_ORDERS = "FILTER_ORDERS";
 export const UPDATE_ORDER = "UPDATE_ORDER";
 export const UPDATE_SINGLE_ORDER = "UPDATE_SINGLE_ORDER";
+export const PICKED_UP = "PICKED_UP";
+
+//Cadeterias
+export const SET_MY_CADETERIAS = "SET_MY_CADETERIAS";
+export const SET_ALL_CADETERIAS = "SET_ALL_CADETERIAS";
+export const ADD_MY_CADETERIA = "ADD_MY_CADETERIA";
+
+//Metricas
+export const GET_METRICAS = "GET_METRICAS";

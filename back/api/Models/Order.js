@@ -2,7 +2,7 @@ const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
 const { io } = require("../../io");
 
-class Order extends Model { }
+class Order extends Model {}
 
 Order.init(
   {
@@ -73,6 +73,7 @@ Order.init(
 );
 
 Order.addHook("afterBulkCreate", async (order, options) => {
+  console.log("en el hook afterbulkcreate");
   // We can use `options.transaction` to perform some other call
   // using the same transaction of the call that triggered this hook
   // const orders = await Order.findAll({ where: {}, raw: true })
@@ -83,15 +84,17 @@ Order.addHook("afterBulkCreate", async (order, options) => {
     products: JSON.parse(order.dataValues.products),
   }));
 
-  options.cadeterias.forEach(cadeteria => {
-    io.to(cadeteria.name).emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
+  options.cadeterias.forEach((cadeteria) => {
+    io.to(cadeteria.name).emit(
+      "ordersCreated",
+      JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders })
+    );
   });
 });
 
 Order.addHook("afterUpdate", async (order, options) => {
   if (options.fields.includes("state")) {
-    console.log("options afterUpdate", options)
-    options.cadeterias.forEach(cadeteria => {
+    options.cadeterias.forEach((cadeteria) => {
       io.to(cadeteria.name).emit(
         "dbModifications",
         JSON.stringify({
@@ -103,5 +106,22 @@ Order.addHook("afterUpdate", async (order, options) => {
     });
   }
 });
+
+/* Order.addHook("afterBulkUpdate", async (order, options) => {
+  console.log("en el back de after update");
+  if (options.fields.includes("state")) {
+    console.log("options afterUpdate", options);
+    options.cadeterias.forEach((cadeteria) => {
+      io.to(cadeteria.name).emit(
+        "dbModifications",
+        JSON.stringify({
+          orderId: order.dataValues.id,
+          cadeteId: order.dataValues.cadeteId,
+          state: order.dataValues.state,
+        })
+      );
+    });
+  }
+}); */
 
 module.exports = Order;

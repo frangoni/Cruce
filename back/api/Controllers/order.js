@@ -1,6 +1,7 @@
 const Cadeteria = require("../Models/Cadeteria");
 const Order = require("../Models/Order");
 const User = require("../Models/User");
+const { Op } = require("sequelize");
 
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
@@ -27,15 +28,17 @@ const pickUp = async (req, res, next) => {
   const cadete = await User.findByPk(id);
 
   const order = await Order.findByPk(orderId);
-  order.setCadete(cadete);
-  order.state = "Pendiente de retiro en sucursal";
-  order.assignedDate = Date.now();
-
-  const tienda = await order.getEmpresa({ include: Cadeteria });
-  const cadeterias = await tienda.getCadeteria({ raw: true });
-
-  order.save({ cadeterias });
-  res.send(order);
+  if (order.cadeteId) {
+    res.send("Esta orden ya fue tomada!");
+  } else {
+    order.setCadete(cadete);
+    order.state = "Pendiente de retiro en sucursal";
+    order.assignedDate = Date.now();
+    const tienda = await order.getEmpresa({ include: Cadeteria });
+    const cadeterias = await tienda.getCadeteria({ raw: true });
+    order.save({ cadeterias });
+    res.send("Te asignaste correctamente!");
+  }
 };
 
 const getAllOrdes = async (req, res, next) => {
@@ -43,17 +46,19 @@ const getAllOrdes = async (req, res, next) => {
     const { role, id, cadeteria } = req.user;
     const id_tiendas = [];
     if (role == "Cadete") {
-      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true });
+      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true }); //cadeteria[0] porque es un array, que si sos cadete solo tiene un elemento
       tiendas_cadeterias.map((user) => id_tiendas.push(user.id));
     }
     const orders = await Order.findAll({
       where:
         role == "Cadete"
           ? { state: "Pendiente", empresaId: id_tiendas }
-          : { empresaId: id },
+          : {
+              empresaId: id,
+              state: "Pendiente",
+            },
       raw: true,
     });
-    console.log("orders", orders.length);
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),
@@ -79,6 +84,7 @@ const getSingleOrder = (req, res, next) => {
 const singleOrderUpdate = (req, res, next) => {
   const id = req.params.id;
   const state = req.body.state;
+  const userId = req.body.userId;
 
   function date(state) {
     switch (state) {
@@ -95,25 +101,50 @@ const singleOrderUpdate = (req, res, next) => {
         return { state };
     }
   }
-
-  Order.update(date(state), {
-    where: { orderId: id },
-  }).then(() => {
-    Order.findOne({
-      where: { orderId: id },
-      include: [{ model: User, as: "empresa" }],
-    }).then((orden) => {
-      res.send(orden);
+  User.findByPk(userId)
+    .then(async (user) => {
+      return await user.getCadeteria({ raw: true });
+    })
+    .then((cadeterias) => {
+      Order.update(date(state), {
+        where: { orderId: id },
+        individualHooks: true,
+        cadeterias,
+      }).then(() => {
+        Order.findOne({
+          where: { orderId: id },
+          include: [{ model: User, as: "empresa" }],
+        }).then((orden) => {
+          res.send(orden);
+        });
+      });
     });
-  });
 };
 
 const getMyOrdes = async (req, res, next) => {
-  const cadeteId = req.user.id;
+  const userId = req.user.id;
+  const role = req.user.role;
   const page = req.params.page;
+  const { fecha, estado } = req.query;
+  const parsedFecha = JSON.parse(fecha);
   try {
     const orders = await Order.findAndCountAll({
-      where: { cadeteId },
+      where:
+        role == "Empresa"
+          ? {
+              empresaId: userId,
+              state: estado,
+              creationDate: {
+                [Op.between]: [parsedFecha.de, parsedFecha.hasta],
+              },
+            }
+          : {
+              cadeteId: userId,
+              state: estado,
+              creationDate: {
+                [Op.between]: [parsedFecha.de, parsedFecha.hasta],
+              },
+            },
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,
@@ -127,7 +158,6 @@ const getMyOrdes = async (req, res, next) => {
     }));
     res.status(200).send({ count: orders.count, results: parsedOrders });
   } catch (e) {
-    console.log(e);
     res.status(503).end();
   }
 };

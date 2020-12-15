@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   Table,
   TableBody,
@@ -21,14 +21,13 @@ const useStyles = makeStyles({
 });
 
 const OrdersTable = ({ orders, handler }) => {
-  const { pathname } = useLocation()
-  const { role } = useSelector(state => state.user.user)
-  console.log("location", pathname)
+  const { pathname } = useLocation();
+  const { role } = useSelector((state) => state.user.user);
   const classes = useStyles();
   return (
     <>
       {orders.length ? (
-        <div>
+        <div id="ordersTable">
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="caption table">
               <caption>Listado de Cadetes/Empresas</caption>
@@ -48,14 +47,16 @@ const OrdersTable = ({ orders, handler }) => {
                     <TableCell align="center">{order.client.email}</TableCell>
                     <TableCell align="center">{order.state}</TableCell>
                     <TableCell align="center">
-                      {pathname === "/ordenes" && role === "Cadete" ? <IconButton
-                        onClick={() => handler(order.id)}
-                        aria-label="delete"
-                        className={classes.margin}
-                        size="medium"
-                      >
-                        <CheckIcon fontSize="inherit" />
-                      </IconButton> : null}
+                      {pathname === "/ordenes" && role === "Cadete" ? (
+                        <IconButton
+                          aria-label="delete"
+                          className={classes.margin}
+                          size="medium"
+                          onClick={() => handler(order.id)}
+                        >
+                          <CheckIcon fontSize="inherit" />
+                        </IconButton>
+                      ) : null}
                       <Link to={`/orden/${order.id}`}>
                         <IconButton size="medium">
                           <VisibilityOutlinedIcon fontSize="inherit" />
