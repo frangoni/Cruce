@@ -37,15 +37,31 @@ export default function SingleOrder({ match }) {
     setOpen(true);
     //dispatch(orderStateUpdate(name, order.orderId, user.id));
   };
+  console.log("role", user.role);
+  let estados;
 
-  const estados = [
-    "Pendiente de retiro en sucursal",
-    "Retirado",
-    "Entregado",
-    "Cancelado",
-  ];
-  const i = estados.indexOf(order.state);
+  if (user.role == "Admin") {
+    estados = [
+      "Pendiente",
+      "Pendiente de retiro en sucursal",
+      "Retirado",
+      "Entregado",
+      "Cancelado",
+    ];
+  } else {
+    estados = [
+      "Pendiente de retiro en sucursal",
+      "Retirado",
+      "Entregado",
+      "Cancelado",
+    ];
+  }
 
+  let i = estados.indexOf(order.state);
+
+  /* if (i == -1) {
+    i = 4;
+  } */
   const accept = () => {
     setOpen(false);
     dispatch(orderStateUpdate(name, order.orderId, user.id));
@@ -129,7 +145,7 @@ export default function SingleOrder({ match }) {
                 <h4>Pedido:</h4>
                 <p>Fecha: {order.creationDate}</p>
 
-                {user.id === order.cadeteId ? (
+                {user.id === order.cadeteId || user.role == "Admin" ? (
                   <FormControl>
                     <NativeSelect value="" onChange={handleChange}>
                       <option value={estados[i]}>{estados[i]}</option>

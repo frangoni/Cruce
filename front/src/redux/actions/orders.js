@@ -90,7 +90,10 @@ export const fetchOrders = () => (dispatch, state) => {
   const token = state().user.token;
   axios
     .get("/api/order/", { headers: { Authorization: `Bearer ${token}` } })
-    .then((orders) => dispatch(getOrders(orders.data)));
+    .then((orders) => {
+      console.log("orders", orders);
+      dispatch(getOrders(orders.data));
+    });
 };
 
 const getSingleOrder = function (order) {

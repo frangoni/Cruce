@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const db = require("../db");
 
-class Cadeteria extends Model { }
+class Cadeteria extends Model {}
 
 Cadeteria.init(
   {
@@ -10,8 +10,12 @@ Cadeteria.init(
     },
     accepted: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false
-    }
+      defaultValue: false,
+    },
+    rejected: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     sequelize: db,
