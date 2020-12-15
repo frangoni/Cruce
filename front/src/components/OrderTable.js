@@ -49,10 +49,10 @@ const OrdersTable = ({ orders, handler }) => {
                     <TableCell align="center">
                       {pathname === "/ordenes" && role === "Cadete" ? (
                         <IconButton
-                          onClick={() => handler(order.id)}
                           aria-label="delete"
                           className={classes.margin}
                           size="medium"
+                          onClick={() => handler(order.id)}
                         >
                           <CheckIcon fontSize="inherit" />
                         </IconButton>

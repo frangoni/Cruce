@@ -25,16 +25,6 @@ const WebSocket = () => {
   };
 
   useEffect(() => {
-    if (message) {
-      setDisplay("flex");
-      setTimeout(() => {
-        setDisplay("none");
-        dispatch(deleteMessage());
-      }, 3000);
-    }
-  }, [message]);
-
-  useEffect(() => {
     dispatch(fetchOrders());
     const socket = io.connect(`${window.location.origin}`, { query: { id } });
 
@@ -54,6 +44,16 @@ const WebSocket = () => {
       socket.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (message) {
+      setDisplay("flex");
+      setTimeout(() => {
+        setDisplay("none");
+        dispatch(deleteMessage());
+      }, 3000);
+    }
+  }, [message]);
 
   return (
     <>

@@ -74,10 +74,11 @@ export const fetchPickOrder = (orderId) => (dispatch, state) => {
   }).then((res) => dispatch(orderPickUp(res.data)));
 };
 
-export const fetchMyOrders = (page) => (dispatch, state) => {
+export const fetchMyOrders = (page, filter) => (dispatch, state) => {
   const token = state().user.token;
+  const query = queryGenerator(filter);
   axios
-    .get(`/api/order/myorders/${page}`, {
+    .get(`/api/order/myorders/${page}${query}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((res) => {
@@ -121,4 +122,12 @@ export const orderStateUpdate = (estado, id, userId) => (dispatch) => {
     };
     return dispatch(getSingleOrder(parsedOrder));
   });
+};
+
+const queryGenerator = (querys) => {
+  const estado = querys.estado.reduce((acc, value) => {
+    return `${acc}estado[]=${value}&`;
+  }, "?");
+  const result = `${estado}fecha=${JSON.stringify(querys.fecha)}`;
+  return result;
 };
