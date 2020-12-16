@@ -8,20 +8,22 @@ import WebSocket from "./components/websocket";
 import SingleOrder from "./components/SingleOrder";
 import MyOrders from "./components/MyOrders";
 import Cadeterias from "./components/cadeterias";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import SideBar from "./components/SideBar";
+import Metricas from "./components/Metricas";
+import { fetchMe } from "./redux/actions/user";
 
 export default function Main() {
   const history = useHistory();
-  const user = useSelector((state) => state.user.token);
+  const token = useSelector((state) => state.user.token);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (!user) history.push("/inicio");
+    if (!token) history.push("/inicio");
     return () => {};
-  }, [user]);
+  }, [token]);
 
   return (
     <>
-      {" "}
       <Switch>
         <Route path="/inicio" component={Splash} />
         <Route path="/ingreso" component={Login} />
@@ -66,7 +68,16 @@ export default function Main() {
             </SideBar>
           )}
         />
-        {user ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
+        <Route
+          path="/metricas"
+          render={() => (
+            <SideBar title="Metricas">
+              <Metricas />
+            </SideBar>
+          )}
+        />
+
+        {token ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
       </Switch>
     </>
   );

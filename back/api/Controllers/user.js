@@ -25,27 +25,25 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
+  console.log("req body", req.body);
   try {
     const user = await User.create(req.body);
-    /*const cadeteria = await Cadeteria.findOrCreate({
-      where: { name: req.body.cadeteria },
+    Cadeteria.findOrCreate({
+      where: {
+        name: req.body.cadeteria,
+      },
+    }).then((cadeteria) => {
+      user.setCadeteria(cadeteria[0].id);
     });
-    cadeteria.addUser(user); */
+
     res.status(201).send(user);
   } catch (err) {
     res.status(400).send(err);
   }
 };
-
-/* const setCadeteria = async (req, res, next) => {
-  const cadeteria = await Cadeteria.findByPk(req.body.cadeteria);
-  const user = await User.findByPk(req.body.user);
-  cadeteria.addUser(user);
-}; */
-
 const userData = (req, res, next) => {
-  if (req.user) return res.send(req.user);
-  res.status(401).send({ error: "token invalido" });
+  if (req.user) return res.status(200).send(req.user);
+  res.status(401).send({ error: "Token invalido" });
 };
 
 module.exports = { userValidation, userCreation, userData };

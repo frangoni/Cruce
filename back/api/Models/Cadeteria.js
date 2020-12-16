@@ -8,6 +8,10 @@ Cadeteria.init(
     name: {
       type: DataTypes.STRING,
     },
+    accepted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   },
   {
     sequelize: db,

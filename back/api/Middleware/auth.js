@@ -14,7 +14,6 @@ const auth = async (req, res, next) => {
     console.error("No token found");
     return res.status(403).json({ error: "Unauthorized" });
   }
-
   try {
     const decoded = jwt.verify(idToken, privateKey);
     //TODO  cambiar el obj user por los fields necesarios
@@ -31,4 +30,5 @@ const auth = async (req, res, next) => {
     return next(e);
   }
 };
+
 module.exports = auth;

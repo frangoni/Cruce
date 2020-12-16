@@ -26,19 +26,19 @@ const OrdersTable = ({ orders, handler }) => {
   const classes = useStyles();
   return (
     <>
-      {orders.length ? (
-        <div id="ordersTable">
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="caption table">
-              <caption>Listado de Cadetes/Empresas</caption>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">ID</TableCell>
-                  <TableCell align="center">Nombre</TableCell>
-                  <TableCell align="center">E-mail</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                </TableRow>
-              </TableHead>
+      <div id="ordersTable">
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="caption table">
+            <caption>Listado de Cadetes/Empresas</caption>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">ID</TableCell>
+                <TableCell align="center">Nombre</TableCell>
+                <TableCell align="center">E-mail</TableCell>
+                <TableCell align="center">Estado</TableCell>
+              </TableRow>
+            </TableHead>
+            {orders.length ? (
               <TableBody>
                 {orders.map((order) => (
                   <TableRow key={order.id}>
@@ -49,10 +49,10 @@ const OrdersTable = ({ orders, handler }) => {
                     <TableCell align="center">
                       {pathname === "/ordenes" && role === "Cadete" ? (
                         <IconButton
-                          onClick={() => handler(order.id)}
                           aria-label="delete"
                           className={classes.margin}
                           size="medium"
+                          onClick={() => handler(order.id)}
                         >
                           <CheckIcon fontSize="inherit" />
                         </IconButton>
@@ -66,10 +66,10 @@ const OrdersTable = ({ orders, handler }) => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      ) : null}
+            ) : null}
+          </Table>
+        </TableContainer>
+      </div>
     </>
   );
 };

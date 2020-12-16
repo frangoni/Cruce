@@ -34,13 +34,7 @@ Order.init(
     // STRINGIFY JSON/////
     state: {
       type: DataTypes.ENUM({
-        values: [
-          "Pendiente",
-          "Pendiente de retiro en sucursal",
-          "Retirado",
-          "Entregado",
-          "Cancelado",
-        ],
+        values: ["Pendiente", "Pendiente de retiro en sucursal", "Retirado", "Entregado", "Cancelado"],
       }),
       defaultValue: "Pendiente",
     },
@@ -63,9 +57,19 @@ Order.init(
     delay: {
       type: DataTypes.VIRTUAL,
       get() {
-        return (
-          this.getDataValue("deliveredDate") - this.getDataValue("pickedDate")
-        );
+        return this.getDataValue("deliveredDate") - this.getDataValue("assignedDate");
+      },
+    },
+    delay: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue("deliveredDate") - this.getDataValue("pickedDate");
+      },
+    },
+    delay: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue("deliveredDate") - this.getDataValue("creationDate");
       },
     },
   },
@@ -73,7 +77,6 @@ Order.init(
 );
 
 Order.addHook("afterBulkCreate", async (order, options) => {
-  console.log("en el hook afterbulkcreate");
   // We can use `options.transaction` to perform some other call
   // using the same transaction of the call that triggered this hook
   // const orders = await Order.findAll({ where: {}, raw: true })
@@ -85,10 +88,7 @@ Order.addHook("afterBulkCreate", async (order, options) => {
   }));
 
   options.cadeterias.forEach((cadeteria) => {
-    io.to(cadeteria.name).emit(
-      "ordersCreated",
-      JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders })
-    );
+    io.to(cadeteria.name).emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
   });
 });
 

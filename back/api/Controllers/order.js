@@ -44,7 +44,7 @@ const getAllOrdes = async (req, res, next) => {
     const { role, id, cadeteria } = req.user;
     const id_tiendas = [];
     if (role == "Cadete") {
-      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true });
+      const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true }); //cadeteria[0] porque es un array, que si sos cadete solo tiene un elemento
       tiendas_cadeterias.map((user) => id_tiendas.push(user.id));
     }
     const orders = await Order.findAll({
@@ -53,7 +53,7 @@ const getAllOrdes = async (req, res, next) => {
           ? { state: "Pendiente", empresaId: id_tiendas }
           : {
               empresaId: id,
-              state: { [Op.notIn]: ["Entregado", "Cancelado"] },
+              state: "Pendiente",
             },
       raw: true,
     });
@@ -123,12 +123,31 @@ const getMyOrdes = async (req, res, next) => {
   const userId = req.user.id;
   const role = req.user.role;
   const page = req.params.page;
+  const { fecha, estado, tienda } = req.query;
+  const parsedFecha = JSON.parse(fecha);
+
+  const filters = () => {
+    const filter = {
+      cadeteId: userId,
+      state: estado,
+      creationDate: {
+        [Op.between]: [parsedFecha.de, parsedFecha.hasta],
+      },
+    };
+    if (role == "Empresa") {
+      delete filter.cadeteId;
+      return { ...filter, empresaId: userId };
+    } else if (tienda) return { ...filter, empresaId: tienda };
+    else if (role == "Admin") {
+      delete filter.cadeteId;
+      return filter;
+    }
+    return filter;
+  };
+
   try {
     const orders = await Order.findAndCountAll({
-      where:
-        role == "Empresa"
-          ? { empresaId: userId, state: ["Entregado", "Cancelado"] }
-          : { cadeteId: userId },
+      where: role == "Empresa" ? filters() : filters(),
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,
@@ -140,9 +159,9 @@ const getMyOrdes = async (req, res, next) => {
       destination: JSON.parse(order.destination),
       products: JSON.parse(order.products),
     }));
+
     res.status(200).send({ count: orders.count, results: parsedOrders });
   } catch (e) {
-    console.log(e);
     res.status(503).end();
   }
 };

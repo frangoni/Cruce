@@ -25,16 +25,6 @@ const WebSocket = () => {
   };
 
   useEffect(() => {
-    if (message) {
-      setDisplay("flex");
-      setTimeout(() => {
-        setDisplay("none");
-        dispatch(deleteMessage());
-      }, 3000);
-    }
-  }, [message]);
-
-  useEffect(() => {
     dispatch(fetchOrders());
     const socket = io.connect(`${window.location.origin}`, { query: { id } });
 
@@ -55,6 +45,16 @@ const WebSocket = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (message) {
+      setDisplay("flex");
+      setTimeout(() => {
+        setDisplay("none");
+        dispatch(deleteMessage());
+      }, 3000);
+    }
+  }, [message]);
+
   return (
     <>
       <Paper elevation={15} style={{ display }} id="alertaPickUp">
@@ -64,7 +64,9 @@ const WebSocket = () => {
         <div style={{ height: 800, width: "100%" }}>
           <OrdersTable orders={orders} handler={handler} />
         </div>
-      ) : null}
+      ) : (
+        <OrdersTable orders={[]} />
+      )}
       {role === "Empresa" ? <SheetUpload /> : null}
     </>
   );
