@@ -170,6 +170,43 @@ a {
   border: 1px thin;
 }
 
+.singleOrderHeader {
+  display: flex;
+  flex-flow: row wrap;
+  padding: inherit;
+  justify-content: space-between;
+}
+
+.pcikUpSingleOrder {
+  justify-content: flex-end;
+}
+
+.divider {
+  width: 10px;
+  height: auto;
+  display: inline-block;
+}
+
+.inputObservaciones {
+  width: 95%;
+}
+
+.sendIcon{
+  display: flex;
+  flex-flow: row wrap;
+  padding: inherit;
+  justify-content: space-between;
+}
+
+.sendIcon2{
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.noFocus {
+  pointer-events: none;
+}
 .filterActive {
   position: fixed;
   top: 50%;

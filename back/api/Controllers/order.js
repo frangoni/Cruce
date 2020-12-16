@@ -80,7 +80,10 @@ const getAllOrdes = async (req, res, next) => {
 
 const getSingleOrder = (req, res, next) => {
   Order.findByPk(req.params.id, {
-    include: [{ model: User, as: "empresa" }],
+    include: [
+      { model: User, as: "empresa" },
+      { model: User, as: "cadete" },
+    ],
   })
     .then((order) => {
       res.status(200).send(order);
@@ -173,6 +176,13 @@ const getMyOrdes = async (req, res, next) => {
   }
 };
 
+const postObservaciones = async (req, res, next) => {
+  const observaciones = req.body.observaciones
+  const id = req.body.orderId
+  Order.update({ comments: observaciones }, { where: { id } })
+  .then(() => res.status(200).send('Observacion creada'))
+}
+
 module.exports = {
   postOrders,
   getAllOrdes,
@@ -180,4 +190,5 @@ module.exports = {
   getSingleOrder,
   singleOrderUpdate,
   getMyOrdes,
+  postObservaciones
 };

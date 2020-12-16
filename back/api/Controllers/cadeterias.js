@@ -80,6 +80,17 @@ const getSingleCadeteria = async (req, res, next) => {
   }
 };
 
+const getSingleCadeteriaCadete = async (req, res, next) => {
+  const id = req.params.id;
+  try {
+    const user = await User.findByPk(id);
+    const cadeterias = await user.getCadeteria();
+    res.send(cadeterias);
+  } catch (e) {
+    res.sendStatus(503);
+  }
+};
+
 const assignCadeterias = async (req, res, next) => {
   const { cadeteriasIds } = req.body;
   const { user } = req;
@@ -112,5 +123,6 @@ module.exports = {
   getAllCadeterias,
   acceptById,
   cadeteriaDelete,
+  getSingleCadeteriaCadete,
   getTiendas,
 };
