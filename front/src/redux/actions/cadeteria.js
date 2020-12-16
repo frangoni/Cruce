@@ -26,6 +26,12 @@ export const updateCadeteria = (id, data) => ({
   payload: { id, data },
 });
 
+export const fetchAcceptedCadeterias = () => (dispatch) => {
+  axios.get("/api/cadeterias").then((cadeterias) => {
+    return dispatch(getAceptedCadeterias(cadeterias));
+  });
+};
+
 export const fetchCadeterias = () => (dispatch) => {
   axios.get("/api/cadeterias/all").then((cadeterias) => {
     return dispatch(getAllCadeterias(cadeterias.data));

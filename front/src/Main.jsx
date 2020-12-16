@@ -22,6 +22,14 @@ export default function Main() {
     return () => {};
   }, [token]);
 
+  useEffect(() => {
+    dispatch(fetchMe());
+    const id = setInterval(() => {
+      dispatch(fetchMe());
+    }, 1000 * 60 * 10);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <Switch>

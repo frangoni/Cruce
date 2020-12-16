@@ -40,6 +40,10 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    rejected: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     dni: {
       type: DataTypes.INTEGER,
       allowNull: true,

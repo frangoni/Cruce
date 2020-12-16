@@ -47,16 +47,25 @@ const getAllOrdes = async (req, res, next) => {
       const tiendas_cadeterias = await cadeteria[0].getUsers({ raw: true }); //cadeteria[0] porque es un array, que si sos cadete solo tiene un elemento
       tiendas_cadeterias.map((user) => id_tiendas.push(user.id));
     }
-    const orders = await Order.findAll({
-      where:
-        role == "Cadete"
-          ? { state: "Pendiente", empresaId: id_tiendas }
-          : {
-              empresaId: id,
-              state: "Pendiente",
-            },
-      raw: true,
-    });
+    let orders;
+    role == "Admin"
+      ? (orders = await Order.findAll(
+          { raw: true },
+          {
+            include: [{ model: User, as: "empresa" }],
+          }
+        ))
+      : (orders = await Order.findAll({
+          where:
+            role == "Cadete"
+              ? { state: "Pendiente", empresaId: id_tiendas }
+              : {
+                  empresaId: id,
+                  state: "Pendiente",
+                },
+          raw: true,
+        }));
+    console.log("orders", orders);
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),

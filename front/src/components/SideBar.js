@@ -26,33 +26,42 @@ import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import MotorcycleIcon from "@material-ui/icons/Motorcycle";
 import StoreIcon from "@material-ui/icons/Store";
+import GroupIcon from "@material-ui/icons/Group";
+import ListAltIcon from "@material-ui/icons/ListAlt";
 import { useStyles } from "../style/sidebar";
 import { userLogout } from "../redux/actions/user";
 import { useHistory } from "react-router-dom";
-
 import { fetchCadeterias } from "../redux/actions/cadeteria";
+import Collapse from "@material-ui/core/Collapse";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 
 export default function SideBar(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const dispatch = useDispatch();
   const history = useHistory();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const handleClick = () => {
+    setOpenMenu(!openMenu);
+    if (open == false) {
+      setOpen(true);
+    }
+  };
 
   const setLogout = () => {
     dispatch(userLogout());
     history.push("/inicio");
   };
 
-  const cadeterias = useSelector((state) => state.cadeterias.cadeterias);
+  const cadeterias = useSelector((state) => state.allCadeterias.allCadeterias);
 
   const empresas = useSelector((state) => state.users.empresas);
-  const isAdmin = useSelector((state) =>
-    state.user.user.role === "Admin" ? true : false
-  );
-  const isTienda = useSelector((state) =>
-    state.user.user.role === "Empresa" ? true : false
-  );
+  const isAdmin = useSelector((state) => (state.user.user.role === "Admin" ? true : false));
+  const isTienda = useSelector((state) => (state.user.user.role === "Empresa" ? true : false));
   const userName = useSelector((state) => state.user.user.name);
 
   useEffect(() => {
@@ -63,16 +72,6 @@ export default function SideBar(props) {
   }, []);
 
   const cadetes = useSelector((state) => state.users.cadetes);
-
-  /*  useEffect(() => {
-    dispatch(fetchCadetes());
-    return () => {};
-  }, []);
-
-  useEffect(() => {
-    dispatch(fetchCadeterias());
-    return () => {};
-  }, []); */
 
   const [users, setUsers] = useState(cadetes);
   const [selected, setSelected] = useState("cadetes");
@@ -88,6 +87,9 @@ export default function SideBar(props) {
       setSelected("cadeterias");
       setUsers(cadeterias);
     }
+    dispatch(fetchEmpresas());
+    dispatch(fetchCadetes());
+    dispatch(fetchCadeterias());
   };
 
   useEffect(() => {
@@ -107,6 +109,7 @@ export default function SideBar(props) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+    setOpenMenu(false);
   };
 
   return (
@@ -151,11 +154,7 @@ export default function SideBar(props) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             <ListItemText primary={"Cruce"} />
           </IconButton>
         </div>
@@ -163,40 +162,64 @@ export default function SideBar(props) {
 
         {isAdmin ? (
           <List>
-            <ListItemText primary={"Administrar usuarios"} />
+            <Link style={{ textDecoration: "none" }} to="/admin">
+              <ListItem button onClick={handleClick}>
+                <ListItemIcon>
+                  <GroupIcon />
+                </ListItemIcon>
+                <ListItemText primary="Usuarios" />
+                {openMenu ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={openMenu} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItem
+                    button
+                    key={"Cadeterias"}
+                    onClick={() => handlerSelected("cadeterias")}
+                    style={{ marginLeft: "20px" }}
+                  >
+                    <ListItemIcon>
+                      <StoreIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Cadeterias"} />
+                  </ListItem>
 
-            <ListItem
-              button
-              key={"Cadeterias"}
-              onClick={() => handlerSelected("cadeterias")}
-            >
-              <ListItemIcon>
-                <StoreIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Cadeterias"} />
-            </ListItem>
+                  <ListItem
+                    button
+                    key={"Cadetes"}
+                    onClick={() => handlerSelected("cadetes")}
+                    style={{ marginLeft: "20px" }}
+                  >
+                    <ListItemIcon>
+                      <MotorcycleIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Cadetes"} />
+                  </ListItem>
 
-            <ListItem
-              button
-              key={"Cadetes"}
-              onClick={() => handlerSelected("cadetes")}
-            >
-              <ListItemIcon>
-                <MotorcycleIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Cadetes"} />
-            </ListItem>
+                  <ListItem
+                    button
+                    key={"Tiendas"}
+                    onClick={() => handlerSelected("tiendas")}
+                    style={{ marginLeft: "20px" }}
+                  >
+                    <ListItemIcon>
+                      <ApartmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Tiendas"} />
+                  </ListItem>
+                </List>
+              </Collapse>
+            </Link>
 
-            <ListItem
-              button
-              key={"Tiendas"}
-              onClick={() => handlerSelected("tiendas")}
-            >
-              <ListItemIcon>
-                <ApartmentIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Tiendas"} />
-            </ListItem>
+            <Divider />
+            <Link style={{ textDecoration: "none" }} to="/ordenes">
+              <ListItem button key={"orden"}>
+                <ListItemIcon>
+                  <ListAltIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Órdenes"} />
+              </ListItem>
+            </Link>
           </List>
         ) : (
           <List>
@@ -205,9 +228,7 @@ export default function SideBar(props) {
                 <ListItemIcon>
                   <LibraryAddCheckIcon style={{ color: "green" }} />
                 </ListItemIcon>
-                <ListItemText
-                  primary={isTienda ? "Ordenes Finalizadas" : "Mis Ordenes"}
-                />
+                <ListItemText primary={isTienda ? "Ordenes Finalizadas" : "Mis Ordenes"} />
               </ListItem>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/ordenes">
@@ -218,10 +239,7 @@ export default function SideBar(props) {
                 <ListItemText primary={"Ordenes Activas"} />
               </ListItem>
             </Link>
-            <Link
-              style={{ textDecoration: "none" }}
-              to={isTienda ? "/cadeterias" : "/"}
-            >
+            <Link style={{ textDecoration: "none" }} to={isTienda ? "/cadeterias" : "/"}>
               <ListItem button key={"perfil"}>
                 <ListItemIcon>
                   <AccountBoxIcon />

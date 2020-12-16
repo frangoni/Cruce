@@ -5,6 +5,7 @@ const getAcceptedCadeterias = async (req, res, next) => {
     const cadeterias = await Cadeteria.findAll({
       where: {
         accepted: true,
+        rejected: false,
       },
     });
     res.send(cadeterias);
@@ -15,7 +16,7 @@ const getAcceptedCadeterias = async (req, res, next) => {
 
 const getAllCadeterias = async (req, res, next) => {
   try {
-    const cadeterias = await Cadeteria.findAll();
+    const cadeterias = await Cadeteria.findAll({ where: { rejected: false } });
     res.send(cadeterias);
   } catch (e) {
     res.status(503).send(e);
@@ -54,7 +55,16 @@ const acceptById = async (req, res, next) => {
 
 const cadeteriaDelete = (req, res, next) => {
   const id = req.body.content;
-  Cadeteria.destroy({ where: { id } })
+  Cadeteria.update({ rejected: true, accepted: false }, { where: { id }, returning: true, plain: true })
+    .then((rejectedCadeteria) => {
+      rejectedCadeteria[1].getUsers().then((users) => {
+        users.map((user) => {
+          if (user.role == "Cadete") {
+            user.update({ rejected: true, accepted: false }, { where: { role: "Cadete" } });
+          }
+        });
+      });
+    })
     .then(() => res.send("Cadeteria Eliminada"))
     .catch((e) => console.log(e));
 };

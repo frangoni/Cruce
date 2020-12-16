@@ -6,7 +6,7 @@ const {
   acceptById,
   userDelete,
 } = require("../Controllers/users");
-const auth = require("../Middleware/auth");
+const { auth } = require("../Middleware/auth");
 const isAdmin = require("../Middleware/isAdmin");
 
 router.get("/cadetes", auth, isAdmin, getAllCadetes);
