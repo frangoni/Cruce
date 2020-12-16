@@ -6,7 +6,7 @@ const Cadeteria = require("../Models/Cadeteria");
 const getAllCadetes = async (req, res, next) => {
   try {
     const users = await User.findAll({
-      where: { role: "Cadete" },
+      where: { role: "Cadete", rejected: false },
       include: [{ model: Cadeteria }],
     });
     return res.send(users);
@@ -18,7 +18,9 @@ const getAllCadetes = async (req, res, next) => {
 
 const getAllEmpresas = async (req, res, next) => {
   try {
-    const users = await User.findAll({ where: { role: "Empresa" } });
+    const users = await User.findAll({
+      where: { role: "Empresa", rejected: false },
+    });
     return res.send(users);
   } catch (e) {
     console.log(e);
@@ -30,7 +32,7 @@ const acceptById = async (req, res, next) => {
   const { id } = req.params;
   try {
     const [changes, modified] = await User.update(
-      { accepted: true },
+      { accepted: true }, //acc: false --> pending
       {
         where: {
           id,
@@ -49,11 +51,9 @@ const acceptById = async (req, res, next) => {
 };
 
 const userDelete = (req, res, next) => {
-  console.log(req.body);
   const id = req.body.content;
-
-  User.destroy({ where: { id: id } })
-    .then(() => res.status(200).send("Eliminado"))
+  User.update({ rejected: true, accepted: false }, { where: { id: id } })
+    .then(() => res.status(200).send("Usuario rechazado"))
     .catch((e) => res.status(500).send(e));
 };
 

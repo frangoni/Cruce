@@ -21,7 +21,7 @@ export default function Main() {
     if (token) dispatch(fetchMe());
     if (!token) history.push("/inicio");
     return () => {};
-  });
+  }, []);
 
   return (
     <>
