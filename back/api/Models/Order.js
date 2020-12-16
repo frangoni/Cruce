@@ -60,13 +60,13 @@ Order.init(
         return this.getDataValue("deliveredDate") - this.getDataValue("assignedDate");
       },
     },
-    delay: {
+    delayTransport: {
       type: DataTypes.VIRTUAL,
       get() {
         return this.getDataValue("deliveredDate") - this.getDataValue("pickedDate");
       },
     },
-    delay: {
+    delayCircuit: {
       type: DataTypes.VIRTUAL,
       get() {
         return this.getDataValue("deliveredDate") - this.getDataValue("creationDate");
