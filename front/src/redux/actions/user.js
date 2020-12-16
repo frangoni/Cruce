@@ -78,6 +78,8 @@ export const fetchMe = () => (dispatch, state) => {
     method: "GET",
     url: "/api/user/me",
     headers: { Authorization: `Bearer ${token}` },
+  }).then(res => {
+    if (token !== res.data.token) dispatch(userLogin(res.data, res.data.token))
   }).catch(() => {
     dispatch(userLogin({}, ""));
   });
