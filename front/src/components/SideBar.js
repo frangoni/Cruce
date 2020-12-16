@@ -212,7 +212,7 @@ export default function SideBar(props) {
             </Link>
 
             <Divider />
-            <Link style={{ textDecoration: "none" }} to="/ordenes">
+            <Link style={{ textDecoration: "none" }} to="/misordenes">
               <ListItem button key={"orden"}>
                 <ListItemIcon>
                   <ListAltIcon />

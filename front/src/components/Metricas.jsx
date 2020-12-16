@@ -16,7 +16,7 @@ export default function SpacingGrid() {
     const y = [];
     const x = [];
     for (let i = 0; i < arr.length; i++) {
-      y.push(orders[i][ejeY] / 1000);
+      y.push(orders[i][ejeY] / 60000);
       x.push(orders[i].orderId);
     }
     return { x, y };
@@ -54,7 +54,7 @@ export default function SpacingGrid() {
         <Card className="metriCards">
           <CardContent>
             <Typography variant="h1" color="textPrimary">
-              {(metricas.demoraPromedioDeEnvio / 1000).toFixed(2)}
+              {(metricas.demoraPromedioDeEnvio / 60000).toFixed(2)}
               <Typography variant="caption">minutos</Typography>
             </Typography>
             <Typography color="textPrimary">Demora promedio de envío</Typography>
@@ -72,7 +72,7 @@ export default function SpacingGrid() {
         <Card className="metriCards">
           <CardContent>
             <Typography variant="h1" color="textPrimary">
-              {(metricas.demoraIngresoDespacho / 1000).toFixed(2)}
+              {(metricas.demoraIngresoDespacho / 60000).toFixed(2)}
               <Typography variant="caption">minutos</Typography>
             </Typography>
             <Typography color="textPrimary">Demora promedio de ingreso/despacho</Typography>

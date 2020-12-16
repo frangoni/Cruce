@@ -40,7 +40,6 @@ const MyOrders = () => {
         break;
     }
   };
-  console.log("FILTER", filter);
   return (
     <>
       <Filter setFilter={setFilter} tiendas={tiendas} />

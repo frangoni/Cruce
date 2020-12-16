@@ -92,6 +92,12 @@ const Filter = ({ setFilter, tiendas }) => {
         <h3 style={{ marginTop: "10px" }}>
           <b>ESTADO</b>
         </h3>
+        {role == "Admin" ? (
+          <>
+            <p>Pendiente:</p>
+            <Switch name="Pendiente" onChange={(e) => handleFilter(e)} />
+          </>
+        ) : null}
         <p> Entregado:</p>
         <Switch defaultChecked name="Entregado" onChange={(e) => handleFilter(e)} />
         <p> Retirado:</p>
