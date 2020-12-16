@@ -18,11 +18,16 @@ export default function Main() {
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (token) dispatch(fetchMe());
     if (!token) history.push("/inicio");
-    return () => {};
-  });
+    return () => { };
+  }, [token]);
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      dispatch(fetchMe())
+    }, 1000 * 60 * 10)
+    return () => clearInterval(id)
+  }, [])
   return (
     <>
       <Switch>
