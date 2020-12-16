@@ -64,7 +64,9 @@ const WebSocket = () => {
         <div style={{ height: 800, width: "100%" }}>
           <OrdersTable orders={orders} handler={handler} />
         </div>
-      ) : null}
+      ) : (
+        <OrdersTable orders={[]} />
+      )}
       {role === "Empresa" ? <SheetUpload /> : null}
     </>
   );

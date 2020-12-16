@@ -11,9 +11,7 @@ import {
 import axios from "axios";
 
 export const postOrders = (ordenes) => {
-  return axios
-    .post("/api/order/excel", ordenes)
-    .then((order) => console.log(order));
+  return axios.post("/api/order/excel", ordenes);
 };
 
 export const getOrders = function (orders) {
@@ -74,18 +72,6 @@ export const fetchPickOrder = (orderId) => (dispatch, state) => {
   }).then((res) => dispatch(orderPickUp(res.data)));
 };
 
-export const fetchMyOrders = (page, filter) => (dispatch, state) => {
-  const token = state().user.token;
-  const query = queryGenerator(filter);
-  axios
-    .get(`/api/order/myorders/${page}${query}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((res) => {
-      dispatch(getMyOrders(res.data));
-    });
-};
-
 export const fetchOrders = () => (dispatch, state) => {
   const token = state().user.token;
   axios
@@ -126,11 +112,24 @@ export const orderStateUpdate = (estado, id, userId) => (dispatch) => {
     return dispatch(getSingleOrder(parsedOrder));
   });
 };
+export const fetchMyOrders = (page, filter) => (dispatch, state) => {
+  const token = state().user.token;
+  const query = queryGenerator(filter);
+  axios
+    .get(`/api/order/myorders/${page}${query}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => {
+      dispatch(getMyOrders(res.data));
+    });
+};
 
 const queryGenerator = (querys) => {
   const estado = querys.estado.reduce((acc, value) => {
     return `${acc}estado[]=${value}&`;
   }, "?");
-  const result = `${estado}fecha=${JSON.stringify(querys.fecha)}`;
+  let tienda = "";
+  if (!querys.tienda) tienda = querys.tienda.id;
+  const result = `${estado}fecha=${JSON.stringify(querys.fecha)}&tienda=${tienda}`;
   return result;
 };

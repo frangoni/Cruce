@@ -55,18 +55,12 @@ const acceptById = async (req, res, next) => {
 
 const cadeteriaDelete = (req, res, next) => {
   const id = req.body.content;
-  Cadeteria.update(
-    { rejected: true, accepted: false },
-    { where: { id }, returning: true, plain: true }
-  )
+  Cadeteria.update({ rejected: true, accepted: false }, { where: { id }, returning: true, plain: true })
     .then((rejectedCadeteria) => {
       rejectedCadeteria[1].getUsers().then((users) => {
         users.map((user) => {
           if (user.role == "Cadete") {
-            user.update(
-              { rejected: true, accepted: false },
-              { where: { role: "Cadete" } }
-            );
+            user.update({ rejected: true, accepted: false }, { where: { role: "Cadete" } });
           }
         });
       });
@@ -90,7 +84,18 @@ const assignCadeterias = async (req, res, next) => {
   const { user } = req;
   const cadeterias = await Cadeteria.findAll({ where: { id: cadeteriasIds } });
   user.setCadeteria(cadeterias);
-  res.send({ msg: "todo piola" });
+  res.send({ msg: "Cadeteria asignada" });
+};
+
+const getTiendas = async (req, res, next) => {
+  const user = req.user;
+  try {
+    const cadeteria = await user.getCadeteria();
+    const tiendas = await cadeteria[0].getUsers();
+    res.send(tiendas);
+  } catch (e) {
+    res.sendStatus(503);
+  }
 };
 
 module.exports = {
@@ -101,4 +106,5 @@ module.exports = {
   getAllCadeterias,
   acceptById,
   cadeteriaDelete,
+  getTiendas,
 };

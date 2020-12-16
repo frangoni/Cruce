@@ -1,8 +1,4 @@
-import {
-  GET_ACCEPTED_CADETERIAS,
-  GET_ALL_CADETERIAS,
-  UPDATE_CADETERIA,
-} from "../constants";
+import { GET_ACCEPTED_CADETERIAS, GET_ALL_CADETERIAS, UPDATE_CADETERIA } from "../constants";
 import axios from "axios";
 
 export const getAceptedCadeterias = function (cadeterias) {
@@ -10,6 +6,12 @@ export const getAceptedCadeterias = function (cadeterias) {
     type: GET_ACCEPTED_CADETERIAS,
     payload: cadeterias,
   };
+};
+
+export const fetchAcceptedCadeterias = () => (dispatch) => {
+  axios.get("/api/cadeterias").then((cadeterias) => {
+    return dispatch(getAceptedCadeterias(cadeterias));
+  });
 };
 
 export const getAllCadeterias = function (cadeterias) {
@@ -47,7 +49,6 @@ export const fetchAcceptCadeteriaById = (id) => (dispatch, state) => {
 };
 
 export const deleteCadeteria = (data) => (dispatch) => {
-  console.log("estoy en la accion delete");
   axios.post("/api/cadeterias/delete", data);
 };
 

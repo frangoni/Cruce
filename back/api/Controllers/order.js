@@ -5,7 +5,6 @@ const { Op } = require("sequelize");
 
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
-
   if (user.role == "Empresa") {
     User.findByPk(user.id).then(async (user) => {
       const cadeterias = await user.getCadeteria({ raw: true });
@@ -26,7 +25,6 @@ const pickUp = async (req, res, next) => {
   const { orderId } = req.body;
   const { id } = req.user;
   const cadete = await User.findByPk(id);
-
   const order = await Order.findByPk(orderId);
   if (order.cadeteId) {
     res.send("Esta orden ya fue tomada!");
@@ -134,26 +132,31 @@ const getMyOrdes = async (req, res, next) => {
   const userId = req.user.id;
   const role = req.user.role;
   const page = req.params.page;
-  const { fecha, estado } = req.query;
+  const { fecha, estado, tienda } = req.query;
   const parsedFecha = JSON.parse(fecha);
+
+  const filters = () => {
+    const filter = {
+      cadeteId: userId,
+      state: estado,
+      creationDate: {
+        [Op.between]: [parsedFecha.de, parsedFecha.hasta],
+      },
+    };
+    if (role == "Empresa") {
+      delete filter.cadeteId;
+      return { ...filter, empresaId: userId };
+    } else if (tienda) return { ...filter, empresaId: tienda };
+    else if (role == "Admin") {
+      delete filter.cadeteId;
+      return filter;
+    }
+    return filter;
+  };
+
   try {
     const orders = await Order.findAndCountAll({
-      where:
-        role == "Empresa"
-          ? {
-              empresaId: userId,
-              state: estado,
-              creationDate: {
-                [Op.between]: [parsedFecha.de, parsedFecha.hasta],
-              },
-            }
-          : {
-              cadeteId: userId,
-              state: estado,
-              creationDate: {
-                [Op.between]: [parsedFecha.de, parsedFecha.hasta],
-              },
-            },
+      where: role == "Empresa" ? filters() : filters(),
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,
@@ -165,6 +168,7 @@ const getMyOrdes = async (req, res, next) => {
       destination: JSON.parse(order.destination),
       products: JSON.parse(order.products),
     }));
+
     res.status(200).send({ count: orders.count, results: parsedOrders });
   } catch (e) {
     res.status(503).end();

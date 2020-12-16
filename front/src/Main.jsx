@@ -19,21 +19,17 @@ export default function Main() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!token) history.push("/inicio");
-<<<<<<< HEAD
-    return () => { };
-  }, [token]);
-=======
     return () => {};
-  }, []);
->>>>>>> a94ea658947880fb7bd92ea00f40f955704f404a
+  }, [token]);
 
   useEffect(() => {
-    dispatch(fetchMe())
+    dispatch(fetchMe());
     const id = setInterval(() => {
-      dispatch(fetchMe())
-    }, 1000 * 60 * 10)
-    return () => clearInterval(id)
-  }, [])
+      dispatch(fetchMe());
+    }, 1000 * 60 * 10);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <>
       <Switch>
