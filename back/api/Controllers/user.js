@@ -42,10 +42,9 @@ const userCreation = async (req, res, next) => {
     res.status(400).send(err);
   }
 };
-
 const userData = (req, res, next) => {
-  if (req.user) return res.send(req.user);
-  res.status(401).send({ error: "token invalido" });
+  if (req.user) return res.status(200).send(req.user);
+  res.status(401).send({ error: "Token invalido" });
 };
 
 module.exports = { userValidation, userCreation, userData };
