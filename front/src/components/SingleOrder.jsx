@@ -18,6 +18,9 @@ import CheckIcon from "@material-ui/icons/Check";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Button from "@material-ui/core/Button";
 import Confirmacion from "./Confirmacion";
+import TextField from "@material-ui/core/TextField";
+import SendIcon from "@material-ui/icons/Send";
+import { useInput } from "../hooks/useInput";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -25,6 +28,7 @@ import {
   orderStateUpdate,
   updateSingleOrder,
   fetchPickOrder,
+  postObservaciones,
 } from "../redux/actions/orders";
 import { fetchMyCadeteriaCadete } from "../redux/actions/cadeterias";
 import io from "socket.io-client";
@@ -40,6 +44,14 @@ export default function SingleOrder({ match }) {
   const user = useSelector((state) => state.user.user);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState();
+
+  const observacionesInput = useInput("observaciones");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const observacionesValue = observacionesInput.value;
+    dispatch(postObservaciones(observacionesValue, order.id));
+  };
 
   const handleChange = (event) => {
     const name = event.target.value;
@@ -156,7 +168,7 @@ export default function SingleOrder({ match }) {
                   <div className="divider" />
                   <Button
                     variant="outlined"
-                    color="light-grey"
+                    color="grey"
                     size="small"
                     startIcon={<ArrowBackIcon />}
                     onClick={() => history.push("/ordenes")}
@@ -168,7 +180,7 @@ export default function SingleOrder({ match }) {
                 <div className="pcikUpSingleOrder">
                   <Button
                     variant="outlined"
-                    color="light-grey"
+                    color="grey"
                     size="small"
                     startIcon={<ArrowBackIcon />}
                     onClick={() => history.push("/ordenes")}
@@ -278,6 +290,40 @@ export default function SingleOrder({ match }) {
                 </TableBody>
               </Table>
             </TableContainer>
+
+            {order.comments ? (
+              <TextField
+                id="outlined-read-only-input"
+                label="Observaciones"
+                defaultValue={order.comments}
+                InputProps={{
+                  readOnly: true,
+                }}
+                variant="filled"
+                fullWidth={true}
+                multiline
+                className = 'noFocus'
+              />
+            ) : user.role === "Empresa" &&
+              (order.state === "Cancelado" || order.state === "Entregado") ? (
+              <form noValidate autoComplete="off">
+                <div className="sendIcon">
+                  <TextField
+                    className="inputObservaciones"
+                    id="outlined-multiline-static"
+                    label="Observaciones"
+                    placeholder="Ingrese sus observaciones"
+                    variant="outlined"
+                    multiline
+                    {...observacionesInput}
+                  />
+                  <div className="divider" />
+                  <div className="sendIcon2">
+                    <SendIcon onClick={handleSubmit}></SendIcon>
+                  </div>
+                </div>
+              </form>
+            ) : null}
           </Paper>
         </div>
       ) : null}

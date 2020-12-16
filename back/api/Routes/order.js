@@ -9,8 +9,10 @@ const {
   getSingleOrder,
   singleOrderUpdate,
   getMyOrdes,
+  postObservaciones
 } = require("../Controllers/order");
 
+router.put('/observaciones', auth, postObservaciones)
 router.post("/excel", postOrders); //TODO aca hay que usar el middleware para saber si esta autenticado
 router.get("/", auth, getAllOrdes);
 router.put("/", auth, pickUp);

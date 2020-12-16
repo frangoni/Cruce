@@ -7,6 +7,7 @@ import {
   UPDATE_ORDER,
   UPDATE_SINGLE_ORDER,
   PICKED_UP,
+  SET_OBSERVACIONES
 } from "../constants";
 import axios from "axios";
 
@@ -59,6 +60,18 @@ const orderPickUp = function (mensaje) {
     payload: mensaje,
   };
 };
+
+
+
+export const postObservaciones = (observaciones, orderId) => (dispatch, state) => {
+  const token = state().user.token;
+  axios({
+    method: "PUT",
+    url: "/api/order/observaciones",
+    headers: { Authorization: `Bearer ${token}` },
+    data: { observaciones, orderId },
+  })
+}
 
 export const deleteMessage = () => (dispatch) => {
   dispatch(orderPickUp(""));

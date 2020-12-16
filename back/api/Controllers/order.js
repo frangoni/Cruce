@@ -174,6 +174,13 @@ const getMyOrdes = async (req, res, next) => {
   }
 };
 
+const postObservaciones = async (req, res, next) => {
+  const observaciones = req.body.observaciones
+  const id = req.body.orderId
+  Order.update({ comments: observaciones }, { where: { id } })
+  .then(() => res.status(200).send('Observacion creada'))
+}
+
 module.exports = {
   postOrders,
   getAllOrdes,
@@ -181,4 +188,5 @@ module.exports = {
   getSingleOrder,
   singleOrderUpdate,
   getMyOrdes,
+  postObservaciones
 };

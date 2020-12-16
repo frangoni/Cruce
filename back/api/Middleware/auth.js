@@ -4,6 +4,7 @@ const User = require("../Models/User");
 const Cadeteria = require("../Models/Cadeteria");
 
 const auth = async (req, res, next) => {
+  console.log('req headers', req.headers.authorization)
   let idToken;
   if (
     req.headers.authorization &&
