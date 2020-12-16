@@ -1,11 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////order
 const express = require("express");
 const router = express.Router();
-<<<<<<< HEAD
 const { auth } = require("../Middleware/auth")
-=======
-const auth = require("../Middleware/auth");
->>>>>>> a94ea658947880fb7bd92ea00f40f955704f404a
 const {
   postOrders,
   getAllOrdes,

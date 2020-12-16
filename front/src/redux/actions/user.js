@@ -4,6 +4,7 @@ import {
   USER_LOGIN_ANIMATION,
   USER_LOGOUT,
   SET_ERROR_USER_BACK,
+  RESET_ANIMATIONS
 } from "../constants";
 import axios from "axios";
 
@@ -31,10 +32,13 @@ export const userLogin = (user, token) => {
   };
 };
 
-export const userLogout = () => {
-  return {
+export const userLogout = () => (dispatch) => {
+  dispatch({
     type: USER_LOGOUT,
-  };
+  });
+  dispatch({
+    type: RESET_ANIMATIONS,
+  });
 };
 
 export const setError = (error) => {

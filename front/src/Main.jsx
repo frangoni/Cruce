@@ -19,13 +19,8 @@ export default function Main() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!token) history.push("/inicio");
-<<<<<<< HEAD
     return () => { };
   }, [token]);
-=======
-    return () => {};
-  }, []);
->>>>>>> a94ea658947880fb7bd92ea00f40f955704f404a
 
   useEffect(() => {
     dispatch(fetchMe())

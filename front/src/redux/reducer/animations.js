@@ -1,4 +1,4 @@
-import { USER_REGISTER_ANIMATION, USER_LOGIN_ANIMATION } from "../constants";
+import { USER_REGISTER_ANIMATION, USER_LOGIN_ANIMATION, RESET_ANIMATIONS } from "../constants";
 
 const initialState = {
   isLoadingRegister: false,
@@ -21,6 +21,7 @@ export default (state = initialState, action) => {
         isLoadingLogin: action.isLoadingLogin,
         statusLogin: action.statusLogin,
       };
+    case RESET_ANIMATIONS: return { ...state, ...initialState }
     default:
       return state;
   }
