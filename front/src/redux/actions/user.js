@@ -63,7 +63,6 @@ export const fetchRegister = (data) => (dispatch) => {
 
 export const fetchLogin = (data) => (dispatch) => {
   dispatch(userLoginAnimation(true, null));
-
   axios
     .post("/api/user/login", data)
     .then((res) => {
@@ -82,9 +81,11 @@ export const fetchMe = () => (dispatch, state) => {
     method: "GET",
     url: "/api/user/me",
     headers: { Authorization: `Bearer ${token}` },
-  }).then(res => {
-    if (token !== res.data.token) dispatch(userLogin(res.data, res.data.token))
-  }).catch(() => {
-    dispatch(userLogin({}, ""));
-  });
+  })
+    .then((res) => {
+      if (token !== res.data.token) dispatch(userLogin(res.data, res.data.token));
+    })
+    .catch(() => {
+      dispatch(userLogin({}, ""));
+    });
 };

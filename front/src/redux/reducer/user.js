@@ -15,6 +15,7 @@ export default (state = initialState, action) => {
         token: action.token,
       };
     case USER_LOGOUT:
+      localStorage.clear();
       return { ...state, user: {}, token: "" };
     case SET_ERROR_USER_BACK:
       return { ...state, errorBack: action.payload };

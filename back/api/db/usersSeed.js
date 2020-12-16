@@ -4,15 +4,15 @@ const db = require("../Models/index");
 
 db.sync({ force: true }).then(async () => {
   const cadeterias = await Cadeteria.bulkCreate([
-    { name: "Avioneta veloz", accepted: false },
-    { name: "Camioneta veloz", accepted: false },
+    { name: "Avioneta veloz", accepted: true },
+    { name: "Camioneta veloz", accepted: true },
     { name: "Motoneta Veloz", accepted: true },
     { name: "Motoneta Agil", accepted: true },
     { name: "Motoneta Rapida", accepted: true },
     { name: "Motoneta Ligera", accepted: true },
     { name: "Motoneta Espacial", accepted: true },
     { name: "Maquina del Espacio", accepted: true },
-    { name: "Ussain Bolt", accepted: true},
+    { name: "Ussain Bolt", accepted: true },
   ]);
   const users = await User.bulkCreate(
     [

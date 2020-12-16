@@ -10,12 +10,14 @@ const {
   getAllCadeterias,
   acceptById,
   cadeteriaDelete,
+  getTiendas,
 } = require("../Controllers/cadeterias");
 
 router.get("/all", getAllCadeterias);
 router.put("/:id", acceptById);
 router.post("/delete", cadeteriaDelete);
 router.get("/miscadetes", auth, getSingleCadeteria);
+router.get("/mistiendas", auth, getTiendas);
 router.get("/", getAcceptedCadeterias);
 router.put("/", auth, assignCadeterias);
 router.post("/", createCadeteria);

@@ -28,7 +28,6 @@ const userCreation = async (req, res, next) => {
         name: req.body.cadeteria,
       },
     }).then((cadeteria) => {
-      console.log("cadeteria", cadeteria);
       user.setCadeteria(cadeteria[0].id);
     });
 
