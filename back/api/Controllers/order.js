@@ -149,7 +149,6 @@ const getMyOrdes = async (req, res, next) => {
     } else if (role == "Admin") {
       delete filter.cadeteId;
     }
-
     if (tienda) return { ...filter, empresaId: tienda };
     return filter;
   };
