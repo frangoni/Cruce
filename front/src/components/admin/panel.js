@@ -4,12 +4,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import { IconButton } from "@material-ui/core";
-
 import UsersTable from "./usersTable";
-
 import Badge from "@material-ui/core/Badge";
-
-import { useStyles } from "../../style/sidebar";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -22,20 +18,16 @@ function TabPanel(props) {
 }
 
 export default function Panel({ users, selected }) {
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  
 
   <IconButton color="inherit">
     <Badge badgeContent={4} color="secondary">
       <Tab label="Pendientes" />
     </Badge>
- 
   </IconButton>;
 
   return (
@@ -52,9 +44,7 @@ export default function Panel({ users, selected }) {
           <Tab label="Pendientes" />
 
           <Badge
-            badgeContent={
-              users.filter((user) => user.accepted === false).length
-            }
+            badgeContent={users.filter((user) => user.accepted === false).length}
             color="secondary"
             anchorOrigin={{
               vertical: "bottom",
@@ -69,10 +59,7 @@ export default function Panel({ users, selected }) {
         <UsersTable users={users.filter((user) => user.accepted === true)} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <UsersTable
-          users={users.filter((user) => user.accepted === false)}
-          showCheck
-        />
+        <UsersTable users={users.filter((user) => user.accepted === false)} showCheck />
       </TabPanel>
     </div>
   );

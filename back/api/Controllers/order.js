@@ -136,7 +136,7 @@ const getMyOrdes = async (req, res, next) => {
   const parsedFecha = JSON.parse(fecha);
 
   const filters = () => {
-    const filter = {
+    let filter = {
       cadeteId: userId,
       state: estado,
       creationDate: {
@@ -145,18 +145,17 @@ const getMyOrdes = async (req, res, next) => {
     };
     if (role == "Empresa") {
       delete filter.cadeteId;
-      return { ...filter, empresaId: userId };
-    } else if (tienda) return { ...filter, empresaId: tienda };
-    else if (role == "Admin") {
+      filter = { ...filter, empresaId: userId };
+    } else if (role == "Admin") {
       delete filter.cadeteId;
-      return filter;
     }
+
+    if (tienda) return { ...filter, empresaId: tienda };
     return filter;
   };
-
   try {
     const orders = await Order.findAndCountAll({
-      where: role == "Empresa" ? filters() : filters(),
+      where: filters(),
       raw: true,
       order: [["assignedDate", "DESC"]],
       limit: 10,

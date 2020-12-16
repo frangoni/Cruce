@@ -48,9 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
-
   const dispatch = useDispatch();
-
   const userEmail = useInput("email");
   const userPassword = useInput("password");
   const [errorLoginFront, setErrorLoginFront] = useState({});
@@ -96,7 +94,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (statusLogin === 200) {
-      user.role === "Admin" ? history.push("/admin") : history.push("/ordenes")
+      user.role === "Admin" ? history.push("/admin") : history.push("/ordenes");
     }
   }, [statusLogin]);
 
@@ -110,9 +108,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Iniciar Sesión
         </Typography>
-        {isLoadingLogin ? (
-          <CircularProgress style={{ margin: "25px auto" }} />
-        ) : null}
+        {isLoadingLogin ? <CircularProgress style={{ margin: "25px auto" }} /> : null}
 
         {Object.keys(errorLoginFront).length ? (
           <Alert severity="error" style={{ margin: "25px auto" }}>
@@ -153,13 +149,7 @@ export default function SignIn() {
             {...userPassword}
             className={classInput.password}
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
             Enviar
           </Button>
           <Grid container>

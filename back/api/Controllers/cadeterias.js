@@ -1,4 +1,5 @@
 const Cadeteria = require("../Models/Cadeteria");
+const User = require("../Models/User");
 
 const getAcceptedCadeterias = async (req, res, next) => {
   try {
@@ -90,9 +91,14 @@ const assignCadeterias = async (req, res, next) => {
 const getTiendas = async (req, res, next) => {
   const user = req.user;
   try {
-    const cadeteria = await user.getCadeteria();
-    const tiendas = await cadeteria[0].getUsers();
-    res.send(tiendas);
+    if (user.role == "Admin") {
+      const tiendas = await User.findAll({ where: { role: "Empresa", accepted: true } });
+      res.send(tiendas);
+    } else {
+      const cadeteria = await user.getCadeteria();
+      const tiendas = await cadeteria[0].getUsers();
+      res.send(tiendas);
+    }
   } catch (e) {
     res.sendStatus(503);
   }
