@@ -1,7 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////order
 const express = require("express");
 const router = express.Router();
-const { auth } = require("../Middleware/auth");
+const { auth } = require("../Middleware/auth")
+
 const {
   postOrders,
   getAllOrdes,
@@ -9,8 +10,10 @@ const {
   getSingleOrder,
   singleOrderUpdate,
   getMyOrdes,
+  postObservaciones
 } = require("../Controllers/order");
 
+router.put('/observaciones', auth, postObservaciones)
 router.post("/excel", postOrders); //TODO aca hay que usar el middleware para saber si esta autenticado
 router.get("/", auth, getAllOrdes);
 router.put("/", auth, pickUp);
