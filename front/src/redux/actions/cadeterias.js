@@ -1,47 +1,68 @@
-import { SET_MY_CADETERIAS, SET_ALL_CADETERIAS } from "../constants";
-import axios from 'axios'
-
-
+import {
+  SET_MY_CADETERIAS_CADETE,
+  SET_MY_CADETERIAS,
+  SET_ALL_CADETERIAS,
+} from "../constants";
+import axios from "axios";
 
 const setMyCadeterias = function (cadeterias) {
-    return {
-        type: SET_MY_CADETERIAS,
-        payload: cadeterias
-    }
-}
+  return {
+    type: SET_MY_CADETERIAS,
+    payload: cadeterias,
+  };
+};
+
+const setMyCadeteriaCadete = function (cadeterias) {
+  return {
+    type: SET_MY_CADETERIAS_CADETE,
+    payload: cadeterias,
+  };
+};
 
 const setAllCadeterias = function (cadeterias) {
-    return {
-        type: SET_ALL_CADETERIAS,
-        payload: cadeterias
-    }
-}
+  return {
+    type: SET_ALL_CADETERIAS,
+    payload: cadeterias,
+  };
+};
 
-//ASYNCHRONUS 
+//ASYNCHRONUS
 
 export const fetchMyCadeterias = () => (dispatch, state) => {
-    const token = state().user.token
-    axios.get(`/api/cadeterias/miscadetes`,
-        { headers: { Authorization: `Bearer ${token}` } }).then(res => {
-            dispatch(setMyCadeterias(res.data))
-        })
-}
-
-export const fetchCadeterias = () => (dispatch) => {
-    axios.get(`/api/cadeterias/`).then(res => {
-        dispatch(setAllCadeterias(res.data));
+  const token = state().user.token;
+  axios
+    .get(`/api/cadeterias/miscadetes`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => {
+      dispatch(setMyCadeterias(res.data));
     });
 };
 
+export const fetchMyCadeteriaCadete = (id) => (dispatch, state) => {
+  const token = state().user.token;
+  console.log("En el action, ID", id);
+  axios
+    .get(`/api/cadeterias/miscadetes/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((res) => {
+      dispatch(setMyCadeteriaCadete(res.data));
+    });
+};
+
+export const fetchCadeterias = () => (dispatch) => {
+  axios.get(`/api/cadeterias/`).then((res) => {
+    dispatch(setAllCadeterias(res.data));
+  });
+};
 
 export const postMyCadeterias = (cadeteriasIds) => (dispatch, state) => {
-    const token = state().user.token
-    axios
-        ({
-            method: 'PUT',
-            url: "/api/cadeterias/",
-            headers: { Authorization: `Bearer ${token}` },
-            data: { cadeteriasIds }
-        }).then(res => dispatch(fetchCadeterias()))
-}
-
+  const token = state().user.token;
+  axios({
+    method: "PUT",
+    url: "/api/cadeterias/",
+    headers: { Authorization: `Bearer ${token}` },
+    data: { cadeteriasIds },
+  }).then((res) => dispatch(fetchCadeterias()));
+};

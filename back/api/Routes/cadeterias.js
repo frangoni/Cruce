@@ -10,11 +10,13 @@ const {
   getAllCadeterias,
   acceptById,
   cadeteriaDelete,
+  getSingleCadeteriaCadete,
 } = require("../Controllers/cadeterias");
 
 router.get("/all", getAllCadeterias);
 router.put("/:id", acceptById);
 router.post("/delete", cadeteriaDelete);
+router.get("/miscadetes/:id", auth, getSingleCadeteriaCadete);
 router.get("/miscadetes", auth, getSingleCadeteria);
 router.get("/", getAcceptedCadeterias);
 router.put("/", auth, assignCadeterias);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -13,6 +14,9 @@ import {
 } from "@material-ui/core";
 import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
 import RoomIcon from "@material-ui/icons/Room";
+import CheckIcon from "@material-ui/icons/Check";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import Button from "@material-ui/core/Button";
 import Confirmacion from "./Confirmacion";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -20,13 +24,19 @@ import {
   fetchSingleOrder,
   orderStateUpdate,
   updateSingleOrder,
+  fetchPickOrder,
 } from "../redux/actions/orders";
+import { fetchMyCadeteriaCadete } from "../redux/actions/cadeterias";
 import io from "socket.io-client";
 
 export default function SingleOrder({ match }) {
   const orderId = match.params.id;
   const dispatch = useDispatch();
+  const history = useHistory();
   const order = useSelector((state) => state.orders.order);
+  const cadeteria = useSelector(
+    (state) => state.cadeterias.misCadeteriasCadete
+  );
   const user = useSelector((state) => state.user.user);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState();
@@ -35,9 +45,16 @@ export default function SingleOrder({ match }) {
     const name = event.target.value;
     setName(name);
     setOpen(true);
-    //dispatch(orderStateUpdate(name, order.orderId, user.id));
   };
-  console.log("role", user.role);
+
+  const handlerPickUpOrder = (orderId) => {
+    dispatch(fetchPickOrder(orderId));
+  };
+
+  useEffect(() => {
+    dispatch(fetchSingleOrder(orderId));
+  }, [order.state]);
+
   let estados;
 
   if (user.role == "Admin") {
@@ -59,9 +76,6 @@ export default function SingleOrder({ match }) {
 
   let i = estados.indexOf(order.state);
 
-  /* if (i == -1) {
-    i = 4;
-  } */
   const accept = () => {
     setOpen(false);
     dispatch(orderStateUpdate(name, order.orderId, user.id));
@@ -74,6 +88,9 @@ export default function SingleOrder({ match }) {
 
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
+    if (order.cadeteId) {
+      dispatch(fetchMyCadeteriaCadete(order.cadeteId));
+    }
 
     const socket = io.connect(`${window.location.origin}`, {
       query: { id: user.id },
@@ -87,6 +104,12 @@ export default function SingleOrder({ match }) {
       socket.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (order.cadeteId) {
+      dispatch(fetchMyCadeteriaCadete(order.cadeteId));
+    }
+  }, [order.cadeteId]);
 
   const factura = () => {
     let discounts = 0;
@@ -113,9 +136,48 @@ export default function SingleOrder({ match }) {
             deny={deny}
           />
           <Paper elevation={5} className="singleOrderContainer">
-            <p>{order.empresa.name}</p>
-            <p>Pedido: {order.orderId}</p>
-            <p>{order.empresa.email}</p>
+            <div className="singleOrderHeader">
+              <div className="divTiendaSingleOrder">
+                <p>{order.empresa.name}</p>
+                <p>Pedido: {order.orderId}</p>
+                <p>{order.empresa.email}</p>
+              </div>
+              {user.role == "Cadete" && order.state == "Pendiente" ? (
+                <div className="pcikUpSingleOrder">
+                  <Button
+                    variant="outlined"
+                    color="Primary"
+                    size="small"
+                    startIcon={<CheckIcon />}
+                    onClick={() => handlerPickUpOrder(order.id)}
+                  >
+                    Tomar Orden
+                  </Button>
+                  <div className="divider" />
+                  <Button
+                    variant="outlined"
+                    color="light-grey"
+                    size="small"
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => history.push("/ordenes")}
+                  >
+                    Volver
+                  </Button>
+                </div>
+              ) : (
+                <div className="pcikUpSingleOrder">
+                  <Button
+                    variant="outlined"
+                    color="light-grey"
+                    size="small"
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => history.push("/ordenes")}
+                  >
+                    Volver
+                  </Button>
+                </div>
+              )}
+            </div>
             <div className="singleOrderPapers">
               <Paper elevation={3} className="paper">
                 <h4>Cliente:</h4>
@@ -163,8 +225,15 @@ export default function SingleOrder({ match }) {
                 ) : (
                   <p>Estado: {order.state}</p>
                 )}
-
                 <p>Id: {order.orderId}</p>
+                {order.cadete ? (
+                  <>
+                    <p>Cadete: {order.cadete.name}</p>
+                    {cadeteria.length > 0 ? (
+                      <p>Cadeteria: {cadeteria[0].name}</p>
+                    ) : null}
+                  </>
+                ) : null}
               </Paper>
 
               <Paper elevation={3} className="paper">

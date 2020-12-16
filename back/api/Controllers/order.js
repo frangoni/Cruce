@@ -82,7 +82,10 @@ const getAllOrdes = async (req, res, next) => {
 
 const getSingleOrder = (req, res, next) => {
   Order.findByPk(req.params.id, {
-    include: [{ model: User, as: "empresa" }],
+    include: [
+      { model: User, as: "empresa" },
+      { model: User, as: "cadete" },
+    ],
   })
     .then((order) => {
       res.status(200).send(order);
