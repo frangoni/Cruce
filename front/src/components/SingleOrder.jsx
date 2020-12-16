@@ -29,6 +29,7 @@ import {
   updateSingleOrder,
   fetchPickOrder,
   postObservaciones,
+  deleteMessage,
 } from "../redux/actions/orders";
 import { fetchMyCadeteriaCadete } from "../redux/actions/cadeterias";
 import io from "socket.io-client";
@@ -38,9 +39,7 @@ export default function SingleOrder({ match }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const order = useSelector((state) => state.orders.order);
-  const cadeteria = useSelector(
-    (state) => state.cadeterias.misCadeteriasCadete
-  );
+  const cadeteria = useSelector((state) => state.cadeterias.misCadeteriasCadete);
   const user = useSelector((state) => state.user.user);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState();
@@ -65,25 +64,15 @@ export default function SingleOrder({ match }) {
 
   useEffect(() => {
     dispatch(fetchSingleOrder(orderId));
+    dispatch(deleteMessage());
   }, [order.state]);
 
   let estados;
 
   if (user.role == "Admin") {
-    estados = [
-      "Pendiente",
-      "Pendiente de retiro en sucursal",
-      "Retirado",
-      "Entregado",
-      "Cancelado",
-    ];
+    estados = ["Pendiente", "Pendiente de retiro en sucursal", "Retirado", "Entregado", "Cancelado"];
   } else {
-    estados = [
-      "Pendiente de retiro en sucursal",
-      "Retirado",
-      "Entregado",
-      "Cancelado",
-    ];
+    estados = ["Pendiente de retiro en sucursal", "Retirado", "Entregado", "Cancelado"];
   }
 
   let i = estados.indexOf(order.state);
@@ -141,12 +130,7 @@ export default function SingleOrder({ match }) {
     <>
       {order.id ? (
         <div>
-          <Confirmacion
-            open={open}
-            accept={accept}
-            title={"Alerta!"}
-            deny={deny}
-          />
+          <Confirmacion open={open} accept={accept} title={"Alerta!"} deny={deny} />
           <Paper elevation={5} className="singleOrderContainer">
             <div className="singleOrderHeader">
               <div className="divTiendaSingleOrder">
@@ -154,41 +138,31 @@ export default function SingleOrder({ match }) {
                 <p>Pedido: {order.orderId}</p>
                 <p>{order.empresa.email}</p>
               </div>
-              {user.role == "Cadete" && order.state == "Pendiente" ? (
-                <div className="pcikUpSingleOrder">
-                  <Button
-                    variant="outlined"
-                    color="Primary"
-                    size="small"
-                    startIcon={<CheckIcon />}
-                    onClick={() => handlerPickUpOrder(order.id)}
-                  >
-                    Tomar Orden
-                  </Button>
-                  <div className="divider" />
-                  <Button
-                    variant="outlined"
-                    color="grey"
-                    size="small"
-                    startIcon={<ArrowBackIcon />}
-                    onClick={() => history.push("/ordenes")}
-                  >
-                    Volver
-                  </Button>
-                </div>
-              ) : (
-                <div className="pcikUpSingleOrder">
-                  <Button
-                    variant="outlined"
-                    color="grey"
-                    size="small"
-                    startIcon={<ArrowBackIcon />}
-                    onClick={() => history.push("/ordenes")}
-                  >
-                    Volver
-                  </Button>
-                </div>
-              )}
+              <div className="pickUpSingleOrder">
+                {user.role == "Cadete" && order.state == "Pendiente" ? (
+                  <>
+                    <Button
+                      variant="outlined"
+                      color="Primary"
+                      size="small"
+                      startIcon={<CheckIcon />}
+                      onClick={() => handlerPickUpOrder(order.id)}
+                    >
+                      Tomar Orden
+                    </Button>
+                    <div className="divider" />
+                  </>
+                ) : null}
+                <Button
+                  variant="outlined"
+                  color="grey"
+                  size="small"
+                  startIcon={<ArrowBackIcon />}
+                  onClick={() => history.goBack()}
+                >
+                  Volver
+                </Button>
+              </div>
             </div>
             <div className="singleOrderPapers">
               <Paper elevation={3} className="paper">
@@ -223,12 +197,9 @@ export default function SingleOrder({ match }) {
                   <FormControl>
                     <NativeSelect value="" onChange={handleChange}>
                       <option value={estados[i]}>{estados[i]}</option>
-                      {estados[i] == "Entregado" ||
-                      estados[i] == "Cancelado" ? null : (
+                      {estados[i] == "Entregado" || estados[i] == "Cancelado" ? null : (
                         <>
-                          <option value={estados[i + 1]}>
-                            {estados[i + 1]}
-                          </option>
+                          <option value={estados[i + 1]}>{estados[i + 1]}</option>
                           <option value="Cancelado">Cancelado</option>
                         </>
                       )}
@@ -241,9 +212,7 @@ export default function SingleOrder({ match }) {
                 {order.cadete ? (
                   <>
                     <p>Cadete: {order.cadete.name}</p>
-                    {cadeteria.length > 0 ? (
-                      <p>Cadeteria: {cadeteria[0].name}</p>
-                    ) : null}
+                    {cadeteria.length > 0 ? <p>Cadeteria: {cadeteria[0].name}</p> : null}
                   </>
                 ) : null}
               </Paper>
@@ -253,14 +222,7 @@ export default function SingleOrder({ match }) {
                 <p>Subtotal: ${factura().skuTotal}</p>
                 <p>Descuento: ${factura().discounts}</p>
                 <p>Costo de envio: ${factura().shipping}</p>
-                <p>
-                  Total: $
-                  {(
-                    factura().skuTotal +
-                    factura().discounts +
-                    factura().shipping
-                  ).toFixed(2)}
-                </p>
+                <p>Total: ${(factura().skuTotal + factura().discounts + factura().shipping).toFixed(2)}</p>
               </Paper>
             </div>
             <TableContainer component={Paper} className="singleOrderContainer">
@@ -282,9 +244,7 @@ export default function SingleOrder({ match }) {
                         </TableCell>
                         <TableCell align="right">{product.quantity}</TableCell>
                         <TableCell align="right">{product.skuValue}</TableCell>
-                        <TableCell align="right">
-                          {product.totalValue}
-                        </TableCell>
+                        <TableCell align="right">{product.totalValue}</TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
@@ -302,10 +262,9 @@ export default function SingleOrder({ match }) {
                 variant="filled"
                 fullWidth={true}
                 multiline
-                className = 'noFocus'
+                className="noFocus"
               />
-            ) : user.role === "Empresa" &&
-              (order.state === "Cancelado" || order.state === "Entregado") ? (
+            ) : user.role === "Empresa" && (order.state === "Cancelado" || order.state === "Entregado") ? (
               <form noValidate autoComplete="off">
                 <div className="sendIcon">
                   <TextField

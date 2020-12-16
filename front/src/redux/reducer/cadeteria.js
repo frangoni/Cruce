@@ -1,11 +1,8 @@
-import {
-  GET_ALL_CADETERIAS,
-  UPDATE_CADETERIA,
-  GET_ACCEPTED_CADETERIAS,
-} from "../constants";
+import { GET_ALL_CADETERIAS, GET_ACCEPTED_CADETERIAS } from "../constants";
 
 const initialState = {
   allCadeterias: [],
+  acceptedCadeterias: [],
 };
 
 export default (state = initialState, action) => {

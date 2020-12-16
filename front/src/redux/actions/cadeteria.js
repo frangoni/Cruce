@@ -10,7 +10,7 @@ export const getAceptedCadeterias = function (cadeterias) {
 
 export const fetchAcceptedCadeterias = () => (dispatch) => {
   axios.get("/api/cadeterias").then((cadeterias) => {
-    return dispatch(getAceptedCadeterias(cadeterias));
+    return dispatch(getAceptedCadeterias(cadeterias.data));
   });
 };
 

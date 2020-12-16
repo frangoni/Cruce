@@ -177,7 +177,7 @@ a {
   justify-content: space-between;
 }
 
-.pcikUpSingleOrder {
+.pickUpSingleOrder {
   justify-content: flex-end;
 }
 
@@ -191,14 +191,14 @@ a {
   width: 95%;
 }
 
-.sendIcon{
+.sendIcon {
   display: flex;
   flex-flow: row wrap;
   padding: inherit;
   justify-content: space-between;
 }
 
-.sendIcon2{
+.sendIcon2 {
   display: flex;
   align-items: center;
   margin-right: auto;
