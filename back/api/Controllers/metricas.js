@@ -22,7 +22,6 @@ const getMetricas = async (req, res, next) => {
               cadeteId: userId,
               state: ["Entregado", "Cancelado"],
             },
-      raw: true,
     });
 
     let q = 0;
@@ -31,16 +30,7 @@ const getMetricas = async (req, res, next) => {
         q++;
         metricas.pedidosDespachados += 1;
         metricas.demoraIngresoDespacho += order.deliveredDate - order.createdAt;
-        metricas.demoraPromedioDeEnvio +=
-          order.deliveredDate - order.assignedDate;
-        console.log(
-          "DEMORA INGRESO DESPACHO",
-          order.deliveredDate - order.createdAt
-        );
-        console.log(
-          "DEMORA PROMEDIO ENVIO",
-          order.deliveredDate - order.assignedDate
-        );
+        metricas.demoraPromedioDeEnvio += order.deliveredDate - order.assignedDate;
       }
       if (order.state === "Cancelado") {
         metricas.pedidosDevueltos += 1;
@@ -48,9 +38,9 @@ const getMetricas = async (req, res, next) => {
     });
     metricas.demoraIngresoDespacho = metricas.demoraIngresoDespacho / q;
     metricas.demoraPromedioDeEnvio = metricas.demoraPromedioDeEnvio / q;
-    res.status(200).send(metricas);
+
+    res.status(200).send({ metricas, orders });
   } catch (e) {
-    console.log(e);
     res.status(503).end();
   }
 };

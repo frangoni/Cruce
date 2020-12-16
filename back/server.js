@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const { server, app } = require("./io");
 
@@ -6,6 +7,8 @@ const path = require("path");
 const db = require("./api/Models/index");
 const routes = require("./api/Routes/index");
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////MIDDLEWARES
+const PORT = process.env.PORT || 8001
+
 app.use(volleyball);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -20,7 +23,7 @@ app.get("/*", (req, res) => {
 });
 
 db.sync({ force: false }).then(() => {
-  server.listen(8000, () => {
-    console.log("SERVER EN PUERTO 8000");
+  server.listen(PORT, () => {
+    console.log("SERVER EN PUERTO:", PORT);
   });
 });

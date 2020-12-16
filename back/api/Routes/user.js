@@ -5,7 +5,7 @@ const {
   userCreation,
   userData,
 } = require("../Controllers/user");
-const auth = require("../Middleware/auth");
+const { auth } = require("../Middleware/auth");
 
 router.post("/login", userValidation);
 router.post("/register", userCreation);

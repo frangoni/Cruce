@@ -1,8 +1,4 @@
-import {
-  SET_MY_CADETERIAS_CADETE,
-  SET_MY_CADETERIAS,
-  SET_ALL_CADETERIAS,
-} from "../constants";
+import { SET_MY_CADETERIAS, SET_ALL_CADETERIAS, SET_MY_TIENDAS, SET_MY_CADETERIAS_CADETE } from "../constants";
 import axios from "axios";
 
 const setMyCadeterias = function (cadeterias) {
@@ -16,6 +12,13 @@ const setMyCadeteriaCadete = function (cadeterias) {
   return {
     type: SET_MY_CADETERIAS_CADETE,
     payload: cadeterias,
+  }
+}
+
+const setMyTiendas = function (tiendas) {
+  return {
+    type: SET_MY_TIENDAS,
+    payload: tiendas,
   };
 };
 
@@ -30,6 +33,7 @@ const setAllCadeterias = function (cadeterias) {
 
 export const fetchMyCadeterias = () => (dispatch, state) => {
   const token = state().user.token;
+
   axios
     .get(`/api/cadeterias/miscadetes`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -49,6 +53,14 @@ export const fetchMyCadeteriaCadete = (id) => (dispatch, state) => {
     .then((res) => {
       dispatch(setMyCadeteriaCadete(res.data));
     });
+};
+
+export const fetchMyTiendas = () => (dispatch, state) => {
+  const token = state().user.token;
+  axios.get(`/api/cadeterias/mistiendas`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+    dispatch(setMyTiendas(res.data));
+  });
+
 };
 
 export const fetchCadeterias = () => (dispatch) => {

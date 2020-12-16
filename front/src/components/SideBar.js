@@ -3,19 +3,15 @@ import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
-
 import clsx from "clsx";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCadetes, fetchEmpresas } from "../redux/actions/users";
-
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -32,13 +28,10 @@ import MotorcycleIcon from "@material-ui/icons/Motorcycle";
 import StoreIcon from "@material-ui/icons/Store";
 import GroupIcon from "@material-ui/icons/Group";
 import ListAltIcon from "@material-ui/icons/ListAlt";
-
 import { useStyles } from "../style/sidebar";
 import { userLogout } from "../redux/actions/user";
 import { useHistory } from "react-router-dom";
-
 import { fetchCadeterias } from "../redux/actions/cadeteria";
-
 import Collapse from "@material-ui/core/Collapse";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -67,12 +60,8 @@ export default function SideBar(props) {
   const cadeterias = useSelector((state) => state.allCadeterias.allCadeterias);
 
   const empresas = useSelector((state) => state.users.empresas);
-  const isAdmin = useSelector((state) =>
-    state.user.user.role === "Admin" ? true : false
-  );
-  const isTienda = useSelector((state) =>
-    state.user.user.role === "Empresa" ? true : false
-  );
+  const isAdmin = useSelector((state) => (state.user.user.role === "Admin" ? true : false));
+  const isTienda = useSelector((state) => (state.user.user.role === "Empresa" ? true : false));
   const userName = useSelector((state) => state.user.user.name);
 
   useEffect(() => {
@@ -165,11 +154,7 @@ export default function SideBar(props) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             <ListItemText primary={"Cruce"} />
           </IconButton>
         </div>
@@ -227,7 +212,7 @@ export default function SideBar(props) {
             </Link>
 
             <Divider />
-            <Link style={{ textDecoration: "none" }} to="/ordenes">
+            <Link style={{ textDecoration: "none" }} to="/misordenes">
               <ListItem button key={"orden"}>
                 <ListItemIcon>
                   <ListAltIcon />
@@ -243,9 +228,7 @@ export default function SideBar(props) {
                 <ListItemIcon>
                   <LibraryAddCheckIcon style={{ color: "green" }} />
                 </ListItemIcon>
-                <ListItemText
-                  primary={isTienda ? "Ordenes Finalizadas" : "Mis Ordenes"}
-                />
+                <ListItemText primary={isTienda ? "Ordenes Finalizadas" : "Mis Ordenes"} />
               </ListItem>
             </Link>
             <Link style={{ textDecoration: "none" }} to="/ordenes">
@@ -256,10 +239,7 @@ export default function SideBar(props) {
                 <ListItemText primary={"Ordenes Activas"} />
               </ListItem>
             </Link>
-            <Link
-              style={{ textDecoration: "none" }}
-              to={isTienda ? "/cadeterias" : "/"}
-            >
+            <Link style={{ textDecoration: "none" }} to={isTienda ? "/cadeterias" : "/"}>
               <ListItem button key={"perfil"}>
                 <ListItemIcon>
                   <AccountBoxIcon />

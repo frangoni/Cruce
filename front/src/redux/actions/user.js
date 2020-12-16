@@ -4,6 +4,7 @@ import {
   USER_LOGIN_ANIMATION,
   USER_LOGOUT,
   SET_ERROR_USER_BACK,
+  RESET_ANIMATIONS
 } from "../constants";
 import axios from "axios";
 
@@ -31,10 +32,13 @@ export const userLogin = (user, token) => {
   };
 };
 
-export const userLogout = () => {
-  return {
+export const userLogout = () => (dispatch) => {
+  dispatch({
     type: USER_LOGOUT,
-  };
+  });
+  dispatch({
+    type: RESET_ANIMATIONS,
+  });
 };
 
 export const setError = (error) => {
@@ -59,7 +63,6 @@ export const fetchRegister = (data) => (dispatch) => {
 
 export const fetchLogin = (data) => (dispatch) => {
   dispatch(userLoginAnimation(true, null));
-
   axios
     .post("/api/user/login", data)
     .then((res) => {
@@ -78,7 +81,11 @@ export const fetchMe = () => (dispatch, state) => {
     method: "GET",
     url: "/api/user/me",
     headers: { Authorization: `Bearer ${token}` },
-  }).catch(() => {
-    dispatch(userLogin({}, ""));
-  });
+  })
+    .then((res) => {
+      if (token !== res.data.token) dispatch(userLogin(res.data, res.data.token));
+    })
+    .catch(() => {
+      dispatch(userLogin({}, ""));
+    });
 };
