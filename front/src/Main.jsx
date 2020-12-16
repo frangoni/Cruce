@@ -19,7 +19,7 @@ export default function Main() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!token) history.push("/inicio");
-    return () => {};
+    return () => { };
   }, [token]);
 
   useEffect(() => {
