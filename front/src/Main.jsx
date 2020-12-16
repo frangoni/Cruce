@@ -23,6 +23,7 @@ export default function Main() {
   }, [token]);
 
   useEffect(() => {
+    dispatch(fetchMe())
     const id = setInterval(() => {
       dispatch(fetchMe())
     }, 1000 * 60 * 10)
