@@ -44,6 +44,9 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    reset: {
+      type: DataTypes.STRING,
+    },
     dni: {
       type: DataTypes.INTEGER,
       allowNull: true,

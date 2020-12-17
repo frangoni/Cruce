@@ -11,7 +11,7 @@ const persistedState = loadState();
 const store = createStore(
   reducer,
   persistedState,
-  composeEnhancers(applyMiddleware(createLogger(), thunkMiddleware))
+  composeEnhancers(applyMiddleware(thunkMiddleware))//createLogger(), thunkMiddleware))
 );
 
 store.subscribe(() => {
