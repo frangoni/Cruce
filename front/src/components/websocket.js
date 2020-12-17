@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import OrdersTable from "./OrderTable";
 import io from "socket.io-client";
 
@@ -30,8 +30,7 @@ const WebSocket = () => {
 
     socket.on("ordersCreated", (data) => {
       const orders = JSON.parse(data);
-      if (role === "Cadete" || orders.empresa === id)
-        dispatch(addOrders(orders.ordenes));
+      if (role === "Cadete" || orders.empresa === id) dispatch(addOrders(orders.ordenes));
     });
 
     socket.on("dbModifications", (data) => {
@@ -45,7 +44,7 @@ const WebSocket = () => {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (message) {
       setDisplay("flex");
       setTimeout(() => {

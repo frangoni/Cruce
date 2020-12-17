@@ -15,24 +15,16 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-
 import FormGroup from "@material-ui/core/FormGroup";
 import Switch from "@material-ui/core/Switch";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import InputLabel from "@material-ui/core/InputLabel";
-
 import ToggleButton from "@material-ui/core/ToggleButton";
 import ToggleButtonGroup from "@material-ui/core/ToggleButtonGroup";
-
 import FormControl from "@material-ui/core/FormControl";
-
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
-
-import {
-  fetchAcceptedCadeterias,
-  createCadeteria,
-} from "../redux/actions/cadeteria";
+import { fetchAcceptedCadeterias, createCadeteria } from "../redux/actions/cadeteria";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -105,35 +97,31 @@ export default function SignUp() {
   const userInput = useInput("fullName");
   const userEmail = useInput("email");
   const userPassword = useInput("password");
-  /* const userCompany = useInput("company"); */
   const userAddress = useInput("address");
   const userDni = useInput("dni");
   const userLicensePlate = useInput("licensePlate");
   const userCadeteria = useInput("cadeteria");
   const userNewCadeteria = useInput("newCadeteria");
-
   const [moto, setMoto] = useState({
     checkedA: false,
   });
-
   const [role, setRole] = useState("Empresa");
-
   const handleRole = (event, role) => {
+    setErrorRegisterFront({});
     setRole(role);
   };
-
   const [selectCadeteria, setSelectCadeteria] = useState("");
-
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
 
   const classInput = {
     name: "",
     email: "",
     password: "",
-    /*   company: "", */
     address: "",
     dni: "",
+    newCadeteria: "",
     cadeteria: "",
+    licensePlate: ''
   };
 
   const handleSwitchChange = (event) => {
@@ -143,9 +131,14 @@ export default function SignUp() {
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
-  /* errorRegisterFront.company ? (classInput.company = classes.root) : null; */
+
   errorRegisterFront.address ? (classInput.address = classes.root) : null;
   errorRegisterFront.dni ? (classInput.dni = classes.root) : null;
+  errorRegisterFront.newCadeteria
+    ? (classInput.newCadeteria = classes.root)
+    : null;
+  errorRegisterFront.cadeteria ? (classInput.cadeteria = classes.dropdown) : null;
+  errorRegisterFront.licensePlate ? (classInput.licensePlate = classes.root) : null;
 
   const dispatch = useDispatch();
 
@@ -159,7 +152,6 @@ export default function SignUp() {
   const cadeterias = useSelector(
     (state) => state.cadeterias.acceptedCadeterias
   );
-
   const history = useHistory();
 
   const handleCadeteriaChange = (e) => {
@@ -188,7 +180,6 @@ export default function SignUp() {
     userInput.value,
     userEmail.value,
     userPassword.value,
-    /* userCompany.value, */
     userAddress.value,
     userDni.value,
     userLicensePlate.value,
@@ -204,11 +195,27 @@ export default function SignUp() {
     }
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
-    /* if (userCompany.value.length == 0 && role === "Empresa") error = { ...error, company: true }; */
     if (userAddress.value.length == 0 && role === "Empresa")
       error = { ...error, address: true };
     if (userDni.value.length == 0 && role === "Cadete")
       error = { ...error, dni: true };
+    if (
+      userCadeteria.value === "Otra" &&
+      userNewCadeteria.value.length === 0 &&
+      role == "Cadete"
+    ) {
+      error = { ...error, newCadeteria: true };
+
+    }
+    if (
+      userCadeteria.value == "" &&
+      userCadeteria.value.length === 0 &&
+      role == "Cadete"
+    ) {
+      error = { ...error, cadeteria: true };
+    }
+    if (userLicensePlate.value.length == 0 && role == "Cadete" && moto.checkedA === true) error = { ...error, licensePlate: true };
+
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
 
@@ -218,7 +225,6 @@ export default function SignUp() {
           name: userInput.value,
           email: userEmail.value,
           password: userPassword.value,
-          /*  company: userCompany.value, */
           role,
           address: userAddress.value,
           dni: userDni.value || null,
@@ -229,9 +235,6 @@ export default function SignUp() {
               : userNewCadeteria.value,
         })
       );
-      /*       if (userNewCadeteria.value != '') {
-        dispatch((userNewCadeteria.value))
-      } */
     }
   };
 
@@ -338,19 +341,6 @@ export default function SignUp() {
                     {...userAddress}
                   />
                 </Grid>
-                {/*  <Grid item xs={12}>
-                  <TextField
-                    className={classInput.company}
-                    variant="outlined"
-                    required
-                    fullWidth
-                    label="Empresa"
-                    type="company"
-                    id="company"
-                    autoComplete="company"
-                    {...userCompany}
-                  />
-                </Grid> */}
               </>
             ) : (
                 <React.Fragment>
@@ -377,12 +367,13 @@ export default function SignUp() {
                         id="demo-customized-select-native"
                         input={<BootstrapInput />}
                         {...userCadeteria}
+                        className={classInput.cadeteria}
                       >
                         <option value="" disabled>
                           Seleccione su cadetería:
                       </option>
-                        {cadeterias.data.length > 0 &&
-                          cadeterias.data.map((cadeteria) => {
+                        {cadeterias.length > 0 &&
+                          cadeterias.map((cadeteria) => {
                             return (
                               <>
                                 <option value={cadeteria.name}>
@@ -408,6 +399,7 @@ export default function SignUp() {
                         id="cadeteria"
                         autoComplete="Cadeteria"
                         {...userNewCadeteria}
+                        className={classInput.newCadeteria}
                       />
                     </Grid>
                   ) : null}
@@ -445,6 +437,7 @@ export default function SignUp() {
                         id="licensePlate"
                         autoComplete="licensePlate"
                         {...userLicensePlate}
+                        className={classInput.licensePlate}
                       />
                     </Grid>
                   ) : null}
