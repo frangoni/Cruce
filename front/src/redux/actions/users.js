@@ -47,7 +47,7 @@ export const fetchCadetes = (data) => (dispatch, state) => {
       dispatch(setCadetes(cadetes.data));
     })
     .catch((err) => {
-      console.log("ERROR DEL FETCH REGISTER", err);
+
       dispatch(setError(err));
     });
 };
@@ -62,14 +62,14 @@ export const fetchEmpresas = (data) => (dispatch, state) => {
       dispatch(setEmpresas(empresas.data));
     })
     .catch((err) => {
-      console.log("ERROR DEL FETCH REGISTER", err);
+   
       dispatch(setError(err));
     });
 };
 
 export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
   const { token } = state().user;
-  console.log(token);
+ 
   axios({
     method: "PUT",
     url: `/api/users/${role.toLowerCase()}s/${id}`,
@@ -77,13 +77,13 @@ export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
     data: {},
   })
     .then((res) => {
-      console.log(res.data);
+ 
       if (role.toLowerCase() === "empresa")
         dispatch(updateEmpresa(id, res.data));
       else dispatch(updateCadete(id, res.data));
     })
     .catch((err) => {
-      console.log("ERROR DEL FETCH REGISTER", err);
+  
       dispatch(setError(err));
     });
 };
@@ -91,7 +91,7 @@ export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
 export const deleteUser = (data) => (dispatch) => {
   axios
     .post("/api/users/delete", data)
-    .then(() => console.log("hola"))
+    .then(() => console.log("Usuario Eliminado"))
     .catch((err) => {
       dispatch(setError(err));
     });

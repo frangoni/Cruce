@@ -57,7 +57,7 @@ export default function SideBar(props) {
     history.push("/inicio");
   };
 
-  const cadeterias = useSelector((state) => state.allCadeterias.allCadeterias);
+  const cadeterias = useSelector((state) => state.cadeterias.allCadeterias);
 
   const empresas = useSelector((state) => state.users.empresas);
   const isAdmin = useSelector((state) => (state.user.user.role === "Admin" ? true : false));

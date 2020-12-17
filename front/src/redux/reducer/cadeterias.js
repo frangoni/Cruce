@@ -1,11 +1,21 @@
-import { SET_MY_CADETERIAS, SET_ALL_CADETERIAS, ADD_MY_CADETERIA, SET_MY_TIENDAS,  SET_MY_CADETERIAS_CADETE} from "../constants";
+import {
+  SET_MY_CADETERIAS,
+  SET_ALL_CADETERIAS,
+  ADD_MY_CADETERIA,
+  SET_MY_TIENDAS,
+  SET_MY_CADETERIAS_CADETE,
+  GET_ALL_CADETERIAS,
+  GET_ACCEPTED_CADETERIAS,
+} from "../constants";
 
 const initialState = {
   cadeterias: [],
   misCadeterias: [],
   misCadeteriasCadete: [],
-  tiendas: []
-}
+  tiendas: [],
+  allCadeterias: [],
+  acceptedCadeterias: [],
+};
 
 const filterIds = (payload) => {
   return payload.map((cadeteria) => cadeteria.id);
@@ -29,9 +39,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         misCadeterias: createOrDestroy(state.misCadeterias, action.payload),
-      }
+      };
     case SET_MY_TIENDAS:
       return { ...state, tiendas: action.payload };
+    case GET_ACCEPTED_CADETERIAS:
+      return { ...state, acceptedCadeterias: action.payload };
+    case GET_ALL_CADETERIAS:
+      return { ...state, allCadeterias: action.payload };
     default:
       return state;
   }

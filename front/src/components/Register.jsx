@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as RLink } from "react-router-dom";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister, setError } from "../redux/actions/user";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,7 +24,8 @@ import ToggleButtonGroup from "@material-ui/core/ToggleButtonGroup";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
-import { fetchAcceptedCadeterias, createCadeteria } from "../redux/actions/cadeteria";
+import { fetchAcceptedCadeterias } from "../redux/actions/cadeteria";
+import {userRegisterAnimation} from '../redux/actions/user'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
   margin: {
     width: "100%",
+  },
+  dropdown: {
+    border: "1px solid red",
   },
 }));
 
@@ -97,7 +101,6 @@ export default function SignUp() {
   const userInput = useInput("fullName");
   const userEmail = useInput("email");
   const userPassword = useInput("password");
-  /* const userCompany = useInput("company"); */
   const userAddress = useInput("address");
   const userDni = useInput("dni");
   const userLicensePlate = useInput("licensePlate");
@@ -108,18 +111,21 @@ export default function SignUp() {
   });
   const [role, setRole] = useState("Empresa");
   const handleRole = (event, role) => {
+    setErrorRegisterFront({});
     setRole(role);
   };
   const [selectCadeteria, setSelectCadeteria] = useState("");
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
+
   const classInput = {
     name: "",
     email: "",
     password: "",
-    /*   company: "", */
     address: "",
     dni: "",
+    newCadeteria: "",
     cadeteria: "",
+    licensePlate: "",
   };
 
   const handleSwitchChange = (event) => {
@@ -129,16 +135,31 @@ export default function SignUp() {
   errorRegisterFront.name ? (classInput.name = classes.root) : null;
   errorRegisterFront.email ? (classInput.email = classes.root) : null;
   errorRegisterFront.password ? (classInput.password = classes.root) : null;
-  /* errorRegisterFront.company ? (classInput.company = classes.root) : null; */
+
   errorRegisterFront.address ? (classInput.address = classes.root) : null;
   errorRegisterFront.dni ? (classInput.dni = classes.root) : null;
+  errorRegisterFront.newCadeteria
+    ? (classInput.newCadeteria = classes.root)
+    : null;
+  errorRegisterFront.cadeteria
+    ? (classInput.cadeteria = classes.dropdown)
+    : null;
+  errorRegisterFront.licensePlate
+    ? (classInput.licensePlate = classes.root)
+    : null;
 
   const dispatch = useDispatch();
 
-  const isLoadingRegister = useSelector((state) => state.animations.isLoadingRegister);
-  const statusRegister = useSelector((state) => state.animations.statusRegister);
+  const isLoadingRegister = useSelector(
+    (state) => state.animations.isLoadingRegister
+  );
+  const statusRegister = useSelector(
+    (state) => state.animations.statusRegister
+  );
   const errorBack = useSelector((state) => state.user.errorBack);
-  const cadeterias = useSelector((state) => state.allCadeterias.acceptedCadeterias);
+  const cadeterias = useSelector(
+    (state) => state.cadeterias.acceptedCadeterias
+  );
   const history = useHistory();
 
   const handleCadeteriaChange = (e) => {
@@ -154,6 +175,7 @@ export default function SignUp() {
     if (statusRegister === 201) {
       setTimeout(() => {
         history.push("/inicio");
+        dispatch(userRegisterAnimation(null, null))
         //una vez hecho el push hay que pasar el status register a ""
       }, 5000);
     }
@@ -167,7 +189,6 @@ export default function SignUp() {
     userInput.value,
     userEmail.value,
     userPassword.value,
-    /* userCompany.value, */
     userAddress.value,
     userDni.value,
     userLicensePlate.value,
@@ -183,9 +204,30 @@ export default function SignUp() {
     }
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
-    /* if (userCompany.value.length == 0 && role === "Empresa") error = { ...error, company: true }; */
-    if (userAddress.value.length == 0 && role === "Empresa") error = { ...error, address: true };
-    if (userDni.value.length == 0 && role === "Cadete") error = { ...error, dni: true };
+    if (userAddress.value.length == 0 && role === "Empresa")
+      error = { ...error, address: true };
+    if (userDni.value.length == 0 && role === "Cadete")
+      error = { ...error, dni: true };
+    if (
+      userCadeteria.value === "Otra" &&
+      userNewCadeteria.value.length === 0 &&
+      role == "Cadete"
+    ) {
+      error = { ...error, newCadeteria: true };
+    }
+    if (
+      userCadeteria.value == "" &&
+      userCadeteria.value.length === 0 &&
+      role == "Cadete"
+    ) {
+      error = { ...error, cadeteria: true };
+    }
+    if (
+      userLicensePlate.value.length == 0 &&
+      role == "Cadete" &&
+      moto.checkedA === true
+    )
+      error = { ...error, licensePlate: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
 
@@ -195,17 +237,16 @@ export default function SignUp() {
           name: userInput.value,
           email: userEmail.value,
           password: userPassword.value,
-          /*  company: userCompany.value, */
           role,
           address: userAddress.value,
           dni: userDni.value || null,
           licensePlate: userLicensePlate.value,
-          cadeteria: userNewCadeteria.value === null ? userCadeteria.value : userNewCadeteria.value,
+          cadeteria:
+            userNewCadeteria.value === null
+              ? userCadeteria.value
+              : userNewCadeteria.value,
         })
       );
-      /*       if (userNewCadeteria.value != '') {
-        dispatch((userNewCadeteria.value))
-      } */
     }
   };
 
@@ -221,16 +262,37 @@ export default function SignUp() {
         </Typography>
 
         <Grid container justify="flex-end">
-          {isLoadingRegister ? <CircularProgress style={{ margin: "25px auto" }} /> : null}
+          {isLoadingRegister ? (
+            <CircularProgress style={{ margin: "25px auto" }} />
+          ) : null}
         </Grid>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid container direction="column" justify="center" alignItems="center" style={{ marginBottom: "5%" }}>
-              <ToggleButtonGroup value={role} exclusive onChange={handleRole} aria-label="text alignment">
-                <ToggleButton value="Empresa" label="Empresa" disabled={isLoadingRegister ? true : false}>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              alignItems="center"
+              style={{ marginBottom: "5%" }}
+            >
+              <ToggleButtonGroup
+                value={role}
+                exclusive
+                onChange={handleRole}
+                aria-label="text alignment"
+              >
+                <ToggleButton
+                  value="Empresa"
+                  label="Empresa"
+                  disabled={isLoadingRegister ? true : false}
+                >
                   Empresa
                 </ToggleButton>
-                <ToggleButton value="Cadete" label="Cadete" disabled={isLoadingRegister ? true : false}>
+                <ToggleButton
+                  value="Cadete"
+                  label="Cadete"
+                  disabled={isLoadingRegister ? true : false}
+                >
                   Cadete
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -291,19 +353,6 @@ export default function SignUp() {
                     {...userAddress}
                   />
                 </Grid>
-                {/*  <Grid item xs={12}>
-                  <TextField
-                    className={classInput.company}
-                    variant="outlined"
-                    required
-                    fullWidth
-                    label="Empresa"
-                    type="company"
-                    id="company"
-                    autoComplete="company"
-                    {...userCompany}
-                  />
-                </Grid> */}
               </>
             ) : (
               <React.Fragment>
@@ -322,8 +371,16 @@ export default function SignUp() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl className={classes.margin} onChange={handleCadeteriaChange}>
-                    <NativeSelect id="demo-customized-select-native" input={<BootstrapInput />} {...userCadeteria}>
+                  <FormControl
+                    className={classes.margin}
+                    onChange={handleCadeteriaChange}
+                  >
+                    <NativeSelect
+                      id="demo-customized-select-native"
+                      input={<BootstrapInput />}
+                      {...userCadeteria}
+                      className={classInput.cadeteria}
+                    >
                       <option value="" disabled>
                         Seleccione su cadetería:
                       </option>
@@ -331,7 +388,9 @@ export default function SignUp() {
                         cadeterias.map((cadeteria) => {
                           return (
                             <>
-                              <option value={cadeteria.name}>{cadeteria.name}</option>
+                              <option value={cadeteria.name}>
+                                {cadeteria.name}
+                              </option>
                             </>
                           );
                         })}
@@ -341,7 +400,10 @@ export default function SignUp() {
                 </Grid>
                 {selectCadeteria === "Otra" ? (
                   <Grid item xs={12}>
-                    <p className="parrafo">Si su cadetería no se encuentra en la lista previa, regístrela aquí.</p>
+                    <p className="parrafo">
+                      Si su cadetería no se encuentra en la lista previa,
+                      regístrela aquí.
+                    </p>
 
                     <TextField
                       variant="outlined"
@@ -350,11 +412,17 @@ export default function SignUp() {
                       id="cadeteria"
                       autoComplete="Cadeteria"
                       {...userNewCadeteria}
+                      className={classInput.newCadeteria}
                     />
                   </Grid>
                 ) : null}
 
-                <Grid container direction="column" justify="center" alignItems="center">
+                <Grid
+                  container
+                  direction="column"
+                  justify="center"
+                  alignItems="center"
+                >
                   <FormGroup row>
                     <FormControlLabel
                       labelPlacement="start"
@@ -382,6 +450,7 @@ export default function SignUp() {
                       id="licensePlate"
                       autoComplete="licensePlate"
                       {...userLicensePlate}
+                      className={classInput.licensePlate}
                     />
                   </Grid>
                 ) : null}
@@ -391,7 +460,8 @@ export default function SignUp() {
           <Grid container justify="flex-end">
             {errorBack ? (
               <Alert severity="error" style={{ margin: "25px auto" }}>
-                Los datos ingresados no son válidos o ya existen, intente nuevamente.
+                Los datos ingresados no son válidos o ya existen, intente
+                nuevamente.
               </Alert>
             ) : null}
             {Object.keys(errorRegisterFront).length ? (
@@ -404,7 +474,8 @@ export default function SignUp() {
           {statusRegister == 201 ? (
             <Grid container justify="flex-end">
               <Alert severity="info" style={{ margin: "25px auto" }}>
-                Se ha registrado correctamente. Aguarda a recibir un email de confirmación. Te esperamos!
+                Se ha registrado correctamente. Aguarda a recibir un email de
+                confirmación. Te esperamos!
               </Alert>
             </Grid>
           ) : null}
@@ -421,8 +492,11 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
-                ¿Ya tiene una cuenta? Inicie sesión.
+              <Link variant="body2">
+                <RLink to="/ingreso">
+                  
+                  {"¿Ya tiene una cuenta? Inicie sesión."}
+                </RLink>
               </Link>
             </Grid>
           </Grid>

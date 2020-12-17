@@ -4,7 +4,6 @@ import users from "./users";
 import animations from "./animations";
 import orders from "./orders";
 import cadeterias from "./cadeterias";
-import allCadeterias from "./cadeteria";
 import metricas from "./metricas";
 
 export default combineReducers({
@@ -13,6 +12,5 @@ export default combineReducers({
   animations,
   orders,
   cadeterias,
-  allCadeterias,
   metricas,
 });

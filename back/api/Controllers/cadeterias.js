@@ -46,7 +46,7 @@ const acceptById = async (req, res, next) => {
         plain: true,
       }
     );
-    console.log("modified", modified);
+   
     return res.send(modified);
   } catch (e) {
     console.log(e);

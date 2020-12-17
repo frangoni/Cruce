@@ -8,6 +8,7 @@ import WebSocket from "./components/websocket";
 import SingleOrder from "./components/SingleOrder";
 import MyOrders from "./components/MyOrders";
 import Cadeterias from "./components/cadeterias";
+import ResetPassword from "./components/ResetPassword";
 import { useDispatch, useSelector } from "react-redux";
 import SideBar from "./components/SideBar";
 import Metricas from "./components/Metricas";
@@ -18,7 +19,9 @@ export default function Main() {
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (!token) history.push("/inicio");
+    if (!token && !(history.location.pathname.match(/\/reset/) || history.location.pathname === "/registro")) {
+      history.push("/inicio");
+    }
     return () => {};
   }, [token]);
 
@@ -36,6 +39,8 @@ export default function Main() {
         <Route path="/inicio" component={Splash} />
         <Route path="/ingreso" component={Login} />
         <Route path="/registro" component={Register} />
+        <Route path="/reset/:uuid" component={ResetPassword} />
+        <Route path="/reset" component={ResetPassword} />
         <Route
           path="/admin"
           render={() => (

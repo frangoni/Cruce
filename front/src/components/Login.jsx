@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogin, setError } from "../redux/actions/user";
 import { useInput } from "../hooks/useInput";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as RLink } from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
 
 import Avatar from "@material-ui/core/Avatar";
@@ -154,14 +154,18 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="/register" variant="body2">
-                {"¿No tiene una cuenta? Regístrese"}
+              <Link variant="body2">
+                <RLink to="/registro" >  {"¿No tiene una cuenta? Regístrese "}</RLink>
+              </Link>
+              {"|"}
+              <Link variant="body2">
+                <RLink to="/reset"> {"¿Olvidaste tu contraseña?"} </RLink>
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
-      <Box mt={8}></Box>
+      <Box sx={8}></Box>
     </Container>
   );
 }

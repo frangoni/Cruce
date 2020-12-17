@@ -88,7 +88,6 @@ export const fetchPickOrder = (orderId) => (dispatch, state) => {
 export const fetchOrders = () => (dispatch, state) => {
   const token = state().user.token;
   axios.get("/api/order/", { headers: { Authorization: `Bearer ${token}` } }).then((orders) => {
-    console.log("orders", orders);
     dispatch(getOrders(orders.data));
   });
 };
@@ -100,16 +99,21 @@ const getSingleOrder = function (order) {
   };
 };
 
-export const fetchSingleOrder = (id) => (dispatch) => {
-  axios.get(`/api/order/${id}`).then((order) => {
-    let parsedOrder = {
-      ...order.data,
-      products: JSON.parse(order.data.products),
-      client: JSON.parse(order.data.client),
-      destination: JSON.parse(order.data.destination),
-    };
-    return dispatch(getSingleOrder(parsedOrder));
-  });
+export const fetchSingleOrder = (id) => (dispatch, state) => {
+  const token = state().user.token;
+  axios
+  .get(`/api/order/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((order) => {
+      let parsedOrder = {
+        ...order.data,
+        products: JSON.parse(order.data.products),
+        client: JSON.parse(order.data.client),
+        destination: JSON.parse(order.data.destination),
+      };
+      return dispatch(getSingleOrder(parsedOrder));
+  })
 };
 
 export const orderStateUpdate = (estado, id, userId) => (dispatch) => {
