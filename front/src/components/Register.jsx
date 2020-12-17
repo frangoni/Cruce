@@ -112,7 +112,7 @@ export default function SignUp() {
   const [role, setRole] = useState("Empresa");
   const handleRole = (event, role) => {
     setErrorRegisterFront({});
-    setRole(role);
+    setRole(lastRole => role ? role : lastRole);
   };
   const [selectCadeteria, setSelectCadeteria] = useState("");
   const [errorRegisterFront, setErrorRegisterFront] = useState({});
@@ -296,7 +296,7 @@ export default function SignUp() {
                   />
                 </Grid>
               </>
-            ) : (
+            ) : role === "Cadete" ? (
               <React.Fragment>
                 <Grid item xs={12}>
                   <TextField
@@ -384,7 +384,7 @@ export default function SignUp() {
                   </Grid>
                 ) : null}
               </React.Fragment>
-            )}
+            ) : null}
           </Grid>
           <Grid container justify="flex-end">
             {errorBack ? (
