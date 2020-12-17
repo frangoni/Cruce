@@ -18,7 +18,7 @@ export default function Confirmacion({ title, accept, deny, open }) {
                 <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Estas seguro de cambiar el estado de la orden?
+                        Estas seguro de realizar el siguiente cambio??
           </DialogContentText>
                 </DialogContent>
                 <DialogActions>

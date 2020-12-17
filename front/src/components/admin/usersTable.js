@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -11,6 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import Alert from "@material-ui/lab/Alert";
+import Confirmacion from "../Confirmacion";
 
 //Redux
 import { useDispatch } from "react-redux";
@@ -36,31 +37,58 @@ const useStyles = makeStyles({
 export default function UsersTable({ users, showCheck }) {
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [selected, setSelected] = useState({ id: null, role: null })
   const handlerCheckClick = (id, role) => {
-    if (!role) {
-      dispatch(fetchAcceptCadeteriaById(id));
-    } else {
-      dispatch(fetchAcceptUserById(id, role));
-    }
-    dispatch(fetchEmpresas());
-    dispatch(fetchCadetes());
-    dispatch(fetchCadeterias());
+    setOpen(true);
+    setTitle("Aceptar")
+    setSelected({ id, role })
   };
 
   const handlerDeleteClick = (id, role) => {
-    if (!role) {
-      dispatch(deleteCadeteria({ content: id }));
-    } else {
-      dispatch(deleteUser({ content: id }));
-    }
-    dispatch(fetchEmpresas());
-    dispatch(fetchCadetes());
-    dispatch(fetchCadeterias());
+    setTitle("Rechazar")
+    setSelected({ id, role })
+    setOpen(true);
   };
+
+  const accept = () => {
+    setOpen(false);
+    if (title === "Aceptar") {
+      if (!selected.role) {
+        dispatch(fetchAcceptCadeteriaById(selected.id));
+      } else {
+        dispatch(fetchAcceptUserById(selected.id, selected.role));
+      }
+      dispatch(fetchEmpresas());
+      dispatch(fetchCadetes());
+      dispatch(fetchCadeterias());
+    }
+    else if (title === "Rechazar") {
+      if (!selected.role) {
+        dispatch(deleteCadeteria({ content: selected.id }));
+      } else {
+        dispatch(deleteUser({ content: selected.id }));
+      }
+      dispatch(fetchEmpresas());
+      dispatch(fetchCadetes());
+      dispatch(fetchCadeterias());
+    }
+    setTitle("")
+    setSelected({ id: null, role: null })
+  };
+
+  const deny = () => {
+    setOpen(false);
+    setTitle("")
+    setSelected({ id: null, role: null })
+  };
+
+
 
   return (
     <TableContainer component={Paper}>
+      <Confirmacion open={open} accept={accept} title={title} deny={deny} />
       <Table className={classes.table} aria-label="caption table">
         <caption>Listado de Cadetes/Empresas</caption>
         <TableHead>
@@ -81,33 +109,33 @@ export default function UsersTable({ users, showCheck }) {
               <TableCell align="center">{user.company}</TableCell>
               <TableCell align="center">
                 {user.role == "Cadete" &&
-                user.cadeteria.length > 0 &&
-                user.cadeteria[0].accepted === false ? (
-                  <div className="aceptarPrimeroCadeteria">
-                    <strong>Aceptar primero la cadeteria</strong>
-                  </div>
-                ) : (
-                  <>
-                    <IconButton
-                      aria-label="delete"
-                      className={classes.margin}
-                      size="medium"
-                      onClick={() => handlerDeleteClick(user.id, user.role)}
-                    >
-                      <DeleteIcon fontSize="inherit" />
-                    </IconButton>
-                    {showCheck ? (
+                  user.cadeteria.length > 0 &&
+                  user.cadeteria[0].accepted === false ? (
+                    <div className="aceptarPrimeroCadeteria">
+                      <strong>Aceptar primero la cadeteria</strong>
+                    </div>
+                  ) : (
+                    <>
                       <IconButton
-                        onClick={() => handlerCheckClick(user.id, user.role)}
-                        aria-label="accept"
+                        aria-label="delete"
                         className={classes.margin}
                         size="medium"
+                        onClick={() => handlerDeleteClick(user.id, user.role)}
                       >
-                        <CheckIcon fontSize="inherit" />
+                        <DeleteIcon fontSize="inherit" />
                       </IconButton>
-                    ) : null}
-                  </>
-                )}
+                      {showCheck ? (
+                        <IconButton
+                          onClick={() => handlerCheckClick(user.id, user.role)}
+                          aria-label="accept"
+                          className={classes.margin}
+                          size="medium"
+                        >
+                          <CheckIcon fontSize="inherit" />
+                        </IconButton>
+                      ) : null}
+                    </>
+                  )}
               </TableCell>
             </TableRow>
           ))}
