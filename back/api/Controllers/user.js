@@ -22,19 +22,21 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
-  console.log("req body", req.body);
+
   try {
     const user = await User.create(req.body);
-    Cadeteria.findOrCreate({
-      where: {
-        name: req.body.cadeteria,
-      },
-    }).then((cadeteria) => {
-      user.setCadeteria(cadeteria[0].id);
-    });
-
+    if (user.role == "Cadete") {
+      Cadeteria.findOrCreate({
+        where: {
+          name: req.body.cadeteria,
+        },
+      }).then((cadeteria) => {
+        user.setCadeteria(cadeteria[0].id);
+      });
+    }
     res.status(201).send(user);
   } catch (err) {
+    console.log("err", err)
     res.status(400).send(err);
   }
 };

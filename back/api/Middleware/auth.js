@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../Models/User");
 const privateKey = process.env.PORT;
+const Order = require("../Models/Order")
 
 const genereteNewToken = data => (
   jwt.sign({
@@ -18,7 +19,7 @@ const refreshToken = (data, actualToken) => {
 }
 
 const auth = async (req, res, next) => {
-  console.log('req headers', req.headers.authorization)
+ 
   let idToken;
   if (
     req.headers.authorization &&
@@ -41,7 +42,6 @@ const auth = async (req, res, next) => {
     if (user) {
       user.dataValues.token = refreshToken(decoded, idToken)
       req.user = user;
-
     }
     return next();
   } catch (e) {

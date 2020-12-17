@@ -159,7 +159,7 @@ export default function SignIn() {
               </Link>
               {"|"}
               <Link variant="body2">
-                <RLink to="/reset"> {"¿Olvidaste tu contrase?"} </RLink>
+                <RLink to="/reset"> {"¿Olvidaste tu contraseña?"} </RLink>
               </Link>
             </Grid>
           </Grid>

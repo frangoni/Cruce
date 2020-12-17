@@ -83,7 +83,7 @@ const Filter = ({ setFilter, tiendas }) => {
               options={tiendas}
               onChange={(a, value) => handleTienda(value)}
               getOptionLabel={(tienda) => tienda.name}
-              style={{ width: 300 }}
+              style={{ width:"auto" }}
               renderInput={(params) => <TextField {...params} label="Tiendas" variant="outlined" />}
             />
           </>
