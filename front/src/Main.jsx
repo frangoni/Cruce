@@ -8,7 +8,7 @@ import WebSocket from "./components/websocket";
 import SingleOrder from "./components/SingleOrder";
 import MyOrders from "./components/MyOrders";
 import Cadeterias from "./components/cadeterias";
-import ResetPassword from "./components/ResetPassword"
+import ResetPassword from "./components/ResetPassword";
 import { useDispatch, useSelector } from "react-redux";
 import SideBar from "./components/SideBar";
 import Metricas from "./components/Metricas";
@@ -22,7 +22,7 @@ export default function Main() {
     if (!token && !(history.location.pathname.match(/\/reset/) || history.location.pathname === "/registro")) {
       history.push("/inicio");
     }
-    return () => { };
+    return () => {};
   }, [token]);
 
   useEffect(() => {
@@ -82,14 +82,13 @@ export default function Main() {
           )}
         />
         <Route
-          path="/metricas"
-          render={() => (
+          path="/perfil/:id"
+          render={({ match }) => (
             <SideBar title="Metricas">
-              <Metricas />
+              <Metricas match={match} />
             </SideBar>
           )}
         />
-
         {token ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
       </Switch>
     </>

@@ -24,7 +24,8 @@ import ToggleButtonGroup from "@material-ui/core/ToggleButtonGroup";
 import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
-import { fetchAcceptedCadeterias, createCadeteria } from "../redux/actions/cadeteria";
+import { fetchAcceptedCadeterias } from "../redux/actions/cadeteria";
+import {userRegisterAnimation} from '../redux/actions/user'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
   margin: {
     width: "100%",
+  },
+  dropdown: {
+    border: "1px solid red",
   },
 }));
 
@@ -121,7 +125,7 @@ export default function SignUp() {
     dni: "",
     newCadeteria: "",
     cadeteria: "",
-    licensePlate: ''
+    licensePlate: "",
   };
 
   const handleSwitchChange = (event) => {
@@ -137,8 +141,12 @@ export default function SignUp() {
   errorRegisterFront.newCadeteria
     ? (classInput.newCadeteria = classes.root)
     : null;
-  errorRegisterFront.cadeteria ? (classInput.cadeteria = classes.dropdown) : null;
-  errorRegisterFront.licensePlate ? (classInput.licensePlate = classes.root) : null;
+  errorRegisterFront.cadeteria
+    ? (classInput.cadeteria = classes.dropdown)
+    : null;
+  errorRegisterFront.licensePlate
+    ? (classInput.licensePlate = classes.root)
+    : null;
 
   const dispatch = useDispatch();
 
@@ -167,6 +175,7 @@ export default function SignUp() {
     if (statusRegister === 201) {
       setTimeout(() => {
         history.push("/inicio");
+        dispatch(userRegisterAnimation(null, null))
         //una vez hecho el push hay que pasar el status register a ""
       }, 5000);
     }
@@ -205,7 +214,6 @@ export default function SignUp() {
       role == "Cadete"
     ) {
       error = { ...error, newCadeteria: true };
-
     }
     if (
       userCadeteria.value == "" &&
@@ -214,8 +222,12 @@ export default function SignUp() {
     ) {
       error = { ...error, cadeteria: true };
     }
-    if (userLicensePlate.value.length == 0 && role == "Cadete" && moto.checkedA === true) error = { ...error, licensePlate: true };
-
+    if (
+      userLicensePlate.value.length == 0 &&
+      role == "Cadete" &&
+      moto.checkedA === true
+    )
+      error = { ...error, licensePlate: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
 
@@ -343,106 +355,107 @@ export default function SignUp() {
                 </Grid>
               </>
             ) : (
-                <React.Fragment>
-                  <Grid item xs={12}>
-                    <TextField
-                      className={classInput.dni}
-                      variant="outlined"
-                      required
-                      fullWidth
-                      label="DNI"
-                      type="dni"
-                      id="dni"
-                      autoComplete="dni"
-                      {...userDni}
-                    />
-                  </Grid>
+              <React.Fragment>
+                <Grid item xs={12}>
+                  <TextField
+                    className={classInput.dni}
+                    variant="outlined"
+                    required
+                    fullWidth
+                    label="DNI"
+                    type="dni"
+                    id="dni"
+                    autoComplete="dni"
+                    {...userDni}
+                  />
+                </Grid>
 
-                  <Grid item xs={12}>
-                    <FormControl
-                      className={classes.margin}
-                      onChange={handleCadeteriaChange}
+                <Grid item xs={12}>
+                  <FormControl
+                    className={classes.margin}
+                    onChange={handleCadeteriaChange}
+                  >
+                    <NativeSelect
+                      id="demo-customized-select-native"
+                      input={<BootstrapInput />}
+                      {...userCadeteria}
+                      className={classInput.cadeteria}
                     >
-                      <NativeSelect
-                        id="demo-customized-select-native"
-                        input={<BootstrapInput />}
-                        {...userCadeteria}
-                        className={classInput.cadeteria}
-                      >
-                        <option value="" disabled>
-                          Seleccione su cadetería:
+                      <option value="" disabled>
+                        Seleccione su cadetería:
                       </option>
-                        {cadeterias.length > 0 &&
-                          cadeterias.map((cadeteria) => {
-                            return (
-                              <>
-                                <option value={cadeteria.name}>
-                                  {cadeteria.name}
-                                </option>
-                              </>
-                            );
-                          })}
-                        <option value="Otra">Otra</option>
-                      </NativeSelect>
-                    </FormControl>
-                  </Grid>
-                  {selectCadeteria === "Otra" ? (
-                    <Grid item xs={12}>
-                      <p className="parrafo">
-                        Si su cadetería no se encuentra en la lista previa,
-                        regístrela aquí.
+                      {cadeterias.length > 0 &&
+                        cadeterias.map((cadeteria) => {
+                          return (
+                            <>
+                              <option value={cadeteria.name}>
+                                {cadeteria.name}
+                              </option>
+                            </>
+                          );
+                        })}
+                      <option value="Otra">Otra</option>
+                    </NativeSelect>
+                  </FormControl>
+                </Grid>
+                {selectCadeteria === "Otra" ? (
+                  <Grid item xs={12}>
+                    <p className="parrafo">
+                      Si su cadetería no se encuentra en la lista previa,
+                      regístrela aquí.
                     </p>
 
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        id="cadeteria"
-                        autoComplete="Cadeteria"
-                        {...userNewCadeteria}
-                        className={classInput.newCadeteria}
-                      />
-                    </Grid>
-                  ) : null}
-
-                  <Grid
-                    container
-                    direction="column"
-                    justify="center"
-                    alignItems="center"
-                  >
-                    <FormGroup row>
-                      <FormControlLabel
-                        labelPlacement="start"
-                        control={
-                          <Switch
-                            checked={moto.checkedA}
-                            onChange={handleSwitchChange}
-                            name="checkedA"
-                            color="primary"
-                            disabled={isLoadingRegister ? true : false}
-                          />
-                        }
-                        label="Tengo moto"
-                      />
-                    </FormGroup>
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      required
+                      id="cadeteria"
+                      autoComplete="Cadeteria"
+                      {...userNewCadeteria}
+                      className={classInput.newCadeteria}
+                    />
                   </Grid>
+                ) : null}
 
-                  {moto.checkedA ? (
-                    <Grid item xs={12}>
-                      <TextField
-                        variant="outlined"
-                        fullWidth
-                        label="Patente"
-                        type="licensePlate"
-                        id="licensePlate"
-                        autoComplete="licensePlate"
-                        {...userLicensePlate}
-                        className={classInput.licensePlate}
-                      />
-                    </Grid>
-                  ) : null}
-                </React.Fragment>
-              )}
+                <Grid
+                  container
+                  direction="column"
+                  justify="center"
+                  alignItems="center"
+                >
+                  <FormGroup row>
+                    <FormControlLabel
+                      labelPlacement="start"
+                      control={
+                        <Switch
+                          checked={moto.checkedA}
+                          onChange={handleSwitchChange}
+                          name="checkedA"
+                          color="primary"
+                          disabled={isLoadingRegister ? true : false}
+                        />
+                      }
+                      label="Tengo moto"
+                    />
+                  </FormGroup>
+                </Grid>
+
+                {moto.checkedA ? (
+                  <Grid item xs={12}>
+                    <TextField
+                      variant="outlined"
+                      fullWidth
+                      label="Patente"
+                      type="licensePlate"
+                      id="licensePlate"
+                      autoComplete="licensePlate"
+                      {...userLicensePlate}
+                      className={classInput.licensePlate}
+                    />
+                  </Grid>
+                ) : null}
+              </React.Fragment>
+            )}
           </Grid>
           <Grid container justify="flex-end">
             {errorBack ? (
@@ -480,7 +493,10 @@ export default function SignUp() {
           <Grid container justify="flex-end">
             <Grid item>
               <Link variant="body2">
-                <RLink to="/ingreso"> {"¿Ya tiene una cuenta? Inicie sesión."} </RLink>
+                <RLink to="/ingreso">
+                  
+                  {"¿Ya tiene una cuenta? Inicie sesión."}
+                </RLink>
               </Link>
             </Grid>
           </Grid>

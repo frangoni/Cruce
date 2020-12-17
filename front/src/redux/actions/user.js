@@ -4,7 +4,7 @@ import {
   USER_LOGIN_ANIMATION,
   USER_LOGOUT,
   SET_ERROR_USER_BACK,
-  RESET_ANIMATIONS
+  RESET_ANIMATIONS,
 } from "../constants";
 import axios from "axios";
 

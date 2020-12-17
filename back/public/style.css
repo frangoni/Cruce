@@ -230,6 +230,17 @@ a {
   transition: 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms;
   width: 0;
 }
+
+@media (max-width: 1068px) {
+  .filterActive {
+    transform: scale(0.8) translate(10%, -60%);
+  }
+
+  .filterHidden {
+    transform: scale(0.8) translate(10%, -60%);
+  }
+}
+
 #filterButton {
   position: fixed;
   top: 50%;
@@ -271,4 +282,11 @@ a {
   margin-top: 7em;
   transform: scale(0.8);
   width: 85% !important;
+}
+
+#checkBoxCadeterias {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  align-items: center;
 }

@@ -65,7 +65,7 @@ const getAllOrdes = async (req, res, next) => {
                 },
           raw: true,
         }));
-    console.log("orders", orders);
+  
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),

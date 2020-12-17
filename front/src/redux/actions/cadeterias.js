@@ -45,7 +45,7 @@ export const fetchMyCadeterias = () => (dispatch, state) => {
 
 export const fetchMyCadeteriaCadete = (id) => (dispatch, state) => {
   const token = state().user.token;
-  console.log("En el action, ID", id);
+
   axios
     .get(`/api/cadeterias/miscadetes/${id}`, {
       headers: { Authorization: `Bearer ${token}` },

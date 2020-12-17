@@ -14,19 +14,11 @@ import Alert from "@material-ui/lab/Alert";
 import Confirmacion from "../Confirmacion";
 
 //Redux
+import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 import { useDispatch } from "react-redux";
-import {
-  fetchAcceptUserById,
-  deleteUser,
-  fetchCadetes,
-  fetchEmpresas,
-} from "../../redux/actions/users";
-
-import {
-  fetchAcceptCadeteriaById,
-  fetchCadeterias,
-  deleteCadeteria,
-} from "../../redux/actions/cadeteria";
+import { fetchAcceptUserById, deleteUser, fetchCadetes, fetchEmpresas } from "../../redux/actions/users";
+import { fetchAcceptCadeteriaById, fetchCadeterias, deleteCadeteria } from "../../redux/actions/cadeteria";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   table: {
@@ -34,12 +26,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UsersTable({ users, showCheck }) {
+export default function UsersTable({ users, showCheck, selected }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [selected, setSelected] = useState({ id: null, role: null })
+  const [selectedRow, setSelected] = useState({ id: null, role: null })
   const handlerCheckClick = (id, role) => {
     setOpen(true);
     setTitle("Aceptar")
@@ -55,20 +47,20 @@ export default function UsersTable({ users, showCheck }) {
   const accept = () => {
     setOpen(false);
     if (title === "Aceptar") {
-      if (!selected.role) {
-        dispatch(fetchAcceptCadeteriaById(selected.id));
+      if (!selectedRow.role) {
+        dispatch(fetchAcceptCadeteriaById(selectedRow.id));
       } else {
-        dispatch(fetchAcceptUserById(selected.id, selected.role));
+        dispatch(fetchAcceptUserById(selectedRow.id, selectedRow.role));
       }
       dispatch(fetchEmpresas());
       dispatch(fetchCadetes());
       dispatch(fetchCadeterias());
     }
     else if (title === "Rechazar") {
-      if (!selected.role) {
-        dispatch(deleteCadeteria({ content: selected.id }));
+      if (!selectedRow.role) {
+        dispatch(deleteCadeteria({ content: selectedRow.id }));
       } else {
-        dispatch(deleteUser({ content: selected.id }));
+        dispatch(deleteUser({ content: selectedRow.id }));
       }
       dispatch(fetchEmpresas());
       dispatch(fetchCadetes());
@@ -108,13 +100,11 @@ export default function UsersTable({ users, showCheck }) {
               <TableCell align="center">{user.email}</TableCell>
               <TableCell align="center">{user.company}</TableCell>
               <TableCell align="center">
-                {user.role == "Cadete" &&
-                  user.cadeteria.length > 0 &&
-                  user.cadeteria[0].accepted === false ? (
-                    <div className="aceptarPrimeroCadeteria">
-                      <strong>Aceptar primero la cadeteria</strong>
-                    </div>
-                  ) : (
+                {user.role == "Cadete" && user.cadeteria.length > 0 && user.cadeteria[0].accepted === false ? (
+                  <div className="aceptarPrimeroCadeteria">
+                    <strong>Aceptar primero la cadeteria</strong>
+                  </div>
+                ) : (
                     <>
                       <IconButton
                         aria-label="delete"
@@ -126,13 +116,20 @@ export default function UsersTable({ users, showCheck }) {
                       </IconButton>
                       {showCheck ? (
                         <IconButton
-                          onClick={() => handlerCheckClick(user.id, user.role)}
-                          aria-label="accept"
+                          aria-label="delete"
                           className={classes.margin}
                           size="medium"
+                          onClick={() => handlerDeleteClick(user.id, user.role)}
                         >
-                          <CheckIcon fontSize="inherit" />
+                          <DeleteIcon fontSize="inherit" />
                         </IconButton>
+                      ) : null}
+                      {selected != "cadeterias" ? (
+                        <Link to={`/perfil/${user.id}`}>
+                          <IconButton aria-label="view" className={classes.margin} size="medium">
+                            <VisibilityOutlinedIcon fontSize="inherit" />
+                          </IconButton>
+                        </Link>
                       ) : null}
                     </>
                   )}

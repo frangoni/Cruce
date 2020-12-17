@@ -57,12 +57,12 @@ export default function SideBar(props) {
     history.push("/inicio");
   };
 
-  const cadeterias = useSelector((state) => state.allCadeterias.allCadeterias);
+  const cadeterias = useSelector((state) => state.cadeterias.allCadeterias);
 
   const empresas = useSelector((state) => state.users.empresas);
   const isAdmin = useSelector((state) => (state.user.user.role === "Admin" ? true : false));
   const isTienda = useSelector((state) => (state.user.user.role === "Empresa" ? true : false));
-  const userName = useSelector((state) => state.user.user.name);
+  const { name, id, role } = useSelector((state) => state.user.user);
 
   useEffect(() => {
     dispatch(fetchEmpresas());
@@ -135,7 +135,7 @@ export default function SideBar(props) {
           </IconButton>
           <Typography variant="h6" noWrap>
             {props.title}
-            {` || ${userName} `}
+            {` || ${name} `}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -239,7 +239,7 @@ export default function SideBar(props) {
                 <ListItemText primary={"Ordenes Activas"} />
               </ListItem>
             </Link>
-            <Link style={{ textDecoration: "none" }} to={isTienda ? "/cadeterias" : "/"}>
+            <Link style={{ textDecoration: "none" }} to={`/perfil/${id}`}>
               <ListItem button key={"perfil"}>
                 <ListItemIcon>
                   <AccountBoxIcon />

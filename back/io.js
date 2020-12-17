@@ -10,7 +10,7 @@ io.on("connection", async (socket) => {
   const cadeterias = await user.getCadeteria({ raw: true });
   cadeterias.forEach((cadeteria) => {
     socket.join(cadeteria.name);
-    console.log("Conexión establecida", cadeteria.name);
+  
   });
 });
 
