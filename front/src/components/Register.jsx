@@ -408,6 +408,7 @@ export default function SignUp() {
                     <TextField
                       variant="outlined"
                       fullWidth
+                      required
                       id="cadeteria"
                       autoComplete="Cadeteria"
                       {...userNewCadeteria}

@@ -56,7 +56,7 @@ export default function Panel({ users, selected }) {
       </AppBar>
       <h1>{selected.trim().replace(/^\w/, (c) => c.toUpperCase())}</h1>
       <TabPanel value={value} index={0}>
-        <UsersTable users={users.filter((user) => user.accepted === true)} />
+        <UsersTable selected={selected} users={users.filter((user) => user.accepted === true)} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <UsersTable users={users.filter((user) => user.accepted === false)} showCheck />
