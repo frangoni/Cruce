@@ -59,6 +59,7 @@ const WebSocket = () => {
       <Paper elevation={15} style={{ display }} id="alertaPickUp">
         <h3>{message}</h3>
       </Paper>
+      <h2>Ordenes Activas</h2>
       {orders.length ? (
         <div style={{ height: 800, width: "100%" }}>
           <OrdersTable orders={orders} handler={handler} />

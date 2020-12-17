@@ -210,7 +210,6 @@ export default function SideBar(props) {
                 </List>
               </Collapse>
             </Link>
-
             <Divider />
             <Link style={{ textDecoration: "none" }} to="/misordenes">
               <ListItem button key={"orden"}>
