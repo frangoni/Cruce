@@ -1,4 +1,5 @@
 const Order = require("../Models/Order");
+const User = require("../Models/User");
 
 const getMetricas = async (req, res, next) => {
   const userId = req.user.id;
@@ -45,4 +46,13 @@ const getMetricas = async (req, res, next) => {
   }
 };
 
-module.exports = getMetricas;
+const fetchUser = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.id, { include: { all: true } });
+    res.send(user);
+  } catch (e) {
+    res.send(e);
+  }
+};
+
+module.exports = { getMetricas, fetchUser };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,22 +10,11 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
-import Alert from "@material-ui/lab/Alert";
-
-//Redux
+import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 import { useDispatch } from "react-redux";
-import {
-  fetchAcceptUserById,
-  deleteUser,
-  fetchCadetes,
-  fetchEmpresas,
-} from "../../redux/actions/users";
-
-import {
-  fetchAcceptCadeteriaById,
-  fetchCadeterias,
-  deleteCadeteria,
-} from "../../redux/actions/cadeteria";
+import { fetchAcceptUserById, deleteUser, fetchCadetes, fetchEmpresas } from "../../redux/actions/users";
+import { fetchAcceptCadeteriaById, fetchCadeterias, deleteCadeteria } from "../../redux/actions/cadeteria";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   table: {
@@ -33,7 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UsersTable({ users, showCheck }) {
+export default function UsersTable({ users, showCheck, selected }) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -58,7 +47,6 @@ export default function UsersTable({ users, showCheck }) {
     dispatch(fetchCadetes());
     dispatch(fetchCadeterias());
   };
-
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="caption table">
@@ -80,9 +68,7 @@ export default function UsersTable({ users, showCheck }) {
               <TableCell align="center">{user.email}</TableCell>
               <TableCell align="center">{user.company}</TableCell>
               <TableCell align="center">
-                {user.role == "Cadete" &&
-                user.cadeteria.length > 0 &&
-                user.cadeteria[0].accepted === false ? (
+                {user.role == "Cadete" && user.cadeteria.length > 0 && user.cadeteria[0].accepted === false ? (
                   <div className="aceptarPrimeroCadeteria">
                     <strong>Aceptar primero la cadeteria</strong>
                   </div>
@@ -105,6 +91,13 @@ export default function UsersTable({ users, showCheck }) {
                       >
                         <CheckIcon fontSize="inherit" />
                       </IconButton>
+                    ) : null}
+                    {selected != "cadeterias" ? (
+                      <Link to={`/perfil/${user.id}`}>
+                        <IconButton aria-label="view" className={classes.margin} size="medium">
+                          <VisibilityOutlinedIcon fontSize="inherit" />
+                        </IconButton>
+                      </Link>
                     ) : null}
                   </>
                 )}

@@ -2,15 +2,16 @@ const User = require("../Models/User");
 const jwt = require("jsonwebtoken");
 const Cadeteria = require("../Models/Cadeteria");
 const privateKey = "clavesecreta1234";
-const { genereteNewToken } = require("../Middleware/auth")
+const { genereteNewToken } = require("../Middleware/auth");
+
 const userValidation = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email }, include: { all: true } });
     const hash = await user.hash(password);
     if (hash == user.password && user.accepted) {
       //generar un jwt
-      const token = genereteNewToken(user.email)
+      const token = genereteNewToken(user.email);
       return res.status(200).send({ user, token });
     }
     res.status(403).send({ error: "Contraseña incorrecta" });
@@ -20,7 +21,6 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
-  console.log("req body", req.body);
   try {
     const user = await User.create(req.body);
     Cadeteria.findOrCreate({

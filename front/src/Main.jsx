@@ -19,7 +19,7 @@ export default function Main() {
   const dispatch = useDispatch();
   useEffect(() => {
     if (!token) history.push("/inicio");
-    return () => { };
+    return () => {};
   }, [token]);
 
   useEffect(() => {
@@ -77,14 +77,13 @@ export default function Main() {
           )}
         />
         <Route
-          path="/metricas"
-          render={() => (
+          path="/perfil/:id"
+          render={({ match }) => (
             <SideBar title="Metricas">
-              <Metricas />
+              <Metricas match={match} />
             </SideBar>
           )}
         />
-
         {token ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
       </Switch>
     </>
