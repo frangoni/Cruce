@@ -31,16 +31,16 @@ export default function UsersTable({ users, showCheck, selected }) {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [selectedRow, setSelected] = useState({ id: null, role: null })
+  const [selectedRow, setSelected] = useState({ id: null, role: null });
   const handlerCheckClick = (id, role) => {
     setOpen(true);
-    setTitle("Aceptar")
-    setSelected({ id, role })
+    setTitle("Aceptar");
+    setSelected({ id, role });
   };
 
   const handlerDeleteClick = (id, role) => {
-    setTitle("Rechazar")
-    setSelected({ id, role })
+    setTitle("Rechazar");
+    setSelected({ id, role });
     setOpen(true);
   };
 
@@ -55,8 +55,7 @@ export default function UsersTable({ users, showCheck, selected }) {
       dispatch(fetchEmpresas());
       dispatch(fetchCadetes());
       dispatch(fetchCadeterias());
-    }
-    else if (title === "Rechazar") {
+    } else if (title === "Rechazar") {
       if (!selectedRow.role) {
         dispatch(deleteCadeteria({ content: selectedRow.id }));
       } else {
@@ -66,17 +65,15 @@ export default function UsersTable({ users, showCheck, selected }) {
       dispatch(fetchCadetes());
       dispatch(fetchCadeterias());
     }
-    setTitle("")
-    setSelected({ id: null, role: null })
+    setTitle("");
+    setSelected({ id: null, role: null });
   };
 
   const deny = () => {
     setOpen(false);
-    setTitle("")
-    setSelected({ id: null, role: null })
+    setTitle("");
+    setSelected({ id: null, role: null });
   };
-
-
 
   return (
     <TableContainer component={Paper}>
@@ -103,34 +100,34 @@ export default function UsersTable({ users, showCheck, selected }) {
                     <strong>Aceptar primero la cadeteria</strong>
                   </div>
                 ) : (
-                    <>
+                  <>
+                    <IconButton
+                      aria-label="delete"
+                      className={classes.margin}
+                      size="medium"
+                      onClick={() => handlerDeleteClick(user.id, user.role)}
+                    >
+                      <DeleteIcon fontSize="inherit" />
+                    </IconButton>
+                    {showCheck ? (
                       <IconButton
                         aria-label="delete"
                         className={classes.margin}
                         size="medium"
-                        onClick={() => handlerDeleteClick(user.id, user.role)}
+                        onClick={() => handlerCheckClick(user.id, user.role)}
                       >
-                        <DeleteIcon fontSize="inherit" />
+                        <CheckIcon fontSize="inherit" />
                       </IconButton>
-                      {showCheck ? (
-                        <IconButton
-                          aria-label="delete"
-                          className={classes.margin}
-                          size="medium"
-                          onClick={() => handlerDeleteClick(user.id, user.role)}
-                        >
-                          <DeleteIcon fontSize="inherit" />
+                    ) : null}
+                    {selected != "cadeterias" ? (
+                      <Link to={`/perfil/${user.id}`}>
+                        <IconButton aria-label="view" className={classes.margin} size="medium">
+                          <VisibilityOutlinedIcon fontSize="inherit" />
                         </IconButton>
-                      ) : null}
-                      {selected != "cadeterias" ? (
-                        <Link to={`/perfil/${user.id}`}>
-                          <IconButton aria-label="view" className={classes.margin} size="medium">
-                            <VisibilityOutlinedIcon fontSize="inherit" />
-                          </IconButton>
-                        </Link>
-                      ) : null}
-                    </>
-                  )}
+                      </Link>
+                    ) : null}
+                  </>
+                )}
               </TableCell>
             </TableRow>
           ))}

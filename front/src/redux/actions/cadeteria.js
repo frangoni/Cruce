@@ -47,5 +47,5 @@ export const deleteCadeteria = (data) => (dispatch) => {
 };
 
 export const createCadeteria = (data) => {
-  return axios.post("/api/cadeterias", data).then((data) => console.log(data));
+  return axios.post("/api/cadeterias", data);
 };

@@ -30,7 +30,6 @@ export const fetchMetricas = () => (dispatch, state) => {
 
 export const fetchUserMetricas = (id) => (dispatch) => {
   axios.get(`/api/metricas/${id}`).then(({ data }) => {
-    console.log("DATA", data);
     return dispatch(getUserMetricas(data));
   });
 };

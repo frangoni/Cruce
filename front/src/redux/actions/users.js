@@ -1,9 +1,4 @@
-import {
-  GET_ALL_CADETES,
-  GET_ALL_EMPRESAS,
-  UPDATE_CADETE,
-  UPDATE_EMPRESA,
-} from "../constants";
+import { GET_ALL_CADETES, GET_ALL_EMPRESAS, UPDATE_CADETE, UPDATE_EMPRESA } from "../constants";
 import { setError } from "../actions/user";
 import axios from "axios";
 
@@ -47,7 +42,6 @@ export const fetchCadetes = (data) => (dispatch, state) => {
       dispatch(setCadetes(cadetes.data));
     })
     .catch((err) => {
-
       dispatch(setError(err));
     });
 };
@@ -62,14 +56,13 @@ export const fetchEmpresas = (data) => (dispatch, state) => {
       dispatch(setEmpresas(empresas.data));
     })
     .catch((err) => {
-   
       dispatch(setError(err));
     });
 };
 
 export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
   const { token } = state().user;
- 
+
   axios({
     method: "PUT",
     url: `/api/users/${role.toLowerCase()}s/${id}`,
@@ -77,22 +70,16 @@ export const fetchAcceptUserById = (id, role) => (dispatch, state) => {
     data: {},
   })
     .then((res) => {
- 
-      if (role.toLowerCase() === "empresa")
-        dispatch(updateEmpresa(id, res.data));
+      if (role.toLowerCase() === "empresa") dispatch(updateEmpresa(id, res.data));
       else dispatch(updateCadete(id, res.data));
     })
     .catch((err) => {
-  
       dispatch(setError(err));
     });
 };
 
 export const deleteUser = (data) => (dispatch) => {
-  axios
-    .post("/api/users/delete", data)
-    .then(() => console.log("Usuario Eliminado"))
-    .catch((err) => {
-      dispatch(setError(err));
-    });
+  axios.post("/api/users/delete", data).catch((err) => {
+    dispatch(setError(err));
+  });
 };

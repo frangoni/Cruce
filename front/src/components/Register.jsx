@@ -179,7 +179,6 @@ export default function SignUp() {
     e.preventDefault();
     setErrorRegisterFront({});
     let error = {};
-
     if (userInput.value.length == 0) {
       error = { ...error, name: true };
     }
@@ -208,7 +207,7 @@ export default function SignUp() {
           address: userAddress.value,
           dni: userDni.value || null,
           licensePlate: userLicensePlate.value,
-          cadeteria: userNewCadeteria.value === null ? userCadeteria.value : userNewCadeteria.value,
+          cadeteria: userNewCadeteria.value ? userNewCadeteria.value : userCadeteria.value,
         })
       );
     }
