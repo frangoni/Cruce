@@ -64,12 +64,10 @@ const resetPassword = async (req, res, next) => {
 const resetPasswordValidator = async (req, res, next) => {
   const { uuid } = req.params;
   const { email, password } = req.body;
-  console.log("UUID:", uuid, " EMAIL:", email, " PASWORD:", password);
   try {
     const user = await User.findOne({ where: { [Op.and]: [{ email }, { reset: uuid }] } });
     if (user) {
       const newPassword = await user.hash(password);
-      console.log(newPassword);
       user.password = newPassword;
       user.reset = "";
       const savedUser = await user.save();
