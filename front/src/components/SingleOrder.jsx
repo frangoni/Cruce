@@ -154,7 +154,7 @@ export default function SingleOrder({ match }) {
                 ) : null}
                 <Button
                   variant="outlined"
-                  color="grey"
+                  //color="grey"
                   size="small"
                   startIcon={<ArrowBackIcon />}
                   onClick={() => history.goBack()}
