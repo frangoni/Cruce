@@ -49,12 +49,15 @@ const resetPassword = async (req, res, next) => {
   const { email } = req.body
   try {
     const user = await User.findOne({ where: { email } })
-    user.reset = uuidv4()
-    const savedUser = await user.save()
-    postEmail(user, true) //el segundo argumento es para enviar un email de reset
-    return res.send({ ok: "Reset pendiente", savedUser })
+    if (user) {
+      user.reset = uuidv4()
+      const savedUser = await user.save()
+      postEmail(user, true) //el segundo argumento es para enviar un email de reset
+      return res.send({ ok: "Reset pendiente", savedUser })
+    }
+    else return res.status(404).send({ error: "Datos erroneos" })
   } catch (e) {
-    res.status(404).send({ error: "Datos erroneos" })
+    res.status(503).end()
   }
 }
 const resetPasswordValidator = async (req, res, next) => {

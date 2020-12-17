@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLogin, setError } from "../redux/actions/user";
+import { fetchResetPassword, fetchSetNewPassword, userLogout, setError } from "../redux/actions/user";
 import { useInput } from "../hooks/useInput";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import Alert from "@material-ui/lab/Alert";
 
 import Avatar from "@material-ui/core/Avatar";
@@ -52,6 +52,7 @@ export default function ResetPassword() {
     const [errorLoginFront, setErrorLoginFront] = useState({});
 
     const history = useHistory();
+    const match = useRouteMatch()
     const statusLogin = useSelector((state) => state.animations.statusLogin);
     const isLoadingLogin = useSelector((state) => state.animations.isLoadingLogin);
     const errorBack = useSelector((state) => state.user.errorBack);
@@ -72,15 +73,26 @@ export default function ResetPassword() {
         let error = {};
 
         if (userEmail.value.length == 0) error = { ...error, email: true };
-        if (userPassword.value.length == 0) error = { ...error, password: true };
+        if (match.params.uuid) {
+            if (userPassword.value.length == 0) error = { ...error, password: true };
+        }
         if (Object.keys(error).length) setErrorLoginFront(error);
         if (Object.keys(error).length == 0) {
-            dispatch(
-                fetchLogin({
+            if (match.params.uuid) {
+                dispatch(fetchSetNewPassword({
                     email: userEmail.value,
                     password: userPassword.value,
-                })
-            );
+                    uuid: match.params.uuid
+
+                }))
+            }
+            else {
+                dispatch(
+                    fetchResetPassword({
+                        email: userEmail.value
+                    })
+                );
+            }
         }
     };
 
@@ -92,9 +104,20 @@ export default function ResetPassword() {
 
     useEffect(() => {
         if (statusLogin === 200) {
-            // history.push("/ingreso");
+            dispatch(userLogout())
+            if (match.params.uuid) {
+                alert("Contraseña cambiada con exito!")
+
+                history.push("/ingreso");
+            }
+            else {
+                alert("Email para cambiar la Contraseña enviado")
+                history.push("/");
+            }
         }
     }, [statusLogin]);
+
+    console.log("match", match)
 
     return (
         <Container component="main" maxWidth="xs">
@@ -134,19 +157,20 @@ export default function ResetPassword() {
                         {...userEmail}
                         className={classInput.email}
                     />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Contraseña"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        {...userPassword}
-                        className={classInput.password}
-                    />
+                    {match.params.uuid ?
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Contraseña"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            {...userPassword}
+                            className={classInput.password}
+                        /> : null}
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                         Enviar
           </Button>

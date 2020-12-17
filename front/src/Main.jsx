@@ -19,8 +19,7 @@ export default function Main() {
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log(history.location.pathname)
-    if (!token && !(history.location.pathname === "/reset" || history.location.pathname === "/registro")) {
+    if (!token && !(history.location.pathname.match(/\/reset/) || history.location.pathname === "/registro")) {
       history.push("/inicio");
     }
     return () => { };
@@ -40,6 +39,7 @@ export default function Main() {
         <Route path="/inicio" component={Splash} />
         <Route path="/ingreso" component={Login} />
         <Route path="/registro" component={Register} />
+        <Route path="/reset/:uuid" component={ResetPassword} />
         <Route path="/reset" component={ResetPassword} />
         <Route
           path="/admin"
