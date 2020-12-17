@@ -3,6 +3,7 @@ const Order = require("../Models/Order");
 const User = require("../Models/User");
 const { Op } = require("sequelize");
 
+
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
   if (user.role == "Empresa") {
@@ -50,22 +51,22 @@ const getAllOrdes = async (req, res, next) => {
     let orders;
     role == "Admin"
       ? (orders = await Order.findAll(
-          { raw: true },
-          {
-            include: [{ model: User, as: "empresa" }],
-          }
-        ))
+        { raw: true },
+        {
+          include: [{ model: User, as: "empresa" }],
+        }
+      ))
       : (orders = await Order.findAll({
-          where:
-            role == "Cadete"
-              ? { state: "Pendiente", empresaId: id_tiendas }
-              : {
-                  empresaId: id,
-                  state: "Pendiente",
-                },
-          raw: true,
-        }));
-  
+        where:
+          role == "Cadete"
+            ? { state: "Pendiente", empresaId: id_tiendas }
+            : {
+              empresaId: id,
+              state: "Pendiente",
+            },
+        raw: true,
+      }));
+
     const parsedOrders = orders.map((order) => ({
       ...order,
       client: JSON.parse(order.client),
@@ -155,6 +156,7 @@ const getMyOrdes = async (req, res, next) => {
     if (tienda) return { ...filter, empresaId: tienda };
     return filter;
   };
+  if (!estado) return res.send({ count: 0, results: [] })
   try {
     const orders = await Order.findAndCountAll({
       where: filters(),
@@ -180,7 +182,7 @@ const postObservaciones = async (req, res, next) => {
   const observaciones = req.body.observaciones
   const id = req.body.orderId
   Order.update({ comments: observaciones }, { where: { id } })
-  .then(() => res.status(200).send('Observacion creada'))
+    .then(() => res.status(200).send('Observacion creada'))
 }
 
 module.exports = {
