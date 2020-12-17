@@ -68,7 +68,7 @@ export const postObservaciones = (observaciones, orderId) => (dispatch, state) =
     url: "/api/order/observaciones",
     headers: { Authorization: `Bearer ${token}` },
     data: { observaciones, orderId },
-  })
+  }).then(res => dispatch(fetchSingleOrder(orderId)))
 }
 
 export const deleteMessage = () => (dispatch) => {
@@ -102,9 +102,9 @@ const getSingleOrder = function (order) {
 export const fetchSingleOrder = (id) => (dispatch, state) => {
   const token = state().user.token;
   axios
-  .get(`/api/order/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+    .get(`/api/order/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then((order) => {
       let parsedOrder = {
         ...order.data,
@@ -113,7 +113,7 @@ export const fetchSingleOrder = (id) => (dispatch, state) => {
         destination: JSON.parse(order.data.destination),
       };
       return dispatch(getSingleOrder(parsedOrder));
-  })
+    })
 };
 
 export const orderStateUpdate = (estado, id, userId) => (dispatch) => {
