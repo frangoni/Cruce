@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 const { MAILUSER, PASS } = process.env;
-console.log("USER", MAILUSER, "PASS", PASS);
 const postEmail = (user, reset) =>
   nodemailer.createTestAccount((err, account) => {
     if (err) {
