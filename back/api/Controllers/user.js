@@ -20,7 +20,7 @@ const userValidation = async (req, res, next) => {
 };
 
 const userCreation = async (req, res, next) => {
-  console.log("req body", req.body);
+
   try {
     const user = await User.create(req.body);
     Cadeteria.findOrCreate({
