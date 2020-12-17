@@ -86,6 +86,34 @@ export const fetchMe = () => (dispatch, state) => {
       if (token !== res.data.token) dispatch(userLogin(res.data, res.data.token));
     })
     .catch(() => {
-      dispatch(userLogin({}, ""));
+      dispatch(userLogout());
+    });
+};
+
+export const fetchResetPassword = (data) => (dispatch) => {
+  dispatch(userLoginAnimation(true, null));
+  axios
+    .post("/api/user/reset", data)
+    .then((res) => {
+      //dispatch(userLogin(res.data.user, res.data.token));
+      dispatch(userLoginAnimation(false, res.status));
+    })
+    .catch((err) => {
+      dispatch(userLoginAnimation(false, 403));
+      dispatch(setError(err));
+    });
+};
+
+export const fetchSetNewPassword = (data) => (dispatch) => {
+  dispatch(userLoginAnimation(true, null));
+  axios
+    .post(`/api/user/reset/${data.uuid}`, data)
+    .then((res) => {
+      //dispatch(userLogin(res.data.user, res.data.token));
+      dispatch(userLoginAnimation(false, res.status));
+    })
+    .catch((err) => {
+      dispatch(userLoginAnimation(false, 403));
+      dispatch(setError(err));
     });
 };

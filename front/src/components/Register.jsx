@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link as RLink } from "react-router-dom";
 import { useInput } from "../hooks/useInput";
 import { fetchRegister, setError } from "../redux/actions/user";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +25,7 @@ import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
 import { fetchAcceptedCadeterias } from "../redux/actions/cadeteria";
+import {userRegisterAnimation} from '../redux/actions/user'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -56,8 +57,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   dropdown: {
-    border: "1px solid red"
-  }
+    border: "1px solid red",
+  },
 }));
 
 const BootstrapInput = withStyles((theme) => ({
@@ -124,7 +125,7 @@ export default function SignUp() {
     dni: "",
     newCadeteria: "",
     cadeteria: "",
-    licensePlate: ''
+    licensePlate: "",
   };
 
   const handleSwitchChange = (event) => {
@@ -140,8 +141,12 @@ export default function SignUp() {
   errorRegisterFront.newCadeteria
     ? (classInput.newCadeteria = classes.root)
     : null;
-  errorRegisterFront.cadeteria ? (classInput.cadeteria = classes.dropdown) : null;
-  errorRegisterFront.licensePlate ? (classInput.licensePlate = classes.root) : null;
+  errorRegisterFront.cadeteria
+    ? (classInput.cadeteria = classes.dropdown)
+    : null;
+  errorRegisterFront.licensePlate
+    ? (classInput.licensePlate = classes.root)
+    : null;
 
   const dispatch = useDispatch();
 
@@ -170,6 +175,7 @@ export default function SignUp() {
     if (statusRegister === 201) {
       setTimeout(() => {
         history.push("/inicio");
+        dispatch(userRegisterAnimation(null, null))
         //una vez hecho el push hay que pasar el status register a ""
       }, 5000);
     }
@@ -208,7 +214,6 @@ export default function SignUp() {
       role == "Cadete"
     ) {
       error = { ...error, newCadeteria: true };
-  
     }
     if (
       userCadeteria.value == "" &&
@@ -217,8 +222,12 @@ export default function SignUp() {
     ) {
       error = { ...error, cadeteria: true };
     }
-    if (userLicensePlate.value.length == 0 && role == "Cadete" && moto.checkedA === true) error = { ...error, licensePlate: true };
-    
+    if (
+      userLicensePlate.value.length == 0 &&
+      role == "Cadete" &&
+      moto.checkedA === true
+    )
+      error = { ...error, licensePlate: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
 
@@ -402,7 +411,7 @@ export default function SignUp() {
                       id="cadeteria"
                       autoComplete="Cadeteria"
                       {...userNewCadeteria}
-                      className = {classInput.newCadeteria}
+                      className={classInput.newCadeteria}
                     />
                   </Grid>
                 ) : null}
@@ -439,8 +448,8 @@ export default function SignUp() {
                       type="licensePlate"
                       id="licensePlate"
                       autoComplete="licensePlate"
-                        {...userLicensePlate}
-                        className = {classInput.licensePlate}
+                      {...userLicensePlate}
+                      className={classInput.licensePlate}
                     />
                   </Grid>
                 ) : null}
@@ -482,8 +491,11 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
-                ¿Ya tiene una cuenta? Inicie sesión.
+              <Link variant="body2">
+                <RLink to="/ingreso">
+                  
+                  {"¿Ya tiene una cuenta? Inicie sesión."}
+                </RLink>
               </Link>
             </Grid>
           </Grid>
