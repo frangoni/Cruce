@@ -82,23 +82,21 @@ export default function UsersTable({ users, showCheck, selected }) {
     <TableContainer component={Paper}>
       <Confirmacion open={open} accept={accept} title={title} deny={deny} />
       <Table className={classes.table} aria-label="caption table">
-        <caption>Listado de Cadetes/Empresas</caption>
+        <caption>Listado de {selected && selected.trim().replace(/^\w/, (c) => c.toUpperCase())}</caption>
         <TableHead>
           <TableRow>
-            <TableCell align="center">ID</TableCell>
             <TableCell align="center">Nombre</TableCell>
-            <TableCell align="center">E-mail</TableCell>
-            <TableCell align="center">Empresa</TableCell>
+            {selected != "cadeterias" ? <TableCell align="center">E-mail</TableCell> : null}
+            {selected == "cadetes" ? <TableCell align="center">Cadetería</TableCell> : null}
             <TableCell align="center">Accion</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.id}>
-              <TableCell align="center">{user.id}</TableCell>
               <TableCell align="center">{user.name}</TableCell>
-              <TableCell align="center">{user.email}</TableCell>
-              <TableCell align="center">{user.company}</TableCell>
+              {selected != "cadeterias" ? <TableCell align="center">{user.email}</TableCell> : null}
+              {selected == "cadetes" ? <TableCell align="center">{user.cadeteria[0].name}</TableCell> : null}
               <TableCell align="center">
                 {user.role == "Cadete" && user.cadeteria.length > 0 && user.cadeteria[0].accepted === false ? (
                   <div className="aceptarPrimeroCadeteria">

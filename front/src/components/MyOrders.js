@@ -16,7 +16,7 @@ const MyOrders = () => {
   const MAX_ORDERS_PER_PAGE = 10;
   const results = useSelector((state) => state.orders.myOrders);
   const { tiendas } = useSelector((state) => state.cadeterias);
-
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState(filterTemplate);
@@ -43,7 +43,7 @@ const MyOrders = () => {
   return (
     <>
       <Filter setFilter={setFilter} tiendas={tiendas} />
-      <h2>Mis ordenes</h2>
+      {user.role == "Admin" ? <h2>Ordenes</h2> : <h2>Mis ordenes</h2>}
       {results.results && results.results.length > 0 ? (
         <>
           <OrdersTable orders={results.results} />

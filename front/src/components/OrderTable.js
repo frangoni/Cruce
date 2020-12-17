@@ -1,16 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-} from "@material-ui/core";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 import { makeStyles } from "@material-ui/core/styles";
@@ -29,7 +20,7 @@ const OrdersTable = ({ orders, handler }) => {
       <div id="ordersTable">
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="caption table">
-            <caption>Listado de Cadetes/Empresas</caption>
+            <caption>Listado de Ordenes</caption>
             <TableHead>
               <TableRow>
                 <TableCell align="center">ID</TableCell>

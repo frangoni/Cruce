@@ -9,7 +9,6 @@ import Badge from "@material-ui/core/Badge";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div role="tabpanel" id={`simple-tabpanel-${index}`} {...other}>
       {value === index && <Box p={3}>{children}</Box>}
@@ -59,7 +58,7 @@ export default function Panel({ users, selected }) {
         <UsersTable selected={selected} users={users.filter((user) => user.accepted === true)} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <UsersTable users={users.filter((user) => user.accepted === false)} showCheck />
+        <UsersTable selected={selected} users={users.filter((user) => user.accepted === false)} showCheck />
       </TabPanel>
     </div>
   );

@@ -25,7 +25,7 @@ import FormControl from "@material-ui/core/FormControl";
 import NativeSelect from "@material-ui/core/NativeSelect";
 import InputBase from "@material-ui/core/InputBase";
 import { fetchAcceptedCadeterias } from "../redux/actions/cadeteria";
-import {userRegisterAnimation} from '../redux/actions/user'
+import { userRegisterAnimation } from "../redux/actions/user";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -138,28 +138,16 @@ export default function SignUp() {
 
   errorRegisterFront.address ? (classInput.address = classes.root) : null;
   errorRegisterFront.dni ? (classInput.dni = classes.root) : null;
-  errorRegisterFront.newCadeteria
-    ? (classInput.newCadeteria = classes.root)
-    : null;
-  errorRegisterFront.cadeteria
-    ? (classInput.cadeteria = classes.dropdown)
-    : null;
-  errorRegisterFront.licensePlate
-    ? (classInput.licensePlate = classes.root)
-    : null;
+  errorRegisterFront.newCadeteria ? (classInput.newCadeteria = classes.root) : null;
+  errorRegisterFront.cadeteria ? (classInput.cadeteria = classes.dropdown) : null;
+  errorRegisterFront.licensePlate ? (classInput.licensePlate = classes.root) : null;
 
   const dispatch = useDispatch();
 
-  const isLoadingRegister = useSelector(
-    (state) => state.animations.isLoadingRegister
-  );
-  const statusRegister = useSelector(
-    (state) => state.animations.statusRegister
-  );
+  const isLoadingRegister = useSelector((state) => state.animations.isLoadingRegister);
+  const statusRegister = useSelector((state) => state.animations.statusRegister);
   const errorBack = useSelector((state) => state.user.errorBack);
-  const cadeterias = useSelector(
-    (state) => state.cadeterias.acceptedCadeterias
-  );
+  const cadeterias = useSelector((state) => state.cadeterias.acceptedCadeterias);
   const history = useHistory();
 
   const handleCadeteriaChange = (e) => {
@@ -175,7 +163,7 @@ export default function SignUp() {
     if (statusRegister === 201) {
       setTimeout(() => {
         history.push("/inicio");
-        dispatch(userRegisterAnimation(null, null))
+        dispatch(userRegisterAnimation(null, null));
         //una vez hecho el push hay que pasar el status register a ""
       }, 5000);
     }
@@ -185,14 +173,7 @@ export default function SignUp() {
     if (errorBack != "") {
       dispatch(setError(""));
     }
-  }, [
-    userInput.value,
-    userEmail.value,
-    userPassword.value,
-    userAddress.value,
-    userDni.value,
-    userLicensePlate.value,
-  ]);
+  }, [userInput.value, userEmail.value, userPassword.value, userAddress.value, userDni.value, userLicensePlate.value]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -204,29 +185,15 @@ export default function SignUp() {
     }
     if (userEmail.value.length == 0) error = { ...error, email: true };
     if (userPassword.value.length == 0) error = { ...error, password: true };
-    if (userAddress.value.length == 0 && role === "Empresa")
-      error = { ...error, address: true };
-    if (userDni.value.length == 0 && role === "Cadete")
-      error = { ...error, dni: true };
-    if (
-      userCadeteria.value === "Otra" &&
-      userNewCadeteria.value.length === 0 &&
-      role == "Cadete"
-    ) {
+    if (userAddress.value.length == 0 && role === "Empresa") error = { ...error, address: true };
+    if (userDni.value.length == 0 && role === "Cadete") error = { ...error, dni: true };
+    if (userCadeteria.value === "Otra" && userNewCadeteria.value.length === 0 && role == "Cadete") {
       error = { ...error, newCadeteria: true };
     }
-    if (
-      userCadeteria.value == "" &&
-      userCadeteria.value.length === 0 &&
-      role == "Cadete"
-    ) {
+    if (userCadeteria.value == "" && userCadeteria.value.length === 0 && role == "Cadete") {
       error = { ...error, cadeteria: true };
     }
-    if (
-      userLicensePlate.value.length == 0 &&
-      role == "Cadete" &&
-      moto.checkedA === true
-    )
+    if (userLicensePlate.value.length == 0 && role == "Cadete" && moto.checkedA === true)
       error = { ...error, licensePlate: true };
 
     if (Object.keys(error).length) setErrorRegisterFront(error);
@@ -241,10 +208,7 @@ export default function SignUp() {
           address: userAddress.value,
           dni: userDni.value || null,
           licensePlate: userLicensePlate.value,
-          cadeteria:
-            userNewCadeteria.value === null
-              ? userCadeteria.value
-              : userNewCadeteria.value,
+          cadeteria: userNewCadeteria.value === null ? userCadeteria.value : userNewCadeteria.value,
         })
       );
     }
@@ -262,37 +226,16 @@ export default function SignUp() {
         </Typography>
 
         <Grid container justify="flex-end">
-          {isLoadingRegister ? (
-            <CircularProgress style={{ margin: "25px auto" }} />
-          ) : null}
+          {isLoadingRegister ? <CircularProgress style={{ margin: "25px auto" }} /> : null}
         </Grid>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              alignItems="center"
-              style={{ marginBottom: "5%" }}
-            >
-              <ToggleButtonGroup
-                value={role}
-                exclusive
-                onChange={handleRole}
-                aria-label="text alignment"
-              >
-                <ToggleButton
-                  value="Empresa"
-                  label="Empresa"
-                  disabled={isLoadingRegister ? true : false}
-                >
+            <Grid container direction="column" justify="center" alignItems="center" style={{ marginBottom: "5%" }}>
+              <ToggleButtonGroup value={role} exclusive onChange={handleRole} aria-label="text alignment">
+                <ToggleButton value="Empresa" label="Empresa" disabled={isLoadingRegister ? true : false}>
                   Empresa
                 </ToggleButton>
-                <ToggleButton
-                  value="Cadete"
-                  label="Cadete"
-                  disabled={isLoadingRegister ? true : false}
-                >
+                <ToggleButton value="Cadete" label="Cadete" disabled={isLoadingRegister ? true : false}>
                   Cadete
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -371,10 +314,7 @@ export default function SignUp() {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl
-                    className={classes.margin}
-                    onChange={handleCadeteriaChange}
-                  >
+                  <FormControl className={classes.margin} onChange={handleCadeteriaChange}>
                     <NativeSelect
                       id="demo-customized-select-native"
                       input={<BootstrapInput />}
@@ -388,9 +328,7 @@ export default function SignUp() {
                         cadeterias.map((cadeteria) => {
                           return (
                             <>
-                              <option value={cadeteria.name}>
-                                {cadeteria.name}
-                              </option>
+                              <option value={cadeteria.name}>{cadeteria.name}</option>
                             </>
                           );
                         })}
@@ -400,10 +338,7 @@ export default function SignUp() {
                 </Grid>
                 {selectCadeteria === "Otra" ? (
                   <Grid item xs={12}>
-                    <p className="parrafo">
-                      Si su cadetería no se encuentra en la lista previa,
-                      regístrela aquí.
-                    </p>
+                    <p className="parrafo">Si su cadetería no se encuentra en la lista previa, regístrela aquí.</p>
 
                     <TextField
                       variant="outlined"
@@ -417,12 +352,7 @@ export default function SignUp() {
                   </Grid>
                 ) : null}
 
-                <Grid
-                  container
-                  direction="column"
-                  justify="center"
-                  alignItems="center"
-                >
+                <Grid container direction="column" justify="center" alignItems="center">
                   <FormGroup row>
                     <FormControlLabel
                       labelPlacement="start"
@@ -460,8 +390,7 @@ export default function SignUp() {
           <Grid container justify="flex-end">
             {errorBack ? (
               <Alert severity="error" style={{ margin: "25px auto" }}>
-                Los datos ingresados no son válidos o ya existen, intente
-                nuevamente.
+                Los datos ingresados no son válidos o ya existen, intente nuevamente.
               </Alert>
             ) : null}
             {Object.keys(errorRegisterFront).length ? (
@@ -474,8 +403,7 @@ export default function SignUp() {
           {statusRegister == 201 ? (
             <Grid container justify="flex-end">
               <Alert severity="info" style={{ margin: "25px auto" }}>
-                Se ha registrado correctamente. Aguarda a recibir un email de
-                confirmación. Te esperamos!
+                Se ha registrado correctamente. Aguarda a recibir un email de confirmación. Te esperamos!
               </Alert>
             </Grid>
           ) : null}
@@ -493,10 +421,7 @@ export default function SignUp() {
           <Grid container justify="flex-end">
             <Grid item>
               <Link variant="body2">
-                <RLink to="/ingreso">
-                  
-                  {"¿Ya tiene una cuenta? Inicie sesión."}
-                </RLink>
+                <RLink to="/ingreso">{"¿Ya tiene una cuenta? Inicie sesión."}</RLink>
               </Link>
             </Grid>
           </Grid>

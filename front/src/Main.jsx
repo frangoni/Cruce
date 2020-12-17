@@ -16,7 +16,7 @@ import { fetchMe } from "./redux/actions/user";
 
 export default function Main() {
   const history = useHistory();
-  const token = useSelector((state) => state.user.token);
+  const { token, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   useEffect(() => {
     if (!token && !(history.location.pathname.match(/\/reset/) || history.location.pathname === "/registro")) {
@@ -60,7 +60,7 @@ export default function Main() {
         <Route
           path="/misordenes"
           render={() => (
-            <SideBar title="Mis Ordenes">
+            <SideBar title={user.role == "Admin" ? "Ordenes" : "Mis Ordenes"}>
               <MyOrders />
             </SideBar>
           )}
