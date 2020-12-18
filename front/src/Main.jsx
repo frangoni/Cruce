@@ -22,11 +22,11 @@ export default function Main() {
     if (!token && !(history.location.pathname.match(/\/reset/) || history.location.pathname === "/registro")) {
       history.push("/inicio");
     }
-    return () => {};
+    return () => { };
   }, [token]);
 
   useEffect(() => {
-    dispatch(fetchMe());
+    if (token) dispatch(fetchMe());
     const id = setInterval(() => {
       dispatch(fetchMe());
     }, 1000 * 60 * 10);
