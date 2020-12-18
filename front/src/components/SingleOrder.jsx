@@ -21,7 +21,6 @@ import Confirmacion from "./Confirmacion";
 import TextField from "@material-ui/core/TextField";
 import SendIcon from "@material-ui/icons/Send";
 import { useInput } from "../hooks/useInput";
-
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchSingleOrder,
@@ -43,9 +42,7 @@ export default function SingleOrder({ match }) {
   const user = useSelector((state) => state.user.user);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState();
-
   const observacionesInput = useInput("observaciones");
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const observacionesValue = observacionesInput.value;
@@ -250,7 +247,6 @@ export default function SingleOrder({ match }) {
                 </TableBody>
               </Table>
             </TableContainer>
-
             {order.comments ? (
               <TextField
                 id="outlined-read-only-input"
