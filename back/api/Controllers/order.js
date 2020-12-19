@@ -3,7 +3,6 @@ const Order = require("../Models/Order");
 const User = require("../Models/User");
 const { Op } = require("sequelize");
 
-
 const postOrders = (req, res, next) => {
   const { orders, user } = req.body;
   if (user.role == "Empresa") {
@@ -35,7 +34,7 @@ const pickUp = async (req, res, next) => {
     order.assignedDate = Date.now();
     const tienda = await order.getEmpresa({ include: Cadeteria });
     const cadeterias = await tienda.getCadeteria({ raw: true });
-    order.save({ cadeterias });
+    order.save({ cadeterias, tienda });
     res.send("Te asignaste correctamente!");
   }
 };
@@ -51,21 +50,21 @@ const getAllOrdes = async (req, res, next) => {
     let orders;
     role == "Admin"
       ? (orders = await Order.findAll(
-        { raw: true },
-        {
-          include: [{ model: User, as: "empresa" }],
-        }
-      ))
+          { raw: true },
+          {
+            include: [{ model: User, as: "empresa" }],
+          }
+        ))
       : (orders = await Order.findAll({
-        where:
-          role == "Cadete"
-            ? { state: "Pendiente", empresaId: id_tiendas }
-            : {
-              empresaId: id,
-              state: "Pendiente",
-            },
-        raw: true,
-      }));
+          where:
+            role == "Cadete"
+              ? { state: "Pendiente", empresaId: id_tiendas }
+              : {
+                  empresaId: id,
+                  state: "Pendiente",
+                },
+          raw: true,
+        }));
 
     const parsedOrders = orders.map((order) => ({
       ...order,
@@ -116,11 +115,14 @@ const singleOrderUpdate = (req, res, next) => {
     .then(async (user) => {
       return await user.getCadeteria({ raw: true });
     })
-    .then((cadeterias) => {
+    .then(async (cadeterias) => {
+      const order = await Order.findOne({ where: { orderId: id } });
+      const tienda = await User.findByPk(order.empresaId);
       Order.update(date(state), {
         where: { orderId: id },
         individualHooks: true,
         cadeterias,
+        tienda,
       }).then(() => {
         Order.findOne({
           where: { orderId: id },
@@ -156,7 +158,7 @@ const getMyOrdes = async (req, res, next) => {
     if (tienda) return { ...filter, empresaId: tienda };
     return filter;
   };
-  if (!estado) return res.send({ count: 0, results: [] })
+  if (!estado) return res.send({ count: 0, results: [] });
   try {
     const orders = await Order.findAndCountAll({
       where: filters(),
@@ -179,11 +181,10 @@ const getMyOrdes = async (req, res, next) => {
 };
 
 const postObservaciones = async (req, res, next) => {
-  const observaciones = req.body.observaciones
-  const id = req.body.orderId
-  Order.update({ comments: observaciones }, { where: { id } })
-    .then(() => res.status(200).send('Observacion creada'))
-}
+  const observaciones = req.body.observaciones;
+  const id = req.body.orderId;
+  Order.update({ comments: observaciones }, { where: { id } }).then(() => res.status(200).send("Observacion creada"));
+};
 
 module.exports = {
   postOrders,
@@ -192,5 +193,5 @@ module.exports = {
   getSingleOrder,
   singleOrderUpdate,
   getMyOrdes,
-  postObservaciones
+  postObservaciones,
 };

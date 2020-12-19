@@ -7,6 +7,8 @@ import {
   UPDATE_ORDER,
   UPDATE_SINGLE_ORDER,
   PICKED_UP,
+  UPDATE_MY_ORDER,
+  ADD_MY_ORDER,
 } from "../constants";
 
 const initialState = {
@@ -17,9 +19,7 @@ const initialState = {
 };
 
 const updateOrder = (orders, newOrder) => {
-  return orders.map((order) =>
-    order.id === newOrder.orderId ? { ...order, state: newOrder.state } : order
-  );
+  return orders.map((order) => (order.id === newOrder.id ? { ...order, state: newOrder.state } : order));
 };
 
 export default (state = initialState, action) => {
@@ -33,12 +33,23 @@ export default (state = initialState, action) => {
     case ADD_ORDERS:
       return { ...state, orders: [...state.orders, ...action.payload] };
     case FILTER_ORDERS:
-      return {
-        ...state,
-        orders: state.orders.filter((order) => order.id !== action.payload),
-      };
+      return { ...state, orders: state.orders.filter((order) => order.orderId != action.payload) };
     case UPDATE_ORDER:
       return { ...state, orders: updateOrder(state.orders, action.payload) };
+    case UPDATE_MY_ORDER:
+      return {
+        ...state,
+        myOrders: { ...state.myOrders, results: updateOrder(state.myOrders.results, action.payload) },
+      };
+    case ADD_MY_ORDER:
+      return {
+        ...state,
+        myOrders: {
+          ...state.myOrders,
+          count: state.myOrders.count + 1,
+          results: [...state.myOrders.results, action.payload],
+        },
+      };
     case UPDATE_SINGLE_ORDER:
       return { ...state, order: { ...state.order, state: action.payload } };
     case PICKED_UP:

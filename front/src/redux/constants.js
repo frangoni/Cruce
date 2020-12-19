@@ -26,6 +26,8 @@ export const UPDATE_ORDER = "UPDATE_ORDER";
 export const UPDATE_SINGLE_ORDER = "UPDATE_SINGLE_ORDER";
 export const PICKED_UP = "PICKED_UP";
 export const SET_OBSERVACIONES = "SET_OBSERVACIONES";
+export const UPDATE_MY_ORDER = "UPDATE_MY_ORDER";
+export const ADD_MY_ORDER = "ADD_MY_ORDER";
 
 //Cadeterias
 export const SET_MY_TIENDAS = "SET_MY_TIENDAS";

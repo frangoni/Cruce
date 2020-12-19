@@ -21,7 +21,6 @@ import Confirmacion from "./Confirmacion";
 import TextField from "@material-ui/core/TextField";
 import SendIcon from "@material-ui/icons/Send";
 import { useInput } from "../hooks/useInput";
-
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchSingleOrder,
@@ -43,7 +42,6 @@ export default function SingleOrder({ match }) {
   const user = useSelector((state) => state.user.user);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState();
-
   const observacionesInput = useInput("observaciones");
 
   const handleSubmit = () => {
@@ -91,12 +89,11 @@ export default function SingleOrder({ match }) {
     if (order.cadeteId) {
       dispatch(fetchMyCadeteriaCadete(order.cadeteId));
     }
-
     const socket = io.connect(`${window.location.origin}`, {
       query: { id: user.id },
     });
     socket.on("dbModifications", (data) => {
-      if (orderId == JSON.parse(data).orderId) {
+      if (orderId == JSON.parse(data).id) {
         dispatch(updateSingleOrder(JSON.parse(data).state));
       }
     });
@@ -249,7 +246,6 @@ export default function SingleOrder({ match }) {
                 </TableBody>
               </Table>
             </TableContainer>
-
             {order.comments ? (
               <TextField
                 id="outlined-read-only-input"

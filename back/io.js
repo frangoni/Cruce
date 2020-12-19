@@ -8,10 +8,13 @@ io.on("connection", async (socket) => {
   const { id } = socket.handshake.query;
   const user = await User.findByPk(id);
   const cadeterias = await user.getCadeteria({ raw: true });
-  cadeterias.forEach((cadeteria) => {
-    socket.join(cadeteria.name);
-  
-  });
+  if (user.role == "Empresa") {
+    socket.join(user.name);
+  } else {
+    cadeterias.forEach((cadeteria) => {
+      socket.join(cadeteria.name);
+    });
+  }
 });
 
 module.exports = { server, io, app };

@@ -77,33 +77,30 @@ Order.init(
 );
 
 Order.addHook("afterBulkCreate", async (order, options) => {
-  // We can use `options.transaction` to perform some other call
-  // using the same transaction of the call that triggered this hook
-  // const orders = await Order.findAll({ where: {}, raw: true })
   const parsedOrders = order.map((order) => ({
     ...order.dataValues,
     client: JSON.parse(order.dataValues.client),
     destination: JSON.parse(order.dataValues.destination),
     products: JSON.parse(order.dataValues.products),
   }));
-
   options.cadeterias.forEach((cadeteria) => {
     io.to(cadeteria.name).emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
   });
+  io.to(options.user.name).emit("ordersCreated", JSON.stringify({ empresa: options.user.id, ordenes: parsedOrders }));
 });
 
 Order.addHook("afterUpdate", async (order, options) => {
+  const parsedOrder = {
+    ...order.dataValues,
+    client: JSON.parse(order.dataValues.client),
+    destination: JSON.parse(order.dataValues.destination),
+    products: JSON.parse(order.dataValues.products),
+  };
   if (options.fields.includes("state")) {
     options.cadeterias.forEach((cadeteria) => {
-      io.to(cadeteria.name).emit(
-        "dbModifications",
-        JSON.stringify({
-          orderId: order.dataValues.id,
-          cadeteId: order.dataValues.cadeteId,
-          state: order.dataValues.state,
-        })
-      );
+      io.to(cadeteria.name).emit("dbModifications", JSON.stringify(parsedOrder));
     });
+    io.to(options.tienda.name).emit("dbModifications", JSON.stringify(parsedOrder));
   }
 });
 
