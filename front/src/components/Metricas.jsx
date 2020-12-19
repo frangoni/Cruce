@@ -106,7 +106,7 @@ export default function Metricas({ match }) {
             <Card className="metriCards">
               <CardContent>
                 <Typography variant="h1" color="textPrimary">
-                  {(metricas.demoraPromedioDeEnvio / 60000).toFixed(2)}
+                  {(metricas.demoraPromedioDeEnvio / 60000).toFixed()}
                   <Typography variant="caption">minutos</Typography>
                 </Typography>
                 <Typography color="textPrimary">Demora promedio de envío</Typography>
@@ -124,7 +124,7 @@ export default function Metricas({ match }) {
             <Card className="metriCards">
               <CardContent>
                 <Typography variant="h1" color="textPrimary">
-                  {(metricas.demoraIngresoDespacho / 60000).toFixed(2)}
+                  {(metricas.demoraIngresoDespacho / 60000).toFixed()}
                   <Typography variant="caption">minutos</Typography>
                 </Typography>
                 <Typography color="textPrimary">Demora promedio de ingreso/despacho</Typography>

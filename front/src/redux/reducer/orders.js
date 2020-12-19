@@ -44,10 +44,14 @@ export default (state = initialState, action) => {
     case ADD_MY_ORDER:
       return {
         ...state,
-        myOrders: { ...state.myOrders, results: [...state.myOrders.results, action.payload] },
+        myOrders: {
+          ...state.myOrders,
+          count: state.myOrders.count + 1,
+          results: [...state.myOrders.results, action.payload],
+        },
       };
     case UPDATE_SINGLE_ORDER:
-      return { ...state, count: state.count + 1, order: { ...state.order, state: action.payload } };
+      return { ...state, order: { ...state.order, state: action.payload } };
     case PICKED_UP:
       return { ...state, message: action.payload };
     default:

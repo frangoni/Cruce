@@ -114,10 +114,10 @@ export default function SingleOrder({ match }) {
     let shipping = 0;
     order.products.length > 0
       ? order.products.map((product) => {
-          discounts += Number(product.discountsTotals);
-          skuTotal += Number(product.skuValue);
-          shipping += Number(product.shippingValue);
-        })
+        discounts += Number(product.discountsTotals);
+        skuTotal += Number(product.skuValue);
+        shipping += Number(product.shippingValue);
+      })
       : null;
     return { discounts, skuTotal, shipping };
   };
@@ -202,8 +202,8 @@ export default function SingleOrder({ match }) {
                     </NativeSelect>
                   </FormControl>
                 ) : (
-                  <p>Estado: {order.state}</p>
-                )}
+                    <p>Estado: {order.state}</p>
+                  )}
                 <p>Id: {order.orderId}</p>
                 {order.cadete ? (
                   <>
