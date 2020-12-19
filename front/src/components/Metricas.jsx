@@ -152,7 +152,15 @@ export default function Metricas({ match }) {
                 <FormLabel component="legend"></FormLabel>
                 <RadioGroup aria-label="metricas" name="metricas" value={ejeY} onChange={handleChange}>
                   {indices.map((indice, id) => {
-                    return <FormControlLabel id={id} value={indice.value} control={<Radio />} label={indice.label} />;
+                    return (
+                      <FormControlLabel
+                        key={id}
+                        id={id}
+                        value={indice.value}
+                        control={<Radio />}
+                        label={indice.label}
+                      />
+                    );
                   })}
                 </RadioGroup>
               </FormControl>

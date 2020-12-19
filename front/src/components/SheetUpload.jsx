@@ -8,7 +8,6 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { useSelector } from "react-redux";
 export default () => {
   const user = useSelector((state) => state.user.user);
-
   const fileInputRef = useRef();
   const [orders, setOrders] = useState([]);
   const [open, setOpen] = useState(false);
@@ -37,10 +36,7 @@ export default () => {
       reader.onloadend = (e) => {
         let data = new Uint8Array(e.target.result);
         let workBook = XLSX.read(data, { type: "array" });
-        let planilla = XLSX.utils.sheet_to_json(
-          workBook.Sheets[workBook.SheetNames],
-          { range: 1 }
-        );
+        let planilla = XLSX.utils.sheet_to_json(workBook.Sheets[workBook.SheetNames], { range: 1 });
         planilla.map((order) => {
           let date = new Date(order["Creation Date"]);
           ordenes.push({
@@ -110,20 +106,10 @@ export default () => {
   ];
   return (
     <>
-      <IconButton
-        id="add"
-        onClick={handleClick}
-        style={{ float: "right", position: "fixed", bottom: "0" }}
-      >
+      <IconButton id="add" onClick={handleClick} style={{ float: "right", position: "fixed", bottom: "0" }}>
         <AddCircleIcon style={{ fontSize: 70, color: "#6f20f0" }} />
       </IconButton>
-      <input
-        required
-        type="file"
-        style={{ display: "none" }}
-        ref={fileInputRef}
-        onChange={handleInputChange}
-      />
+      <input required type="file" style={{ display: "none" }} ref={fileInputRef} onChange={handleInputChange} />
       <Modal open={open} onClose={handleReject}>
         <>
           <div id="modal">

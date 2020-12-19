@@ -11,7 +11,7 @@ const Cadeterias = () => {
   useEffect(() => {
     dispatch(fetchMyCadeterias());
     dispatch(fetchCadeterias());
-    return () => {};
+    return () => { };
   }, []);
 
   const handlerCheck = (id) => {
@@ -24,12 +24,12 @@ const Cadeterias = () => {
   return (
     <div id="checkBoxCadeterias" style={{ height: "10vh", width: "100%" }}>
       {cadeterias.length
-        ? cadeterias.map((cadeteria) => (
-            <div id="checkBoxCadeterias">
-              {cadeteria.name}
-              <Checkbox checked={misCadeterias.includes(cadeteria.id)} onClick={() => handlerCheck(cadeteria.id)} />
-            </div>
-          ))
+        ? cadeterias.map((cadeteria, i) => (
+          <div key={i} id="checkBoxCadeterias">
+            {cadeteria.name}
+            <Checkbox checked={misCadeterias.includes(cadeteria.id)} onClick={() => handlerCheck(cadeteria.id)} />
+          </div>
+        ))
         : null}
       <Button variant="contained" color="primary" size="small" onClick={handlerClick} startIcon={<SaveIcon />}>
         Guardar

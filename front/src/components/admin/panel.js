@@ -3,7 +3,6 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import { IconButton } from "@material-ui/core";
 import UsersTable from "./usersTable";
 import Badge from "@material-ui/core/Badge";
 
@@ -11,7 +10,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
     <div role="tabpanel" id={`simple-tabpanel-${index}`} {...other}>
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box sx={3}>{children}</Box>}
     </div>
   );
 }
@@ -22,12 +21,6 @@ export default function Panel({ users, selected }) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  <IconButton color="inherit">
-    <Badge badgeContent={4} color="secondary">
-      <Tab label="Pendientes" />
-    </Badge>
-  </IconButton>;
 
   return (
     <div>
@@ -43,13 +36,13 @@ export default function Panel({ users, selected }) {
           <Tab label="Pendientes" />
 
           <Badge
-            badgeContent={users.filter((user) => user.accepted === false).length}
+            badgeContent={users ? users.filter((user) => user.accepted === false).length : 0}
             color="secondary"
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "left",
             }}
-            overlap="rectangle"
+            overlap="rectangular"
           />
         </Tabs>
       </AppBar>

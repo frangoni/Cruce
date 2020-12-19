@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMyOrders } from "../redux/actions/orders";
+import { addMyOrder, fetchMyOrders, updateMyOrder } from "../redux/actions/orders";
 import Button from "@material-ui/core/Button";
 import OrdersTable from "./OrderTable";
 import Filter from "./Filter";
 import { fetchMyTiendas } from "../redux/actions/cadeterias";
+import io from "socket.io-client";
 
 const filterTemplate = {
   fecha: { de: 0, hasta: Date.now() },
@@ -23,6 +24,19 @@ const MyOrders = () => {
 
   useEffect(() => {
     dispatch(fetchMyTiendas());
+    dispatch(fetchMyOrders(page, filter));
+    const id = user.id;
+    const socket = io.connect(`${window.location.origin}`, { query: { id } });
+    socket.on("dbModifications", (data) => {
+      const order = JSON.parse(data);
+      dispatch(updateMyOrder(order));
+      if (order.state == "Pendiente de retiro en sucursal") {
+        dispatch(addMyOrder(order));
+      }
+    });
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {

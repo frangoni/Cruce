@@ -7,7 +7,8 @@ import {
   UPDATE_ORDER,
   UPDATE_SINGLE_ORDER,
   PICKED_UP,
-  SET_OBSERVACIONES
+  UPDATE_MY_ORDER,
+  ADD_MY_ORDER,
 } from "../constants";
 import axios from "axios";
 
@@ -41,6 +42,18 @@ export const updateOrder = (order) => ({
   payload: order,
 });
 
+export const updateMyOrder = (order) => ({
+  type: UPDATE_MY_ORDER,
+  payload: order,
+});
+
+export const addMyOrder = function (order) {
+  return {
+    type: ADD_MY_ORDER,
+    payload: order,
+  };
+};
+
 export const updateSingleOrder = (order) => ({
   type: UPDATE_SINGLE_ORDER,
   payload: order,
@@ -59,8 +72,6 @@ const orderPickUp = function (mensaje) {
   };
 };
 
-
-
 export const postObservaciones = (observaciones, orderId) => (dispatch, state) => {
   const token = state().user.token;
   axios({
@@ -68,8 +79,8 @@ export const postObservaciones = (observaciones, orderId) => (dispatch, state) =
     url: "/api/order/observaciones",
     headers: { Authorization: `Bearer ${token}` },
     data: { observaciones, orderId },
-  })
-}
+  }).then((res) => dispatch(fetchSingleOrder(orderId)));
+};
 
 export const deleteMessage = () => (dispatch) => {
   dispatch(orderPickUp(""));
@@ -102,9 +113,9 @@ const getSingleOrder = function (order) {
 export const fetchSingleOrder = (id) => (dispatch, state) => {
   const token = state().user.token;
   axios
-  .get(`/api/order/${id}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
+    .get(`/api/order/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then((order) => {
       let parsedOrder = {
         ...order.data,
@@ -113,7 +124,7 @@ export const fetchSingleOrder = (id) => (dispatch, state) => {
         destination: JSON.parse(order.data.destination),
       };
       return dispatch(getSingleOrder(parsedOrder));
-  })
+    });
 };
 
 export const orderStateUpdate = (estado, id, userId) => (dispatch) => {

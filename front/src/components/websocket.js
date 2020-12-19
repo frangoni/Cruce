@@ -3,14 +3,7 @@ import OrdersTable from "./OrderTable";
 import io from "socket.io-client";
 
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchOrders,
-  addOrders,
-  filterOrders,
-  fetchPickOrder,
-  updateOrder,
-  deleteMessage,
-} from "../redux/actions/orders";
+import { fetchOrders, addOrders, filterOrders, fetchPickOrder, deleteMessage } from "../redux/actions/orders";
 import SheetUpload from "./SheetUpload";
 import { Paper } from "@material-ui/core";
 
@@ -27,18 +20,14 @@ const WebSocket = () => {
   useEffect(() => {
     dispatch(fetchOrders());
     const socket = io.connect(`${window.location.origin}`, { query: { id } });
-
     socket.on("ordersCreated", (data) => {
       const orders = JSON.parse(data);
-      if (role === "Cadete" || orders.empresa === id) dispatch(addOrders(orders.ordenes));
+      dispatch(addOrders(orders.ordenes));
     });
-
     socket.on("dbModifications", (data) => {
       const order = JSON.parse(data);
-      if (role === "Cadete") dispatch(filterOrders(order.orderId));
-      else if (role === "Empresa") dispatch(updateOrder(order));
+      dispatch(filterOrders(order.orderId));
     });
-
     return () => {
       socket.disconnect();
     };

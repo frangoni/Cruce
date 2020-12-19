@@ -231,11 +231,10 @@ a {
   width: 0;
 }
 
-@media (max-width: 1068px) {
+@media (max-width: 1400px) {
   .filterActive {
     transform: scale(0.8) translate(10%, -60%);
   }
-
   .filterHidden {
     transform: scale(0.8) translate(10%, -60%);
   }

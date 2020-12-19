@@ -43,8 +43,8 @@ export default function SingleOrder({ match }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState();
   const observacionesInput = useInput("observaciones");
-  const handleSubmit = (e) => {
-    e.preventDefault();
+
+  const handleSubmit = () => {
     const observacionesValue = observacionesInput.value;
     dispatch(postObservaciones(observacionesValue, order.id));
   };
@@ -89,12 +89,11 @@ export default function SingleOrder({ match }) {
     if (order.cadeteId) {
       dispatch(fetchMyCadeteriaCadete(order.cadeteId));
     }
-
     const socket = io.connect(`${window.location.origin}`, {
       query: { id: user.id },
     });
     socket.on("dbModifications", (data) => {
-      if (orderId == JSON.parse(data).orderId) {
+      if (orderId == JSON.parse(data).id) {
         dispatch(updateSingleOrder(JSON.parse(data).state));
       }
     });
@@ -152,7 +151,7 @@ export default function SingleOrder({ match }) {
                 ) : null}
                 <Button
                   variant="outlined"
-                  color="grey"
+                  //color="grey"
                   size="small"
                   startIcon={<ArrowBackIcon />}
                   onClick={() => history.goBack()}
