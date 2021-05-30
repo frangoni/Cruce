@@ -1,12 +1,9 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
-const db = new Sequelize("cruce", null, null, {
-  dialect: "postgres",
-  host: "localhost",
+const db = new Sequelize('cruce', 'postgres', process.env.PASS, {
+  dialect: 'postgres',
+  host: 'localhost',
   logging: false,
 });
 
 module.exports = db;
-
-//"postgres://postgres:gustihero@localhost:5433/cruce"
-//"postgres://postgres:novarohueyo@localhost:5432/cruce"
