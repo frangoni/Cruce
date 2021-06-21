@@ -5,14 +5,14 @@ const {
   userCreation,
   userData,
   resetPassword,
-  resetPasswordValidator
+  resetPasswordValidator,
 } = require("../Controllers/user");
 const { auth } = require("../Middleware/auth");
 
 router.post("/login", userValidation);
 router.post("/register", userCreation);
-router.post("/reset/:uuid", resetPasswordValidator)
-router.post("/reset", resetPassword)
+router.post("/reset/:uuid", resetPasswordValidator);
+router.post("/reset", resetPassword);
 router.get("/me", auth, userData);
 
 module.exports = router;

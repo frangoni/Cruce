@@ -12,7 +12,6 @@ export default (state = initialState, action) => {
       return { ...state, metricas: action.payload, orders: action.orders };
     case GET_USER_METRICAS:
       return { ...state, userMetricas: action.payload };
-
     default:
       return state;
   }

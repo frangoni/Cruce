@@ -69,6 +69,7 @@ export default function Metricas({ match }) {
       },
     ],
   };
+
   useEffect(() => {
     dispatch(fetchMetricas());
     dispatch(fetchUserMetricas(match.params.id));

@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import CheckIcon from "@material-ui/icons/Check";
 import VisibilityOutlinedIcon from "@material-ui/icons/VisibilityOutlined";
 import { makeStyles } from "@material-ui/core/styles";
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,

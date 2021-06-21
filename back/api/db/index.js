@@ -7,6 +7,3 @@ const db = new Sequelize("cruce", null, null, {
 });
 
 module.exports = db;
-
-//"postgres://postgres:gustihero@localhost:5433/cruce"
-//"postgres://postgres:novarohueyo@localhost:5432/cruce"

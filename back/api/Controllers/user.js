@@ -78,4 +78,5 @@ const resetPasswordValidator = async (req, res, next) => {
     return res.status(501).send(e);
   }
 };
+
 module.exports = { userValidation, userCreation, userData, resetPassword, resetPasswordValidator };

@@ -4,6 +4,7 @@ const User = require("../Models/User");
 const getMetricas = async (req, res, next) => {
   const userId = req.user.id;
   const role = req.user.role;
+
   try {
     const metricas = {
       pedidosDespachados: 0,
@@ -24,7 +25,6 @@ const getMetricas = async (req, res, next) => {
               state: ["Entregado", "Cancelado"],
             },
     });
-
     let q = 0;
     orders.map((order) => {
       if (order.state === "Entregado") {
@@ -37,6 +37,7 @@ const getMetricas = async (req, res, next) => {
         metricas.pedidosDevueltos += 1;
       }
     });
+
     metricas.demoraIngresoDespacho = metricas.demoraIngresoDespacho / q;
     metricas.demoraPromedioDeEnvio = metricas.demoraPromedioDeEnvio / q;
 
