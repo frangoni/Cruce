@@ -63,3 +63,5 @@ package-lock.json
 #BUNDLE
 bundle.js
 bundle.js.map
+
+.xls
