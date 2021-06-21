@@ -64,4 +64,5 @@ package-lock.json
 bundle.js
 bundle.js.map
 
+#EXCEL
 .xls
