@@ -1,8 +1,8 @@
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
-const db = new Sequelize("cruce", null, null, {
-  dialect: "postgres",
-  host: "localhost",
+const db = new Sequelize('cruce', 'postgres', process.env.PASS, {
+  dialect: 'postgres',
+  host: 'localhost',
   logging: false,
 });
 
