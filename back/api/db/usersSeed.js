@@ -132,7 +132,7 @@ db.sync({ force: true }).then(async () => {
     { individualHooks: true }
   );
 
-  users.map((user) => {
+  users.map(user => {
     let start = 0;
     let end = 0;
     do {
