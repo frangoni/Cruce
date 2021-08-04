@@ -22,7 +22,7 @@ export default function Main() {
     if (!token && !(history.location.pathname.match(/\/reset/) || history.location.pathname === "/registro")) {
       history.push("/inicio");
     }
-    return () => { };
+    return () => {};
   }, [token]);
 
   useEffect(() => {
@@ -34,63 +34,61 @@ export default function Main() {
   }, []);
 
   return (
-    <>
-      <Switch>
-        <Route path="/inicio" component={Splash} />
-        <Route path="/ingreso" component={Login} />
-        <Route path="/registro" component={Register} />
-        <Route path="/reset/:uuid" component={ResetPassword} />
-        <Route path="/reset" component={ResetPassword} />
-        <Route
-          path="/admin"
-          render={() => (
-            <SideBar title="Panel de Administrador">
-              <Panel />
-            </SideBar>
-          )}
-        />
-        <Route
-          path="/ordenes"
-          render={() => (
-            <SideBar title="Ordenes Activas">
-              <WebSocket />
-            </SideBar>
-          )}
-        />
-        <Route
-          path="/misordenes"
-          render={() => (
-            <SideBar title={user.role == "Admin" ? "Ordenes" : "Mis Ordenes"}>
-              <MyOrders />
-            </SideBar>
-          )}
-        />
-        <Route
-          path="/orden/:id"
-          render={({ match }) => (
-            <SideBar title="Orden">
-              <SingleOrder match={match} />
-            </SideBar>
-          )}
-        />
-        <Route
-          path="/cadeterias"
-          render={({ match }) => (
-            <SideBar title="Orden">
-              <Cadeterias match={match} />
-            </SideBar>
-          )}
-        />
-        <Route
-          path="/perfil/:id"
-          render={({ match }) => (
-            <SideBar title="Metricas">
-              <Metricas match={match} />
-            </SideBar>
-          )}
-        />
-        {token ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
-      </Switch>
-    </>
+    <Switch>
+      <Route path="/inicio" component={Splash} />
+      <Route path="/ingreso" component={Login} />
+      <Route path="/registro" component={Register} />
+      <Route path="/reset/:uuid" component={ResetPassword} />
+      <Route path="/reset" component={ResetPassword} />
+      <Route
+        path="/admin"
+        render={() => (
+          <SideBar title="Panel de Administrador">
+            <Panel />
+          </SideBar>
+        )}
+      />
+      <Route
+        path="/ordenes"
+        render={() => (
+          <SideBar title="Ordenes Activas">
+            <WebSocket />
+          </SideBar>
+        )}
+      />
+      <Route
+        path="/misordenes"
+        render={() => (
+          <SideBar title={user.role == "Admin" ? "Ordenes" : "Mis Ordenes"}>
+            <MyOrders />
+          </SideBar>
+        )}
+      />
+      <Route
+        path="/orden/:id"
+        render={({ match }) => (
+          <SideBar title="Orden">
+            <SingleOrder match={match} />
+          </SideBar>
+        )}
+      />
+      <Route
+        path="/cadeterias"
+        render={({ match }) => (
+          <SideBar title="Orden">
+            <Cadeterias match={match} />
+          </SideBar>
+        )}
+      />
+      <Route
+        path="/perfil/:id"
+        render={({ match }) => (
+          <SideBar title="Metricas">
+            <Metricas match={match} />
+          </SideBar>
+        )}
+      />
+      {token ? <Redirect to="/ordenes" /> : <Redirect to="/inicio" />}
+    </Switch>
   );
 }

@@ -63,3 +63,6 @@ package-lock.json
 #BUNDLE
 bundle.js
 bundle.js.map
+
+#EXCEL
+P5_-_REFERENCIA_PLANILLA_DE_PEDIDOS.xls

@@ -137,10 +137,10 @@ a {
 }
 @media (max-width: 600px) {
   .singleOrderPapers {
-    display: "flex";
+    display: flex;
     flex-flow: column wrap;
-    justify-content: "space-evenly";
-    margin: "2%";
+    justify-content: space-evenly;
+    margin: 2%;
   }
   .paper {
     width: 80vw;
